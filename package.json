@@ -1,0 +1,26 @@
+{
+  "name": "webpack-bundle",
+  "version": "1.0.0",
+  "description": "Bundle NPM packages using webpack",
+  "keywords": [
+    "npm",
+    "package",
+    "bundle",
+    "webpack",
+    "module"
+  ],
+  "repository": "thachnn/webpack-bundle",
+  "license": "MIT",
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "build": "node node_modules/webpack/bin/webpack.js --progress"
+  },
+  "devDependencies": {
+    "glob": "^7.1.3",
+    "string-replace-loader": "^3.0.0",
+    "webpack": "thachnn/webpack#bundle-5.72.1"
+  },
+  "resolutions": {}
+}
