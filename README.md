@@ -1,2 +1,3 @@
-# webpack-bundle
-Bundle NPM packages using `webpack` and provide them
+# Purpose
+
+Bundle NPM packages using `webpack` and provide them :)
