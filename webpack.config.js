@@ -13,6 +13,7 @@ const webpackConfig = (name, config) => ({
   context: __dirname,
   target: 'node',
   node: { __filename: false, __dirname: false },
+  cache: { type: 'filesystem' },
   stats: { modulesSpace: Infinity },
   optimization: {
     nodeEnv: false,
@@ -45,6 +46,26 @@ module.exports = [
               return JSON.stringify(pkg, null, 2);
             },
           },
+        ],
+      }),
+    ],
+  }),
+  webpackConfig('ajv', {
+    entry: './node_modules/ajv/lib/ajv',
+    output: { filename: 'lib/ajv.js', libraryTarget: 'commonjs2' },
+    plugins: [
+      new CopyPlugin({
+        patterns: [
+          { from: 'node_modules/ajv/{LICENSE,README}*', to: '[name][ext]' },
+          {
+            from: 'node_modules/ajv/package.json',
+            transform(content) {
+              const pkg = JSON.parse(content);
+              ['dependencies', 'devDependencies', 'scripts', 'nyc'].forEach((k) => delete pkg[k]);
+              return JSON.stringify(pkg, null, 2);
+            },
+          },
+          { from: 'lib/**/*.d.ts', context: path.join(__dirname, 'node_modules', 'ajv') },
         ],
       }),
     ],
