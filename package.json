@@ -1,29 +1,43 @@
 {
-  "name": "webpack-bundle",
-  "version": "1.0.0",
-  "description": "Bundle NPM packages using webpack",
-  "keywords": [
-    "npm",
-    "package",
-    "bundle",
-    "webpack",
-    "module"
+  "name": "ajv",
+  "version": "6.12.6",
+  "description": "Another JSON Schema Validator",
+  "main": "lib/ajv.js",
+  "typings": "lib/ajv.d.ts",
+  "files": [
+    "lib/",
+    "dist/",
+    "scripts/",
+    "LICENSE",
+    ".tonic_example.js"
   ],
-  "repository": "thachnn/webpack-bundle",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ajv-validator/ajv.git"
+  },
+  "keywords": [
+    "JSON",
+    "schema",
+    "validator",
+    "validation",
+    "jsonschema",
+    "json-schema",
+    "json-schema-validator",
+    "json-schema-validation"
+  ],
+  "author": "Evgeny Poberezkin",
   "license": "MIT",
-  "engines": {
-    "node": ">=10"
+  "bugs": {
+    "url": "https://github.com/ajv-validator/ajv/issues"
   },
-  "scripts": {
-    "build": "node node_modules/webpack/bin/webpack.js --progress",
-    "clean": "node node_modules/rimraf/bin.js dist node_modules/.cache"
+  "homepage": "https://github.com/ajv-validator/ajv",
+  "tonicExampleFilename": ".tonic_example.js",
+  "collective": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/ajv"
   },
-  "devDependencies": {
-    "rimraf": "^2.6.3",
-    "string-replace-loader": "^3.0.0",
-    "webpack": "thachnn/webpack#bundle-5.72.1"
-  },
-  "resolutions": {
-    "rimraf/glob": "thachnn/webpack-bundle#glob-7.2.3"
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/epoberezkin"
   }
 }
