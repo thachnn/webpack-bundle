@@ -24,6 +24,7 @@
     "webpack": "thachnn/webpack#bundle-5.72.1"
   },
   "resolutions": {
+    "**/schema-utils/ajv": "thachnn/webpack-bundle#ajv-6.12.6",
     "rimraf/glob": "thachnn/webpack-bundle#glob-7.2.3"
   }
 }
