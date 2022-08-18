@@ -70,4 +70,4 @@ string-replace-loader@^3.0.0:
 
 webpack@thachnn/webpack#bundle-5.72.1:
   version "5.72.1"
-  resolved "https://codeload.github.com/thachnn/webpack/tar.gz/43fd914215768faac85c543c66bdcfe43d413002"
+  resolved "https://codeload.github.com/thachnn/webpack/tar.gz/34d601403d7fe66e906143f9da01fd2df5fd99be"
