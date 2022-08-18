@@ -70,4 +70,24 @@ module.exports = [
       }),
     ],
   }),
+  webpackConfig('fast-glob', {
+    entry: './node_modules/fast-glob/out/index',
+    output: { filename: 'out/index.js', libraryTarget: 'commonjs2' },
+    plugins: [
+      new CopyPlugin({
+        patterns: [
+          { from: 'node_modules/fast-glob/{LICENSE,README}*', to: '[name][ext]' },
+          {
+            from: 'node_modules/fast-glob/package.json',
+            transform(content) {
+              const pkg = JSON.parse(content);
+              ['dependencies', 'devDependencies', 'scripts'].forEach((k) => delete pkg[k]);
+              return JSON.stringify(pkg, null, 2);
+            },
+          },
+          // dts-bundle --name fast-glob --main out/index.d.ts --baseDir . --out dist/index.d.ts
+        ],
+      }),
+    ],
+  }),
 ];
