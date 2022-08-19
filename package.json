@@ -1,22 +1,10 @@
 {
-  "name": "@webassemblyjs/wasm-parser",
+  "name": "@webassemblyjs/wasm-edit",
   "version": "1.11.1",
-  "keywords": [
-    "webassembly",
-    "javascript",
-    "ast",
-    "parser",
-    "wasm"
-  ],
-  "description": "WebAssembly binary format parser",
+  "description": "",
   "main": "lib/index.js",
   "scripts": {
-    "test": "mocha"
-  },
-  "author": "Sven Sauleau",
-  "license": "MIT",
-  "dependencies": {
-    "@webassemblyjs/ast": "1.11.1"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -24,6 +12,12 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "author": "Sven Sauleau",
+  "license": "MIT",
+  "dependencies": {
+    "@webassemblyjs/ast": "1.11.1",
+    "@webassemblyjs/wasm-parser": "1.11.1"
   },
   "gitHead": "3f07e2db2031afe0ce686630418c542938c1674b"
 }
