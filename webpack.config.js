@@ -14,7 +14,7 @@ const webpackConfig = (name, config) => ({
   target: 'node',
   node: { __filename: false, __dirname: false },
   cache: { type: 'filesystem' },
-  stats: { modulesSpace: Infinity },
+  stats: { modulesSpace: Infinity, nestedModules: true, nestedModulesSpace: Infinity },
   optimization: {
     nodeEnv: false,
     // minimize: false,
@@ -148,6 +148,67 @@ module.exports = [
         ],
       }),
       // sed -i- 's/("\.\/originalRequire")//' dist/@babel-core/lib/*.js
+    ],
+  }),
+  webpackConfig('@wasm-ast', {
+    entry: './node_modules/@webassemblyjs/ast/esm/index',
+    output: { filename: 'lib/index.js', libraryTarget: 'commonjs' },
+    plugins: [
+      new CopyPlugin({
+        patterns: [
+          { from: 'node_modules/@webassemblyjs/ast/{LICENSE,README}*', to: '[name][ext]' },
+          {
+            from: 'node_modules/@webassemblyjs/ast/package.json',
+            transform(content) {
+              const { dependencies: _1, devDependencies: _2, module: _3, ...pkg } = JSON.parse(content);
+              return JSON.stringify(pkg, null, 2);
+            },
+          },
+        ],
+      }),
+    ],
+  }),
+  webpackConfig('@wasm-parser', {
+    entry: './node_modules/@webassemblyjs/wasm-parser/esm/index',
+    output: { filename: 'lib/index.js', libraryTarget: 'commonjs' },
+    externals: ['@webassemblyjs/ast'],
+    plugins: [
+      new CopyPlugin({
+        patterns: [
+          { from: 'node_modules/@webassemblyjs/wasm-parser/{LICENSE,README}*', to: '[name][ext]' },
+          {
+            from: 'node_modules/@webassemblyjs/wasm-parser/package.json',
+            transform(content) {
+              const { devDependencies: _1, module: _2, ...pkg } = JSON.parse(content);
+              pkg.dependencies = { '@webassemblyjs/ast': pkg.dependencies['@webassemblyjs/ast'] };
+              return JSON.stringify(pkg, null, 2);
+            },
+          },
+        ],
+      }),
+    ],
+  }),
+  webpackConfig('@wasm-edit', {
+    entry: './node_modules/@webassemblyjs/wasm-edit/esm/index',
+    output: { filename: 'lib/index.js', libraryTarget: 'commonjs' },
+    externals: ['@webassemblyjs/ast', '@webassemblyjs/wasm-parser'],
+    plugins: [
+      new CopyPlugin({
+        patterns: [
+          { from: 'node_modules/@webassemblyjs/wasm-edit/{LICENSE,README}*', to: '[name][ext]' },
+          {
+            from: 'node_modules/@webassemblyjs/wasm-edit/package.json',
+            transform(content) {
+              const { devDependencies: _1, module: _2, ...pkg } = JSON.parse(content);
+              pkg.dependencies = {
+                '@webassemblyjs/ast': pkg.dependencies['@webassemblyjs/ast'],
+                '@webassemblyjs/wasm-parser': pkg.dependencies['@webassemblyjs/wasm-parser'],
+              };
+              return JSON.stringify(pkg, null, 2);
+            },
+          },
+        ],
+      }),
     ],
   }),
 ];
