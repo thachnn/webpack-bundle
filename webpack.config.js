@@ -139,7 +139,9 @@ module.exports = [
             from: 'node_modules/@babel/core/package.json',
             transform(content) {
               const { devDependencies: _1, ...pkg } = JSON.parse(content);
-              pkg.dependencies = { browserslist: '^4.20.2' };
+              const { dependencies: dep } = require('@babel/helper-compilation-targets/package.json');
+
+              pkg.dependencies = { browserslist: dep.browserslist };
               return JSON.stringify(pkg, null, 2);
             },
           },
