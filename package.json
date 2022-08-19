@@ -1,32 +1,58 @@
 {
-  "name": "webpack-bundle",
-  "version": "1.0.0",
-  "description": "Bundle NPM packages using webpack",
-  "keywords": [
-    "npm",
-    "package",
-    "bundle",
-    "webpack",
-    "module"
-  ],
-  "repository": "thachnn/webpack-bundle",
-  "license": "MIT",
-  "engines": {
-    "node": ">=10"
-  },
-  "scripts": {
-    "build": "node node_modules/webpack/node_modules/webpack-cli/bin/cli.js --progress",
-    "clean": "node node_modules/rimraf/bin.js dist node_modules/.cache"
-  },
-  "devDependencies": {
-    "globby": "^11.0.3",
-    "rimraf": "^2.6.3",
-    "string-replace-loader": "^3.0.0",
-    "webpack": "thachnn/webpack#bundle-5.72.1"
-  },
-  "resolutions": {
-    "**/schema-utils/ajv": "thachnn/webpack-bundle#ajv-6.12.6",
-    "globby/fast-glob": "thachnn/webpack-bundle#fast-glob-3.2.11",
-    "rimraf/glob": "thachnn/webpack-bundle#glob-7.2.3"
-  }
+	"name": "globby",
+	"version": "11.1.0",
+	"description": "User-friendly glob matching",
+	"license": "MIT",
+	"repository": "sindresorhus/globby",
+	"funding": "https://github.com/sponsors/sindresorhus",
+	"author": {
+		"email": "sindresorhus@gmail.com",
+		"name": "Sindre Sorhus",
+		"url": "https://sindresorhus.com"
+	},
+	"engines": {
+		"node": ">=10"
+	},
+	"files": [
+		"index.js",
+		"index.d.ts",
+		"gitignore.js",
+		"stream-utils.js"
+	],
+	"keywords": [
+		"all",
+		"array",
+		"directories",
+		"expand",
+		"files",
+		"filesystem",
+		"filter",
+		"find",
+		"fnmatch",
+		"folders",
+		"fs",
+		"glob",
+		"globbing",
+		"globs",
+		"gulpfriendly",
+		"match",
+		"matcher",
+		"minimatch",
+		"multi",
+		"multiple",
+		"paths",
+		"pattern",
+		"patterns",
+		"traverse",
+		"util",
+		"utility",
+		"wildcard",
+		"wildcards",
+		"promise",
+		"gitignore",
+		"git"
+	],
+	"dependencies": {
+		"fast-glob": "^3.2.9"
+	}
 }
