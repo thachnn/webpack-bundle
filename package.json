@@ -19,7 +19,7 @@
     "clean": "node node_modules/rimraf/bin.js dist node_modules/.cache"
   },
   "devDependencies": {
-    "globby": "^11.0.3",
+    "globby": "thachnn/webpack-bundle#globby-11.1.0",
     "rimraf": "^2.6.3",
     "string-replace-loader": "^3.0.0",
     "webpack": "thachnn/webpack#bundle-5.72.1"
