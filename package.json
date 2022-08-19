@@ -1,15 +1,23 @@
 {
-  "name": "@webassemblyjs/ast",
+  "name": "@webassemblyjs/wasm-parser",
   "version": "1.11.1",
-  "description": "AST utils for webassemblyjs",
   "keywords": [
     "webassembly",
     "javascript",
-    "ast"
+    "ast",
+    "parser",
+    "wasm"
   ],
+  "description": "WebAssembly binary format parser",
   "main": "lib/index.js",
+  "scripts": {
+    "test": "mocha"
+  },
   "author": "Sven Sauleau",
   "license": "MIT",
+  "dependencies": {
+    "@webassemblyjs/ast": "1.11.1"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/xtuc/webassemblyjs.git"
