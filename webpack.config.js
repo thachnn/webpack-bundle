@@ -80,8 +80,7 @@ module.exports = [
           {
             from: 'node_modules/fast-glob/package.json',
             transform(content) {
-              const pkg = JSON.parse(content);
-              ['dependencies', 'devDependencies', 'scripts'].forEach((k) => delete pkg[k]);
+              const { dependencies: _1, devDependencies: _2, scripts: _3, ...pkg } = JSON.parse(content);
               return JSON.stringify(pkg, null, 2);
             },
           },
@@ -101,14 +100,52 @@ module.exports = [
           {
             from: 'node_modules/globby/package.json',
             transform(content) {
-              const pkg = JSON.parse(content);
-              ['devDependencies', 'scripts', 'xo'].forEach((k) => delete pkg[k]);
+              const { devDependencies: _1, scripts: _2, xo: _3, ...pkg } = JSON.parse(content);
               pkg.dependencies = { 'fast-glob': pkg.dependencies['fast-glob'] };
               return JSON.stringify(pkg, null, '\t');
             },
           },
         ],
       }),
+    ],
+  }),
+  webpackConfig('@babel-core', {
+    entry: './node_modules/@babel/core/lib/index',
+    output: { filename: 'lib/index.js', libraryTarget: 'commonjs' },
+    externals: {
+      browserslist: 'commonjs2 browserslist',
+      originalRequire: 'commonjs2 ./originalRequire',
+    },
+    module: {
+      rules: [
+        {
+          test: /node_modules.@babel.core.lib.config.files.(configuration|module-types|plugins|import)\.js$/,
+          loader: 'string-replace-loader',
+          options: {
+            multiple: [
+              { search: ' require.resolve ', replace: ' require("originalRequire").resolve ' },
+              { search: ' require(filepath)', replace: ' require("originalRequire")(filepath)' },
+              { search: ' import(filepath)', replace: ' import(/* webpackIgnore: true */ filepath)' },
+            ],
+          },
+        },
+      ],
+    },
+    plugins: [
+      new CopyPlugin({
+        patterns: [
+          { from: 'node_modules/@babel/core/{LICENSE,README}*', to: '[name][ext]' },
+          {
+            from: 'node_modules/@babel/core/package.json',
+            transform(content) {
+              const { devDependencies: _1, ...pkg } = JSON.parse(content);
+              pkg.dependencies = { browserslist: '^4.20.2' };
+              return JSON.stringify(pkg, null, 2);
+            },
+          },
+        ],
+      }),
+      // sed -i- 's/("\.\/originalRequire")//' dist/@babel-core/lib/*.js
     ],
   }),
 ];
