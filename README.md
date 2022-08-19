@@ -1,21 +1,19 @@
-# Purpose
+# @babel/core
 
-Bundle NPM packages using `webpack` and provide them :)
+> Babel compiler core.
 
-## Usage
+See our website [@babel/core](https://babeljs.io/docs/en/babel-core) for more information or the [issues](https://github.com/babel/babel/issues?utf8=%E2%9C%93&q=is%3Aissue+label%3A%22pkg%3A%20core%22+is%3Aopen) associated with this package.
 
-```json
-{
-  "dependencies": {
-    "glob": "thachnn/webpack-bundle#glob-7.2.3"
-  },
-  "resolutions": {
-    "**/ajv": "thachnn/webpack-bundle#ajv-6.12.6"
-  }
-}
+## Install
+
+Using npm:
+
+```sh
+npm install --save-dev @babel/core
 ```
 
-## Provided packages
+or using yarn:
 
-- `glob` v7.2.3 -> [thachnn/webpack-bundle#glob-7.2.3](../../tree/glob-7.2.3)
-- `ajv` v6.12.6 -> [thachnn/webpack-bundle#ajv-6.12.6](../../tree/ajv-6.12.6)
+```sh
+yarn add @babel/core --dev
+```
