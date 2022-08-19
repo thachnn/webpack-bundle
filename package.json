@@ -19,13 +19,14 @@
     "clean": "node node_modules/rimraf/bin.js dist node_modules/.cache"
   },
   "devDependencies": {
-    "fast-glob": "^3.2.7",
+    "globby": "^11.0.3",
     "rimraf": "^2.6.3",
     "string-replace-loader": "^3.0.0",
     "webpack": "thachnn/webpack#bundle-5.72.1"
   },
   "resolutions": {
     "**/schema-utils/ajv": "thachnn/webpack-bundle#ajv-6.12.6",
+    "globby/fast-glob": "thachnn/webpack-bundle#fast-glob-3.2.11",
     "rimraf/glob": "thachnn/webpack-bundle#glob-7.2.3"
   }
 }

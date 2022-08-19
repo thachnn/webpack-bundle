@@ -90,4 +90,25 @@ module.exports = [
       }),
     ],
   }),
+  webpackConfig('globby', {
+    entry: { index: './node_modules/globby/index' },
+    output: { libraryTarget: 'commonjs2' },
+    externals: ['fast-glob'],
+    plugins: [
+      new CopyPlugin({
+        patterns: [
+          { from: 'node_modules/globby/{license,readme,index.d}*', to: '[name][ext]' },
+          {
+            from: 'node_modules/globby/package.json',
+            transform(content) {
+              const pkg = JSON.parse(content);
+              ['devDependencies', 'scripts', 'xo'].forEach((k) => delete pkg[k]);
+              pkg.dependencies = { 'fast-glob': pkg.dependencies['fast-glob'] };
+              return JSON.stringify(pkg, null, '\t');
+            },
+          },
+        ],
+      }),
+    ],
+  }),
 ];
