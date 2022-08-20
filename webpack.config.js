@@ -250,4 +250,22 @@ module.exports = [
       }),
     ],
   }),
+  webpackConfig('chalk', {
+    entry: { index: './node_modules/chalk/index' },
+    output: { libraryTarget: 'commonjs2' },
+    plugins: [
+      new CopyPlugin({
+        patterns: [
+          { from: '**/{license*,readme*,*.d.ts}', context: path.join(__dirname, 'node_modules', 'chalk') },
+          {
+            from: 'node_modules/chalk/package.json',
+            transform(content) {
+              const { dependencies: _1, devDependencies: _2, scripts: _3, xo: _4, ...pkg } = JSON.parse(content);
+              return JSON.stringify(pkg, null, '\t');
+            },
+          },
+        ],
+      }),
+    ],
+  }),
 ];
