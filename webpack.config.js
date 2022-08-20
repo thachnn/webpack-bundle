@@ -283,4 +283,22 @@ module.exports = [
       }),
     ],
   }),
+  webpackConfig('execa', {
+    entry: { index: './node_modules/execa/index' },
+    output: { libraryTarget: 'commonjs2' },
+    plugins: [
+      new CopyPlugin({
+        patterns: [
+          { from: 'node_modules/execa/{license,readme,index.d}*', to: '[name][ext]' },
+          {
+            from: 'node_modules/execa/package.json',
+            transform(content) {
+              const { dependencies: _1, devDependencies: _2, scripts: _3, nyc: _4, ...pkg } = JSON.parse(content);
+              return JSON.stringify(pkg, null, '\t');
+            },
+          },
+        ],
+      }),
+    ],
+  }),
 ];
