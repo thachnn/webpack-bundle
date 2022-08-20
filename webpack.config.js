@@ -41,8 +41,7 @@ module.exports = [
           {
             from: 'node_modules/glob/package.json',
             transform(content) {
-              const pkg = JSON.parse(content);
-              ['dependencies', 'devDependencies', 'scripts', 'tap'].forEach((k) => delete pkg[k]);
+              const { dependencies: _1, devDependencies: _2, scripts: _3, tap: _4, ...pkg } = JSON.parse(content);
               return JSON.stringify(pkg, null, 2);
             },
           },
@@ -56,16 +55,14 @@ module.exports = [
     plugins: [
       new CopyPlugin({
         patterns: [
-          { from: 'node_modules/ajv/{LICENSE,README}*', to: '[name][ext]' },
+          { from: '**/{LICENSE*,README*,*.d.ts}', context: path.join(__dirname, 'node_modules', 'ajv') },
           {
             from: 'node_modules/ajv/package.json',
             transform(content) {
-              const pkg = JSON.parse(content);
-              ['dependencies', 'devDependencies', 'scripts', 'nyc'].forEach((k) => delete pkg[k]);
+              const { dependencies: _1, devDependencies: _2, scripts: _3, nyc: _4, ...pkg } = JSON.parse(content);
               return JSON.stringify(pkg, null, 2);
             },
           },
-          { from: 'lib/**/*.d.ts', context: path.join(__dirname, 'node_modules', 'ajv') },
         ],
       }),
     ],
@@ -80,8 +77,7 @@ module.exports = [
           {
             from: 'node_modules/fast-glob/package.json',
             transform(content) {
-              const pkg = JSON.parse(content);
-              ['dependencies', 'devDependencies', 'scripts'].forEach((k) => delete pkg[k]);
+              const { dependencies: _1, devDependencies: _2, scripts: _3, ...pkg } = JSON.parse(content);
               return JSON.stringify(pkg, null, 2);
             },
           },
@@ -101,8 +97,7 @@ module.exports = [
           {
             from: 'node_modules/globby/package.json',
             transform(content) {
-              const pkg = JSON.parse(content);
-              ['devDependencies', 'scripts', 'xo'].forEach((k) => delete pkg[k]);
+              const { devDependencies: _1, scripts: _2, xo: _3, ...pkg } = JSON.parse(content);
               pkg.dependencies = { 'fast-glob': pkg.dependencies['fast-glob'] };
               return JSON.stringify(pkg, null, '\t');
             },
