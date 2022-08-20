@@ -40,8 +40,7 @@ module.exports = [
           {
             from: 'node_modules/glob/package.json',
             transform(content) {
-              const pkg = JSON.parse(content);
-              ['dependencies', 'devDependencies', 'scripts', 'tap'].forEach((k) => delete pkg[k]);
+              const { dependencies: _1, devDependencies: _2, scripts: _3, tap: _4, ...pkg } = JSON.parse(content);
               return JSON.stringify(pkg, null, 2);
             },
           },
