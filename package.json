@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@babel/core": "thachnn/webpack-bundle#@babel/core-7.17.10",
-    "@babel/preset-env": "^7.11.1",
+    "@babel/preset-env": "thachnn/webpack-bundle#@babel/preset-env-7.17.10",
     "@webassemblyjs/wasm-edit": "thachnn/webpack-bundle#@webassemblyjs/wasm-edit-1.11.1",
     "globby": "thachnn/webpack-bundle#globby-11.1.0",
     "rimraf": "^2.6.3",
@@ -31,6 +31,8 @@
     "**/@webassemblyjs/ast": "thachnn/webpack-bundle#@webassemblyjs/ast-1.11.1",
     "**/@webassemblyjs/wasm-parser": "thachnn/webpack-bundle#@webassemblyjs/wasm-parser-1.11.1",
     "**/schema-utils/ajv": "thachnn/webpack-bundle#ajv-6.12.6",
+    "@babel/preset-env/chalk": "thachnn/webpack-bundle#chalk-2.4.2",
+    "@babel/preset-env/regexpu-core": "thachnn/webpack-bundle#regexpu-core-5.0.1",
     "globby/fast-glob": "thachnn/webpack-bundle#fast-glob-3.2.11",
     "rimraf/glob": "thachnn/webpack-bundle#glob-7.2.3"
   }
