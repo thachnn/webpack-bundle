@@ -1,37 +1,29 @@
 {
-  "name": "webpack-bundle",
-  "version": "1.0.0",
-  "description": "Bundle NPM packages using webpack",
-  "keywords": [
-    "npm",
-    "package",
-    "bundle",
-    "webpack",
-    "module"
-  ],
-  "repository": "thachnn/webpack-bundle",
+  "name": "@babel/preset-env",
+  "version": "7.17.10",
+  "description": "A Babel preset for each environment.",
+  "author": "The Babel Team (https://babel.dev/team)",
+  "homepage": "https://babel.dev/docs/en/next/babel-preset-env",
+  "bugs": "https://github.com/babel/babel/issues?utf8=%E2%9C%93&q=is%3Aissue+label%3A%22pkg%3A%20preset-env%22+is%3Aopen",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/babel/babel.git",
+    "directory": "packages/babel-preset-env"
+  },
+  "main": "./lib/index.js",
+  "dependencies": {
+    "browserslist": "^4.20.3",
+    "chalk": "^2.0.0",
+    "regexpu-core": "^5.0.1"
+  },
+  "peerDependencies": {
+    "@babel/core": "^7.0.0-0"
+  },
   "engines": {
-    "node": ">=10"
-  },
-  "scripts": {
-    "build": "node node_modules/webpack/node_modules/webpack-cli/bin/cli.js --progress",
-    "clean": "node node_modules/rimraf/bin.js dist node_modules/.cache"
-  },
-  "devDependencies": {
-    "@babel/core": "thachnn/webpack-bundle#@babel/core-7.17.10",
-    "@babel/preset-env": "^7.11.1",
-    "@webassemblyjs/wasm-edit": "thachnn/webpack-bundle#@webassemblyjs/wasm-edit-1.11.1",
-    "globby": "thachnn/webpack-bundle#globby-11.1.0",
-    "rimraf": "^2.6.3",
-    "string-replace-loader": "^3.0.0",
-    "webpack": "thachnn/webpack#bundle-5.72.1"
-  },
-  "resolutions": {
-    "**/@webassemblyjs/ast": "thachnn/webpack-bundle#@webassemblyjs/ast-1.11.1",
-    "**/@webassemblyjs/wasm-parser": "thachnn/webpack-bundle#@webassemblyjs/wasm-parser-1.11.1",
-    "**/schema-utils/ajv": "thachnn/webpack-bundle#ajv-6.12.6",
-    "globby/fast-glob": "thachnn/webpack-bundle#fast-glob-3.2.11",
-    "rimraf/glob": "thachnn/webpack-bundle#glob-7.2.3"
+    "node": ">=6.9.0"
   }
 }

@@ -1,24 +1,19 @@
-# Purpose
+# @babel/preset-env
 
-Bundle NPM packages using `webpack` and provide them :)
+> A Babel preset for each environment.
 
-## Usage
+See our website [@babel/preset-env](https://babeljs.io/docs/en/babel-preset-env) for more information or the [issues](https://github.com/babel/babel/issues?utf8=%E2%9C%93&q=is%3Aissue+label%3A%22pkg%3A%20preset-env%22+is%3Aopen) associated with this package.
 
-```json
-{
-  "dependencies": {
-    "glob": "thachnn/webpack-bundle#glob-7.2.3"
-  },
-  "resolutions": {
-    "**/ajv": "thachnn/webpack-bundle#ajv-6.12.6"
-  }
-}
+## Install
+
+Using npm:
+
+```sh
+npm install --save-dev @babel/preset-env
 ```
 
-## Provided packages
+or using yarn:
 
-- `glob` v7.2.3 -> [thachnn/webpack-bundle#glob-7.2.3](../../tree/glob-7.2.3)
-- `ajv` v6.12.6 -> [thachnn/webpack-bundle#ajv-6.12.6](../../tree/ajv-6.12.6)
-- `fast-glob` v3.2.11 -> [thachnn/webpack-bundle#fast-glob-3.2.1](../../tree/fast-glob-3.2.1)
-- `@babel/core` v7.17.10 -> [thachnn/webpack-bundle#@babel/core-7.17.10](../../tree/@babel/core-7.17.10)
-- ...
+```sh
+yarn add @babel/preset-env --dev
+```
