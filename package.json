@@ -22,7 +22,7 @@
     "@babel/core": "thachnn/webpack-bundle#@babel/core-7.17.10",
     "@babel/preset-env": "thachnn/webpack-bundle#@babel/preset-env-7.17.10",
     "@webassemblyjs/wasm-edit": "thachnn/webpack-bundle#@webassemblyjs/wasm-edit-1.11.1",
-    "execa": "^5.0.0",
+    "execa": "thachnn/webpack-bundle#execa-5.1.1",
     "globby": "thachnn/webpack-bundle#globby-11.1.0",
     "rimraf": "^2.6.3",
     "string-replace-loader": "^3.0.0",
