@@ -1,40 +1,38 @@
 {
-  "name": "webpack-bundle",
-  "version": "1.0.0",
-  "description": "Bundle NPM packages using webpack",
-  "keywords": [
-    "npm",
-    "package",
-    "bundle",
-    "webpack",
-    "module"
-  ],
-  "repository": "thachnn/webpack-bundle",
-  "license": "MIT",
-  "engines": {
-    "node": ">=10"
-  },
-  "scripts": {
-    "build": "node node_modules/webpack/node_modules/webpack-cli/bin/cli.js --progress",
-    "clean": "node node_modules/rimraf/bin.js dist node_modules/.cache"
-  },
-  "devDependencies": {
-    "@babel/core": "thachnn/webpack-bundle#@babel/core-7.17.10",
-    "@babel/preset-env": "thachnn/webpack-bundle#@babel/preset-env-7.17.10",
-    "@webassemblyjs/wasm-edit": "thachnn/webpack-bundle#@webassemblyjs/wasm-edit-1.11.1",
-    "execa": "^5.0.0",
-    "globby": "thachnn/webpack-bundle#globby-11.1.0",
-    "rimraf": "^2.6.3",
-    "string-replace-loader": "^3.0.0",
-    "webpack": "thachnn/webpack#bundle-5.72.1"
-  },
-  "resolutions": {
-    "**/@webassemblyjs/ast": "thachnn/webpack-bundle#@webassemblyjs/ast-1.11.1",
-    "**/@webassemblyjs/wasm-parser": "thachnn/webpack-bundle#@webassemblyjs/wasm-parser-1.11.1",
-    "**/schema-utils/ajv": "thachnn/webpack-bundle#ajv-6.12.6",
-    "@babel/preset-env/chalk": "thachnn/webpack-bundle#chalk-2.4.2",
-    "@babel/preset-env/regexpu-core": "thachnn/webpack-bundle#regexpu-core-5.0.1",
-    "globby/fast-glob": "thachnn/webpack-bundle#fast-glob-3.2.11",
-    "rimraf/glob": "thachnn/webpack-bundle#glob-7.2.3"
-  }
+	"name": "execa",
+	"version": "5.1.1",
+	"description": "Process execution for humans",
+	"license": "MIT",
+	"repository": "sindresorhus/execa",
+	"funding": "https://github.com/sindresorhus/execa?sponsor=1",
+	"author": {
+		"name": "Sindre Sorhus",
+		"email": "sindresorhus@gmail.com",
+		"url": "https://sindresorhus.com"
+	},
+	"engines": {
+		"node": ">=10"
+	},
+	"files": [
+		"index.js",
+		"index.d.ts",
+		"lib"
+	],
+	"keywords": [
+		"exec",
+		"child",
+		"process",
+		"execute",
+		"fork",
+		"execfile",
+		"spawn",
+		"file",
+		"shell",
+		"bin",
+		"binary",
+		"binaries",
+		"npm",
+		"path",
+		"local"
+	]
 }
