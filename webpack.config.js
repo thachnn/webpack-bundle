@@ -265,4 +265,22 @@ module.exports = [
       }),
     ],
   }),
+  webpackConfig('regexpu-core', {
+    entry: { 'rewrite-pattern': './node_modules/regexpu-core/rewrite-pattern' },
+    output: { libraryTarget: 'commonjs2' },
+    plugins: [
+      new CopyPlugin({
+        patterns: [
+          { from: 'node_modules/regexpu-core/{LICENSE,README}*', to: '[name][ext]' },
+          {
+            from: 'node_modules/regexpu-core/package.json',
+            transform(content) {
+              const { dependencies: _1, devDependencies: _2, scripts: _3, ...pkg } = JSON.parse(content);
+              return JSON.stringify(pkg, null, '\t');
+            },
+          },
+        ],
+      }),
+    ],
+  }),
 ];
