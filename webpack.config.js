@@ -150,6 +150,45 @@ module.exports = [
       // sed -i- 's/("\.\/originalRequire")//' dist/@babel-core/lib/*.js
     ],
   }),
+  webpackConfig('@babel-preset', {
+    entry: './node_modules/@babel/preset-env/lib/index',
+    output: { filename: 'lib/index.js', libraryTarget: 'commonjs' },
+    externals: {
+      '@babel/core': 'commonjs @babel/core',
+      browserslist: 'commonjs2 browserslist',
+      chalk: 'commonjs2 chalk',
+      'regexpu-core': 'commonjs2 regexpu-core',
+      originalRequire: 'commonjs2 ./originalRequire',
+    },
+    module: {
+      rules: [
+        {
+          test: /node_modules.@babel.helper-define-polyfill-provider.lib.node.dependencies\.js$/,
+          loader: 'string-replace-loader',
+          options: { search: ' require\\.resolve\\(', flags: 'g', replace: ' require("originalRequire").resolve(' },
+        },
+      ],
+    },
+    plugins: [
+      new CopyPlugin({
+        patterns: [
+          { from: 'node_modules/@babel/preset-env/{LICENSE,README}*', to: '[name][ext]' },
+          {
+            from: 'node_modules/@babel/preset-env/package.json',
+            transform(content) {
+              const { devDependencies: _1, ...pkg } = JSON.parse(content);
+              const { dependencies: d1 } = require('core-js-compat/package.json');
+              const { dependencies: d2 } = require('@babel/helper-create-regexp-features-plugin/package.json');
+              const { dependencies: d3 } = require('@babel/highlight/package.json');
+
+              pkg.dependencies = { browserslist: d1.browserslist, chalk: d3.chalk, 'regexpu-core': d2['regexpu-core'] };
+              return JSON.stringify(pkg, null, 2);
+            },
+          },
+        ],
+      }),
+    ],
+  }),
   webpackConfig('@wasm-ast', {
     entry: './node_modules/@webassemblyjs/ast/esm/index',
     output: { filename: 'lib/index.js', libraryTarget: 'commonjs' },

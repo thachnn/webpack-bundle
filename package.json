@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "@babel/core": "thachnn/webpack-bundle#@babel/core-7.17.10",
+    "@babel/preset-env": "^7.11.1",
     "@webassemblyjs/wasm-edit": "thachnn/webpack-bundle#@webassemblyjs/wasm-edit-1.11.1",
     "globby": "thachnn/webpack-bundle#globby-11.1.0",
     "rimraf": "^2.6.3",
