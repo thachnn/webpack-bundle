@@ -1,40 +1,45 @@
 {
-	"name": "chalk",
-	"version": "2.4.2",
-	"description": "Terminal string styling done right",
-	"license": "MIT",
-	"repository": "chalk/chalk",
+	"name": "regexpu-core",
+	"version": "5.0.1",
+	"description": "regexpu’s core functionality (i.e. `rewritePattern(pattern, flag)`), capable of translating ES6 Unicode regular expressions to ES5.",
+	"homepage": "https://mths.be/regexpu",
+	"main": "rewrite-pattern.js",
 	"engines": {
 		"node": ">=4"
 	},
-	"files": [
-		"index.js",
-		"templates.js",
-		"types/index.d.ts",
-		"index.js.flow"
-	],
 	"keywords": [
-		"color",
-		"colour",
-		"colors",
-		"terminal",
-		"console",
-		"cli",
-		"string",
-		"str",
-		"ansi",
-		"style",
-		"styles",
-		"tty",
-		"formatting",
-		"rgb",
-		"256",
-		"shell",
-		"xterm",
-		"log",
-		"logging",
-		"command-line",
-		"text"
+		"codegen",
+		"desugaring",
+		"ecmascript",
+		"es5",
+		"es6",
+		"harmony",
+		"javascript",
+		"refactoring",
+		"regex",
+		"regexp",
+		"regular expressions",
+		"rewriting",
+		"syntax",
+		"transformation",
+		"transpile",
+		"transpiler",
+		"unicode"
 	],
-	"types": "types/index.d.ts"
+	"license": "MIT",
+	"author": {
+		"name": "Mathias Bynens",
+		"url": "https://mathiasbynens.be/"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/mathiasbynens/regexpu-core.git"
+	},
+	"bugs": "https://github.com/mathiasbynens/regexpu-core/issues",
+	"files": [
+		"LICENSE-MIT.txt",
+		"rewrite-pattern.js",
+		"data/character-class-escape-sets.js",
+		"data/iu-mappings.js"
+	]
 }
