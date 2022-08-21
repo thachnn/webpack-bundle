@@ -26,7 +26,7 @@
     "globby": "thachnn/webpack-bundle#globby-11.1.0",
     "rimraf": "^2.6.3",
     "string-replace-loader": "^3.0.0",
-    "terser": "^5.7.2",
+    "terser": "thachnn/webpack-bundle#terser-5.12.1",
     "webpack": "thachnn/webpack#bundle-5.72.1"
   },
   "resolutions": {
