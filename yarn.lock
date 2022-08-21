@@ -2,13 +2,13 @@
 # yarn lockfile v1
 
 
-"@babel/core@thachnn/webpack-bundle#@babel/core-7.17.10":
+"@babel/core@thachnn/webpack-bundle#_babel/core-7.17.10":
   version "7.17.10"
   resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/94f91d78f7bfecc6314ab2bb8995e770c9906780"
   dependencies:
     browserslist "^4.20.2"
 
-"@babel/preset-env@thachnn/webpack-bundle#@babel/preset-env-7.17.10":
+"@babel/preset-env@thachnn/webpack-bundle#_babel/preset-env-7.17.10":
   version "7.17.10"
   resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/8b4de9c1284a0285d8e28bd852434e9fd8ccbf17"
   dependencies:
@@ -21,22 +21,27 @@
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.11.tgz#d421b6c527a3037f7c84433fd2c4229e016863d3"
   integrity sha512-wOuvG1SN4Us4rez+tylwwwCV1psiNVOkJeM3AUWUNWg/jDQY2+HE/444y5gc+jBmRqASOm2Oeh5c1axHobwRKQ==
 
-"@webassemblyjs/ast@1.11.1", "@webassemblyjs/ast@thachnn/webpack-bundle#@webassemblyjs/ast-1.11.1":
+"@webassemblyjs/ast@1.11.1", "@webassemblyjs/ast@thachnn/webpack-bundle#_webassemblyjs/ast-1.11.1":
   version "1.11.1"
   resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/81c4938bc0727dd6b9590ab21165d4a517012c4b"
 
-"@webassemblyjs/wasm-edit@thachnn/webpack-bundle#@webassemblyjs/wasm-edit-1.11.1":
+"@webassemblyjs/wasm-edit@thachnn/webpack-bundle#_webassemblyjs/wasm-edit-1.11.1":
   version "1.11.1"
   resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/46cc52b84ca3e2643c480cbb75b68e039d3cdaa0"
   dependencies:
     "@webassemblyjs/ast" "1.11.1"
     "@webassemblyjs/wasm-parser" "1.11.1"
 
-"@webassemblyjs/wasm-parser@1.11.1", "@webassemblyjs/wasm-parser@thachnn/webpack-bundle#@webassemblyjs/wasm-parser-1.11.1":
+"@webassemblyjs/wasm-parser@1.11.1", "@webassemblyjs/wasm-parser@thachnn/webpack-bundle#_webassemblyjs/wasm-parser-1.11.1":
   version "1.11.1"
   resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/52b80fb8e320d0a4b2c0dd0567677fcc4c0f42a8"
   dependencies:
     "@webassemblyjs/ast" "1.11.1"
+
+acorn@^8.5.0:
+  version "8.7.1"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.7.1.tgz#0197122c843d1bf6d0a5e83220a788f278f63c30"
+  integrity sha512-Xx54uLJQZ19lKygFXOWsscKUbsBZW0CPykPhVQdhIeIwrbPmJzqeASDInc8nKBnp/JT6igTs82qPXz069H8I/A==
 
 ajv-keywords@^3.5.2:
   version "3.5.2"
@@ -63,6 +68,11 @@ browserslist@^4.20.2, browserslist@^4.20.3:
     node-releases "^2.0.5"
     picocolors "^1.0.0"
 
+buffer-from@^1.0.0:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/buffer-from/-/buffer-from-1.1.2.tgz#2b146a6fd72e80b4f55d255f35ed59a3a9a41bd5"
+  integrity sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==
+
 caniuse-lite@^1.0.30001349:
   version "1.0.30001378"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001378.tgz#3d2159bf5a8f9ca093275b0d3ecc717b00f27b67"
@@ -71,6 +81,11 @@ caniuse-lite@^1.0.30001349:
 chalk@^2.0.0, chalk@thachnn/webpack-bundle#chalk-2.4.2:
   version "2.4.2"
   resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/041110d5fa29e143bf796303c76d9e2e5dbb4729"
+
+commander@^2.20.0:
+  version "2.20.3"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
+  integrity sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==
 
 electron-to-chromium@^1.4.147:
   version "1.4.225"
@@ -149,6 +164,24 @@ schema-utils@^3.0.0:
     ajv "^6.12.5"
     ajv-keywords "^3.5.2"
 
+source-map-support@~0.5.20:
+  version "0.5.21"
+  resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.21.tgz#04fe7c7f9e1ed2d662233c28cb2b35b9f63f6e4f"
+  integrity sha512-uBHU3L3czsIyYXKX88fdrGovxdSCoTGDRZ6SYXtSRxLZUzHg5P/66Ht6uoUlHu9EZod+inXhKo3qQgwXUT/y1w==
+  dependencies:
+    buffer-from "^1.0.0"
+    source-map "^0.6.0"
+
+source-map@^0.6.0:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.6.1.tgz#74722af32e9614e9c287a8d0bbde48b5e2f1a263"
+  integrity sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==
+
+source-map@~0.7.2:
+  version "0.7.3"
+  resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.7.3.tgz#5302f8169031735226544092e64981f751750383"
+  integrity sha512-CkCj6giN3S+n9qrYiBTX5gystlENnRW5jZeNLHpe6aue+SrHcG5VYwujhW9s4dY31mEGsxBDrHR6oI69fTXsaQ==
+
 string-replace-loader@^3.0.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/string-replace-loader/-/string-replace-loader-3.1.0.tgz#11ac6ee76bab80316a86af358ab773193dd57a4f"
@@ -157,6 +190,16 @@ string-replace-loader@^3.0.0:
     loader-utils "^2.0.0"
     schema-utils "^3.0.0"
 
+terser@^5.7.2:
+  version "5.12.1"
+  resolved "https://registry.yarnpkg.com/terser/-/terser-5.12.1.tgz#4cf2ebed1f5bceef5c83b9f60104ac4a78b49e9c"
+  integrity sha512-NXbs+7nisos5E+yXwAD+y7zrcTkMqb0dEJxIGtSKPdCBzopf7ni4odPul2aechpV7EXNvOudYOX2bb5tln1jbQ==
+  dependencies:
+    acorn "^8.5.0"
+    commander "^2.20.0"
+    source-map "~0.7.2"
+    source-map-support "~0.5.20"
+
 webpack@thachnn/webpack#bundle-5.72.1:
   version "5.72.1"
-  resolved "https://codeload.github.com/thachnn/webpack/tar.gz/34d601403d7fe66e906143f9da01fd2df5fd99be"
+  resolved "https://codeload.github.com/thachnn/webpack/tar.gz/c633a5630d41c85bc60647da210c6bbbde0e4249"

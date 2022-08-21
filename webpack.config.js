@@ -20,6 +20,7 @@ const webpackConfig = (name, config) => ({
     // minimize: false,
     minimizer: [
       new TerserPlugin({
+        test: /(\.[cm]?js|[\/\\][^.]+)$/i,
         // cache: true,
         parallel: true,
         terserOptions: { mangle: false, format: { beautify: true, indent_level: 2 } },
@@ -299,6 +300,44 @@ module.exports = [
           },
         ],
       }),
+    ],
+  }),
+  webpackConfig('terser', {
+    entry: {
+      main: { import: './node_modules/terser/main', library: { name: 'Terser', type: 'umd' } },
+      bin: { import: './node_modules/terser/bin/terser', filename: 'bin/terser' },
+    },
+    externals: { '..': 'commonjs2 ../main' },
+    module: {
+      rules: [
+        {
+          test: /node_modules.terser.lib.cli\.js$/,
+          loader: 'string-replace-loader',
+          options: { search: ' require("acorn")', replace: ' import(/* webpackMode: "eager" */ "acorn").acorn' },
+        },
+        {
+          test: /node_modules.terser.package\.json$/,
+          loader: 'string-replace-loader',
+          options: { search: ',\\s*"engines":[\\s\\S]*', flags: '', replace: '\n}' },
+        },
+      ],
+    },
+    plugins: [
+      new CopyPlugin({
+        patterns: [
+          { from: '**/{LICENSE*,*.md,*.d.ts}', context: path.join(__dirname, 'node_modules', 'terser') },
+          {
+            from: 'node_modules/terser/package.json',
+            transform(content) {
+              const { devDependencies: _1, scripts: _2, type: _3, module: _4, ...pkg } = JSON.parse(content);
+              pkg.dependencies = {};
+              return JSON.stringify(pkg, null, 2).replace(/\bdist\/bundle\.min\b/g, 'main');
+            },
+          },
+        ],
+      }),
+      new BannerPlugin({ banner: '#!/usr/bin/env node', raw: true, test: /\bterser$/ }),
+      // sed -i- 's/Promise\.resolve()\.then.*[( ,]\([0-9]*\))*\.acorn/__webpack_require__(\1)/' dist/terser/*.js
     ],
   }),
 ];
