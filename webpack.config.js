@@ -368,4 +368,22 @@ module.exports = [
       }),
     ],
   }),
+  webpackConfig('webpack-merge', {
+    entry: './node_modules/webpack-merge/dist/index',
+    output: { filename: 'dist/index.js', libraryTarget: 'commonjs' },
+    plugins: [
+      new CopyPlugin({
+        patterns: [
+          { from: '**/{LICENSE*,*.md,*.d.ts}', context: path.join(__dirname, 'node_modules', 'webpack-merge') },
+          {
+            from: 'node_modules/webpack-merge/package.json',
+            transform(content) {
+              const { dependencies: _1, devDependencies: _2, scripts: _3, husky: _4, ...pkg } = JSON.parse(content);
+              return JSON.stringify(pkg, null, 2);
+            },
+          },
+        ],
+      }),
+    ],
+  }),
 ];
