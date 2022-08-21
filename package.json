@@ -1,42 +1,33 @@
 {
-  "name": "webpack-bundle",
-  "version": "1.0.0",
-  "description": "Bundle NPM packages using webpack",
-  "keywords": [
-    "npm",
-    "package",
-    "bundle",
-    "webpack",
-    "module"
-  ],
-  "repository": "thachnn/webpack-bundle",
-  "license": "MIT",
-  "engines": {
-    "node": ">=10"
-  },
-  "scripts": {
-    "build": "node node_modules/webpack/bin/webpack.js --progress --config-name",
-    "clean": "node node_modules/rimraf/bin.js dist node_modules/.cache"
-  },
-  "devDependencies": {
-    "@babel/core": "thachnn/webpack-bundle#_babel/core-7.17.10",
-    "@babel/preset-env": "thachnn/webpack-bundle#_babel/preset-env-7.17.10",
-    "@webassemblyjs/wasm-edit": "thachnn/webpack-bundle#_webassemblyjs/wasm-edit-1.11.1",
-    "execa": "thachnn/webpack-bundle#execa-5.1.1",
-    "globby": "thachnn/webpack-bundle#globby-11.1.0",
-    "import-local": "^3.0.2",
-    "rimraf": "^2.6.3",
-    "string-replace-loader": "^3.0.0",
-    "terser": "thachnn/webpack-bundle#terser-5.12.1",
-    "webpack": "thachnn/webpack#bundle-5.72.1"
-  },
-  "resolutions": {
-    "**/@webassemblyjs/ast": "thachnn/webpack-bundle#_webassemblyjs/ast-1.11.1",
-    "**/@webassemblyjs/wasm-parser": "thachnn/webpack-bundle#_webassemblyjs/wasm-parser-1.11.1",
-    "**/schema-utils/ajv": "thachnn/webpack-bundle#ajv-6.12.6",
-    "@babel/preset-env/chalk": "thachnn/webpack-bundle#chalk-2.4.2",
-    "@babel/preset-env/regexpu-core": "thachnn/webpack-bundle#regexpu-core-5.0.1",
-    "globby/fast-glob": "thachnn/webpack-bundle#fast-glob-3.2.11",
-    "rimraf/glob": "thachnn/webpack-bundle#glob-7.2.3"
-  }
+	"name": "import-local",
+	"version": "3.1.0",
+	"description": "Let a globally installed package use a locally installed version of itself if available",
+	"license": "MIT",
+	"repository": "sindresorhus/import-local",
+	"funding": "https://github.com/sponsors/sindresorhus",
+	"author": {
+		"name": "Sindre Sorhus",
+		"email": "sindresorhus@gmail.com",
+		"url": "https://sindresorhus.com"
+	},
+	"bin": {
+		"import-local-fixture": "fixtures/cli.js"
+	},
+	"engines": {
+		"node": ">=8"
+	},
+	"files": [
+		"index.js",
+		"fixtures/cli.js"
+	],
+	"keywords": [
+		"import",
+		"local",
+		"require",
+		"resolve",
+		"global",
+		"version",
+		"prefer",
+		"cli"
+	]
 }
