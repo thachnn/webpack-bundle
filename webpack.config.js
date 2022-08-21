@@ -340,4 +340,32 @@ module.exports = [
       // sed -i- 's/Promise\.resolve()\.then.*[( ,]\([0-9]*\))*\.acorn/__webpack_require__(\1)/' dist/terser/*.js
     ],
   }),
+  webpackConfig('import-local', {
+    entry: { index: './node_modules/import-local/index' },
+    output: { libraryTarget: 'commonjs2' },
+    externals: { originalRequire: 'commonjs2 ./originalRequire' },
+    module: {
+      rules: [
+        {
+          test: /node_modules.import-local.index\.js$/,
+          loader: 'string-replace-loader',
+          options: { search: ' require(\\([\\w.]+)', flags: 'g', replace: ' require("originalRequire")$1' },
+        },
+      ],
+    },
+    plugins: [
+      new CopyPlugin({
+        patterns: [
+          { from: '**/{license*,readme*,cli.js}', context: path.join(__dirname, 'node_modules', 'import-local') },
+          {
+            from: 'node_modules/import-local/package.json',
+            transform(content) {
+              const { dependencies: _1, devDependencies: _2, scripts: _3, xo: _4, ...pkg } = JSON.parse(content);
+              return JSON.stringify(pkg, null, '\t');
+            },
+          },
+        ],
+      }),
+    ],
+  }),
 ];
