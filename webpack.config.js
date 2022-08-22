@@ -415,4 +415,52 @@ module.exports = [
       // sed -i- 's/("\.\/originalRequire")//' dist/*/index.js
     ],
   }),
+  webpackConfig('dts-bundle', {
+    entry: {
+      index: { import: './node_modules/dts-bundle/lib/index', library: { type: 'commonjs' } },
+      cli: { import: './node_modules/dts-bundle/lib/dts-bundle' },
+    },
+    externals: { './index': 'commonjs ./index' },
+    module: {
+      rules: [
+        {
+          test: /node_modules.dts-bundle.lib.index\.js$/,
+          loader: 'string-replace-loader',
+          options: {
+            search: '^(\\s*)trace\\(.* import relative .*, full\\)',
+            flags: 'm',
+            replace: '$1else if (fs.lstatSync(full).isDirectory()) full = path.join(full, "index.d.ts");\n$&',
+          },
+        },
+        {
+          test: /node_modules.dts-bundle.lib.dts-bundle\.js$/,
+          loader: 'string-replace-loader',
+          options: {
+            search: ' require(path.resolve(argObj.configJson))',
+            replace: ' JSON.parse(require("fs").readFileSync(path.resolve(argObj.configJson), "utf8"))',
+          },
+        },
+        {
+          test: /node_modules.dts-bundle.package\.json$/,
+          loader: 'string-replace-loader',
+          options: { search: ',\\s*"keywords":[\\s\\S]*', flags: '', replace: '\n}' },
+        },
+      ],
+    },
+    plugins: [
+      new CopyPlugin({
+        patterns: [
+          { from: 'node_modules/dts-bundle/{LICENSE,README}*', to: '[name][ext]' },
+          {
+            from: 'node_modules/dts-bundle/package.json',
+            transform(content) {
+              const { dependencies: _1, devDependencies: _2, scripts: _3, ...pkg } = JSON.parse(content);
+              return JSON.stringify(pkg, null, 2).replace(/\blib\/dts-bundle\b/, 'cli');
+            },
+          },
+        ],
+      }),
+      new BannerPlugin({ banner: '#!/usr/bin/env node', raw: true, test: /\bcli\.js$/ }),
+    ],
+  }),
 ];
