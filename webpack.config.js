@@ -55,7 +55,7 @@ module.exports = [
     plugins: [
       new CopyPlugin({
         patterns: [
-          { from: '**/{LICENSE*,README*,*.d.ts}', context: path.join(__dirname, 'node_modules', 'ajv') },
+          { from: '{LICENSE*,README*,**/*.d.ts}', context: path.join(__dirname, 'node_modules', 'ajv') },
           {
             from: 'node_modules/ajv/package.json',
             transform(content) {
@@ -253,7 +253,7 @@ module.exports = [
     plugins: [
       new CopyPlugin({
         patterns: [
-          { from: '**/{license*,readme*,*.d.ts}', context: path.join(__dirname, 'node_modules', 'chalk') },
+          { from: '{license*,readme*,**/*.d.ts}', context: path.join(__dirname, 'node_modules', 'chalk') },
           {
             from: 'node_modules/chalk/package.json',
             transform(content) {
