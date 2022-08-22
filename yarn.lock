@@ -71,7 +71,7 @@ path-is-absolute@^1.0.0:
 
 webpack@thachnn/webpack#bundle-5.72.1:
   version "5.72.1"
-  resolved "https://codeload.github.com/thachnn/webpack/tar.gz/43fd914215768faac85c543c66bdcfe43d413002"
+  resolved "https://codeload.github.com/thachnn/webpack/tar.gz/c0a0ae29ffe69b0d8c778a077dc571dc95d99c93"
 
 wrappy@1:
   version "1.0.2"
