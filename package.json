@@ -25,6 +25,7 @@
     "execa": "thachnn/webpack-bundle#execa-5.1.1",
     "globby": "thachnn/webpack-bundle#globby-11.1.0",
     "import-local": "thachnn/webpack-bundle#import-local-3.1.0",
+    "rechoir": "^0.7.0",
     "rimraf": "^2.6.3",
     "string-replace-loader": "^3.0.0",
     "terser": "thachnn/webpack-bundle#terser-5.12.1",

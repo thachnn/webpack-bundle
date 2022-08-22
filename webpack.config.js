@@ -386,4 +386,33 @@ module.exports = [
       }),
     ],
   }),
+  webpackConfig('rechoir', {
+    entry: { index: './node_modules/rechoir/index' },
+    output: { libraryTarget: 'commonjs2' },
+    externals: { originalRequire: 'commonjs2 ./originalRequire' },
+    module: {
+      rules: [
+        {
+          test: /node_modules.rechoir.(index|lib.register)\.js$/,
+          loader: 'string-replace-loader',
+          options: { search: '\\brequire(\\.extensions|\\(\\w+)', flags: '', replace: 'require("originalRequire")$1' },
+        },
+      ],
+    },
+    plugins: [
+      new CopyPlugin({
+        patterns: [
+          { from: 'node_modules/rechoir/{LICENSE,README}*', to: '[name][ext]' },
+          {
+            from: 'node_modules/rechoir/package.json',
+            transform(content) {
+              const { dependencies: _1, devDependencies: _2, scripts: _3, ...pkg } = JSON.parse(content);
+              return JSON.stringify(pkg, null, 2);
+            },
+          },
+        ],
+      }),
+      // sed -i- 's/("\.\/originalRequire")//' dist/*/index.js
+    ],
+  }),
 ];
