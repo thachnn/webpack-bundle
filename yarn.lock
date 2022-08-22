@@ -175,4 +175,4 @@ webpack-merge@thachnn/webpack-bundle#webpack-merge-5.8.0:
 
 webpack@thachnn/webpack#bundle-5.72.1:
   version "5.72.1"
-  resolved "https://codeload.github.com/thachnn/webpack/tar.gz/c633a5630d41c85bc60647da210c6bbbde0e4249"
+  resolved "https://codeload.github.com/thachnn/webpack/tar.gz/c0a0ae29ffe69b0d8c778a077dc571dc95d99c93"
