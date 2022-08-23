@@ -25,6 +25,7 @@
     "@webassemblyjs/wasm-edit": "thachnn/webpack-bundle#_webassemblyjs/wasm-edit-1.11.1",
     "dts-bundle": "thachnn/webpack-bundle#dts-bundle-0.7.3",
     "execa": "thachnn/webpack-bundle#execa-5.1.1",
+    "find-cache-dir": "^3.3.1",
     "globby": "thachnn/webpack-bundle#globby-11.1.0",
     "import-local": "thachnn/webpack-bundle#import-local-3.1.0",
     "rechoir": "thachnn/webpack-bundle#rechoir-0.7.1",

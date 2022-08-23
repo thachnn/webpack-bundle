@@ -463,4 +463,22 @@ module.exports = [
       new BannerPlugin({ banner: '#!/usr/bin/env node', raw: true, test: /\bcli\.js$/ }),
     ],
   }),
+  webpackConfig('find-cache-dir', {
+    entry: { index: './node_modules/find-cache-dir/index' },
+    output: { libraryTarget: 'commonjs2' },
+    plugins: [
+      new CopyPlugin({
+        patterns: [
+          { from: 'node_modules/find-cache-dir/{license,readme}*', to: '[name][ext]' },
+          {
+            from: 'node_modules/find-cache-dir/package.json',
+            transform(content) {
+              const { dependencies: _1, devDependencies: _2, scripts: _3, nyc: _4, ...pkg } = JSON.parse(content);
+              return JSON.stringify(pkg, null, '\t');
+            },
+          },
+        ],
+      }),
+    ],
+  }),
 ];
