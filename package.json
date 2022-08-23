@@ -1,48 +1,22 @@
 {
-  "name": "webpack-bundle",
-  "version": "1.0.0",
-  "description": "Bundle NPM packages using webpack",
-  "keywords": [
-    "npm",
-    "package",
-    "bundle",
-    "webpack",
-    "module"
-  ],
-  "repository": "thachnn/webpack-bundle",
-  "license": "MIT",
-  "engines": {
-    "node": ">=10"
-  },
-  "scripts": {
-    "build": "node node_modules/webpack/bin/webpack.js --progress --config-name",
-    "clean": "node node_modules/rimraf/bin.js dist node_modules/.cache",
-    "dts-bundle": "node node_modules/dts-bundle/cli.js --newline unix --verbose"
-  },
-  "devDependencies": {
-    "@babel/core": "thachnn/webpack-bundle#_babel/core-7.17.10",
-    "@babel/preset-env": "thachnn/webpack-bundle#_babel/preset-env-7.17.10",
-    "@webassemblyjs/wasm-edit": "thachnn/webpack-bundle#_webassemblyjs/wasm-edit-1.11.1",
-    "dts-bundle": "thachnn/webpack-bundle#dts-bundle-0.7.3",
-    "execa": "thachnn/webpack-bundle#execa-5.1.1",
-    "find-cache-dir": "^3.3.1",
-    "globby": "thachnn/webpack-bundle#globby-11.1.0",
-    "import-local": "thachnn/webpack-bundle#import-local-3.1.0",
-    "rechoir": "thachnn/webpack-bundle#rechoir-0.7.1",
-    "rimraf": "^2.6.3",
-    "string-replace-loader": "^3.0.0",
-    "terser": "thachnn/webpack-bundle#terser-5.12.1",
-    "webpack": "thachnn/webpack#bundle-5.72.1",
-    "webpack-merge": "thachnn/webpack-bundle#webpack-merge-5.8.0"
-  },
-  "resolutions": {
-    "**/@webassemblyjs/ast": "thachnn/webpack-bundle#_webassemblyjs/ast-1.11.1",
-    "**/@webassemblyjs/wasm-parser": "thachnn/webpack-bundle#_webassemblyjs/wasm-parser-1.11.1",
-    "**/schema-utils/ajv": "thachnn/webpack-bundle#ajv-6.12.6",
-    "@babel/preset-env/chalk": "thachnn/webpack-bundle#chalk-2.4.2",
-    "@babel/preset-env/regexpu-core": "thachnn/webpack-bundle#regexpu-core-5.0.1",
-    "dts-bundle/glob": "thachnn/webpack-bundle#glob-6.0.4",
-    "globby/fast-glob": "thachnn/webpack-bundle#fast-glob-3.2.11",
-    "rimraf/glob": "thachnn/webpack-bundle#glob-7.2.3"
-  }
+	"name": "find-cache-dir",
+	"version": "3.3.2",
+	"description": "Finds the common standard cache directory",
+	"license": "MIT",
+	"repository": "avajs/find-cache-dir",
+	"funding": "https://github.com/avajs/find-cache-dir?sponsor=1",
+	"engines": {
+		"node": ">=8"
+	},
+	"files": [
+		"index.js"
+	],
+	"keywords": [
+		"cache",
+		"directory",
+		"dir",
+		"caching",
+		"find",
+		"search"
+	]
 }
