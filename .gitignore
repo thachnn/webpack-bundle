@@ -1,10 +1,10 @@
 # Logs
-logs
+/logs
 *.log*
 
 # Dependency directories
 node_modules/
-.npm
+.npm/
 
 # Output of 'npm pack'
 *.tgz
@@ -17,16 +17,17 @@ node_modules/
 .pnp.*
 
 # Build output
-out
-dist
+/out
+/dist
 
 # Temp and cache directory
 .cache/
 .temp
 
-# Covers IDEs
-.vscode/
+# IDEs and editors
 .idea/
+.vscode/
 
+# Misc.
 .DS_Store
 Thumbs.db
