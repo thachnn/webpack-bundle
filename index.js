@@ -1,6 +1,6 @@
-(() => {
+!function() {
   var __webpack_modules__ = {
-    434: (module, __unused_webpack_exports, __webpack_require__) => {
+    434: function(module, __unused_webpack_exports, __webpack_require__) {
       "use strict";
       module = __webpack_require__.nmd(module);
       const colorConvert = __webpack_require__(85), wrapAnsi16 = (fn, offset) => function() {
@@ -108,7 +108,7 @@
         }
       });
     },
-    589: (module, __unused_webpack_exports, __webpack_require__) => {
+    589: function(module, __unused_webpack_exports, __webpack_require__) {
       "use strict";
       const escapeStringRegexp = __webpack_require__(150), ansiStyles = __webpack_require__(434), stdoutColor = __webpack_require__(130).stdout, template = __webpack_require__(864), isSimpleWindowsTerm = "win32" === process.platform && !(process.env.TERM || "").toLowerCase().startsWith("xterm"), levelMapping = [ "ansi", "ansi", "ansi256", "ansi16m" ], skipModels = new Set([ "gray" ]), styles = Object.create(null);
       function applyOptions(obj, options) {
@@ -145,7 +145,7 @@
           const level = this.level;
           return function() {
             const open = ansiStyles.color[levelMapping[level]][model].apply(null, arguments), codes = {
-              open,
+              open: open,
               close: ansiStyles.color.close,
               closeRe: ansiStyles.color.closeRe
             };
@@ -161,7 +161,7 @@
             const level = this.level;
             return function() {
               const open = ansiStyles.bgColor[levelMapping[level]][model].apply(null, arguments), codes = {
-                open,
+                open: open,
                 close: ansiStyles.bgColor.close,
                 closeRe: ansiStyles.bgColor.closeRe
               };
@@ -214,7 +214,7 @@
       Object.defineProperties(Chalk.prototype, styles), module.exports = Chalk(), module.exports.supportsColor = stdoutColor, 
       module.exports.default = module.exports;
     },
-    864: module => {
+    864: function(module) {
       "use strict";
       const TEMPLATE_REGEX = /(?:\\(u[a-f\d]{4}|x[a-f\d]{2}|.))|(?:\{(~)?(\w+(?:\([^)]*\))?(?:\.\w+(?:\([^)]*\))?)*)(?:[ \t]|(?=\r?\n)))|(\})|((?:.|[\r\n\f])+?)/gi, STYLE_REGEX = /(?:^|\.)(\w+)(?:\(([^)]*)\))?/g, STRING_REGEX = /^(['"])((?:\\.|(?!\1)[^\\])*)\1$/, ESCAPE_REGEX = /\\(u[a-f\d]{4}|x[a-f\d]{2}|.)|([^\\])/gi, ESCAPES = new Map([ [ "n", "\n" ], [ "r", "\r" ], [ "t", "\t" ], [ "b", "\b" ], [ "f", "\f" ], [ "v", "\v" ], [ "0", "\0" ], [ "\\", "\\" ], [ "e", "" ], [ "a", "" ] ]);
       function unescape(c) {
@@ -260,7 +260,7 @@
             const str = chunk.join("");
             chunk = [], chunks.push(0 === styles.length ? str : buildStyle(chalk, styles)(str)), 
             styles.push({
-              inverse,
+              inverse: inverse,
               styles: parseStyle(style)
             });
           } else if (close) {
@@ -274,7 +274,7 @@
         return chunks.join("");
       };
     },
-    168: (module, __unused_webpack_exports, __webpack_require__) => {
+    168: function(module, __unused_webpack_exports, __webpack_require__) {
       var cssKeywords = __webpack_require__(874), reverseKeywords = {};
       for (var key in cssKeywords) cssKeywords.hasOwnProperty(key) && (reverseKeywords[cssKeywords[key]] = key);
       var convert = module.exports = {
@@ -583,7 +583,7 @@
         return [ (rgb[0] + rgb[1] + rgb[2]) / 3 / 255 * 100 ];
       };
     },
-    85: (module, __unused_webpack_exports, __webpack_require__) => {
+    85: function(module, __unused_webpack_exports, __webpack_require__) {
       var conversions = __webpack_require__(168), route = __webpack_require__(111), convert = {};
       Object.keys(conversions).forEach((function(fromModel) {
         convert[fromModel] = {}, Object.defineProperty(convert[fromModel], "channels", {
@@ -613,7 +613,7 @@
         }));
       })), module.exports = convert;
     },
-    111: (module, __unused_webpack_exports, __webpack_require__) => {
+    111: function(module, __unused_webpack_exports, __webpack_require__) {
       var conversions = __webpack_require__(168);
       function deriveBFS(fromModel) {
         var graph = function() {
@@ -648,7 +648,7 @@
         return conversion;
       };
     },
-    874: module => {
+    874: function(module) {
       "use strict";
       module.exports = {
         aliceblue: [ 240, 248, 255 ],
@@ -801,7 +801,7 @@
         yellowgreen: [ 154, 205, 50 ]
       };
     },
-    150: module => {
+    150: function(module) {
       "use strict";
       var matchOperatorsRe = /[|\\{}()[\]^$+*?.]/g;
       module.exports = function(str) {
@@ -809,7 +809,7 @@
         return str.replace(matchOperatorsRe, "\\$&");
       };
     },
-    560: module => {
+    560: function(module) {
       "use strict";
       module.exports = (flag, argv) => {
         argv = argv || process.argv;
@@ -817,7 +817,7 @@
         return -1 !== pos && (-1 === terminatorPos || pos < terminatorPos);
       };
     },
-    130: (module, __unused_webpack_exports, __webpack_require__) => {
+    130: function(module, __unused_webpack_exports, __webpack_require__) {
       "use strict";
       const os = __webpack_require__(37), hasFlag = __webpack_require__(560), env = process.env;
       let forceColor;
@@ -850,7 +850,7 @@
         }(stream);
         return function(level) {
           return 0 !== level && {
-            level,
+            level: level,
             hasBasic: !0,
             has256: level >= 2,
             has16m: level >= 3
@@ -865,7 +865,7 @@
         stderr: getSupportLevel(process.stderr)
       };
     },
-    37: module => {
+    37: function(module) {
       "use strict";
       module.exports = require("os");
     }
@@ -881,8 +881,9 @@
     return __webpack_modules__[moduleId](module, module.exports, __webpack_require__), 
     module.loaded = !0, module.exports;
   }
-  __webpack_require__.nmd = module => (module.paths = [], module.children || (module.children = []), 
-  module);
+  __webpack_require__.nmd = function(module) {
+    return module.paths = [], module.children || (module.children = []), module;
+  };
   var __webpack_exports__ = __webpack_require__(589);
   module.exports = __webpack_exports__;
-})();
+}();
