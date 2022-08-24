@@ -11,7 +11,7 @@ const webpackConfig = (name, config) => ({
     ...(config.output || {}),
   },
   context: __dirname,
-  target: 'node',
+  target: config.target || 'node',
   node: { __filename: false, __dirname: false },
   cache: { type: 'filesystem' },
   stats: { modulesSpace: Infinity },
@@ -34,6 +34,7 @@ module.exports = [
   webpackConfig('glob', {
     entry: { glob: './node_modules/glob/glob' },
     output: { libraryTarget: 'commonjs2' },
+    target: 'node0.10',
     plugins: [
       new CopyPlugin({
         patterns: [
@@ -50,8 +51,9 @@ module.exports = [
     ],
   }),
   webpackConfig('ajv', {
-    entry: './node_modules/ajv/lib/ajv',
-    output: { filename: 'lib/ajv.js', libraryTarget: 'commonjs2' },
+    entry: { 'lib/ajv': './node_modules/ajv/lib/ajv' },
+    output: { libraryTarget: 'commonjs2' },
+    target: 'node6',
     plugins: [
       new CopyPlugin({
         patterns: [
@@ -68,8 +70,9 @@ module.exports = [
     ],
   }),
   webpackConfig('fast-glob', {
-    entry: './node_modules/fast-glob/out/index',
-    output: { filename: 'out/index.js', libraryTarget: 'commonjs2' },
+    entry: { 'out/index': './node_modules/fast-glob/out/index' },
+    output: { libraryTarget: 'commonjs2' },
+    target: 'node8.6',
     plugins: [
       new CopyPlugin({
         patterns: [
