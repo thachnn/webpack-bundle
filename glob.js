@@ -1,6 +1,6 @@
-(() => {
+!function() {
   var __webpack_modules__ = {
-    623: module => {
+    623: function(module) {
       "use strict";
       function balanced(a, b, str) {
         a instanceof RegExp && (a = maybeMatch(a, str)), b instanceof RegExp && (b = maybeMatch(b, str));
@@ -30,7 +30,7 @@
       }
       module.exports = balanced, balanced.range = range;
     },
-    644: (module, __unused_webpack_exports, __webpack_require__) => {
+    644: function(module, __unused_webpack_exports, __webpack_require__) {
       var concatMap = __webpack_require__(48), balanced = __webpack_require__(623);
       module.exports = function(str) {
         if (!str) return [];
@@ -104,7 +104,7 @@
         return expansions;
       }
     },
-    48: module => {
+    48: function(module) {
       module.exports = function(xs, fn) {
         for (var res = [], i = 0; i < xs.length; i++) {
           var x = fn(xs[i], i);
@@ -116,7 +116,7 @@
         return "[object Array]" === Object.prototype.toString.call(xs);
       };
     },
-    334: (module, __unused_webpack_exports, __webpack_require__) => {
+    334: function(module, __unused_webpack_exports, __webpack_require__) {
       module.exports = realpath, realpath.realpath = realpath, realpath.sync = realpathSync, 
       realpath.realpathSync = realpathSync, realpath.monkeypatch = function() {
         fs.realpath = realpath, fs.realpathSync = realpathSync;
@@ -143,7 +143,7 @@
         }
       }
     },
-    59: (__unused_webpack_module, exports, __webpack_require__) => {
+    59: function(__unused_webpack_module, exports, __webpack_require__) {
       var pathModule = __webpack_require__(17), isWindows = "win32" === process.platform, fs = __webpack_require__(147), DEBUG = process.env.NODE_DEBUG && /fs/.test(process.env.NODE_DEBUG);
       function maybeCallback(cb) {
         return "function" == typeof cb ? cb : function() {
@@ -246,7 +246,7 @@
         start();
       };
     },
-    772: (__unused_webpack_module, exports, __webpack_require__) => {
+    772: function(__unused_webpack_module, exports, __webpack_require__) {
       function ownProp(obj, field) {
         return Object.prototype.hasOwnProperty.call(obj, field);
       }
@@ -334,7 +334,7 @@
           matcher: new Minimatch(pattern, {
             dot: !0
           }),
-          gmatcher
+          gmatcher: gmatcher
         };
       }
       function makeAbs(self, f) {
@@ -348,7 +348,7 @@
         }));
       }
     },
-    884: (module, __unused_webpack_exports, __webpack_require__) => {
+    884: function(module, __unused_webpack_exports, __webpack_require__) {
       module.exports = glob;
       var rp = __webpack_require__(334), minimatch = __webpack_require__(171), inherits = (minimatch.Minimatch, 
       __webpack_require__(378)), EE = __webpack_require__(361).EventEmitter, path = __webpack_require__(17), assert = __webpack_require__(491), isAbsolute = __webpack_require__(95), globSync = __webpack_require__(751), common = __webpack_require__(772), setopts = common.setopts, ownProp = common.ownProp, inflight = __webpack_require__(844), childrenIgnored = (__webpack_require__(837), 
@@ -636,7 +636,7 @@
         needDir && "FILE" === c ? cb() : cb(null, c, stat);
       };
     },
-    751: (module, __unused_webpack_exports, __webpack_require__) => {
+    751: function(module, __unused_webpack_exports, __webpack_require__) {
       module.exports = globSync, globSync.GlobSync = GlobSync;
       var rp = __webpack_require__(334), minimatch = __webpack_require__(171), path = (minimatch.Minimatch, 
       __webpack_require__(884).Glob, __webpack_require__(837), __webpack_require__(17)), assert = __webpack_require__(491), isAbsolute = __webpack_require__(95), common = __webpack_require__(772), setopts = common.setopts, ownProp = common.ownProp, childrenIgnored = common.childrenIgnored, isIgnored = common.isIgnored;
@@ -831,7 +831,7 @@
         return common.makeAbs(this, f);
       };
     },
-    844: (module, __unused_webpack_exports, __webpack_require__) => {
+    844: function(module, __unused_webpack_exports, __webpack_require__) {
       var wrappy = __webpack_require__(479), reqs = Object.create(null), once = __webpack_require__(778);
       function slice(args) {
         for (var length = args.length, array = [], i = 0; i < length; i++) array[i] = args[i];
@@ -852,7 +852,7 @@
         }(key));
       }));
     },
-    378: (module, __unused_webpack_exports, __webpack_require__) => {
+    378: function(module, __unused_webpack_exports, __webpack_require__) {
       try {
         var util = __webpack_require__(837);
         if ("function" != typeof util.inherits) throw "";
@@ -861,7 +861,7 @@
         module.exports = __webpack_require__(717);
       }
     },
-    717: module => {
+    717: function(module) {
       "function" == typeof Object.create ? module.exports = function(ctor, superCtor) {
         superCtor && (ctor.super_ = superCtor, ctor.prototype = Object.create(superCtor.prototype, {
           constructor: {
@@ -879,7 +879,7 @@
         }
       };
     },
-    171: (module, __unused_webpack_exports, __webpack_require__) => {
+    171: function(module, __unused_webpack_exports, __webpack_require__) {
       module.exports = minimatch, minimatch.Minimatch = Minimatch;
       var path = function() {
         try {
@@ -1193,8 +1193,8 @@
         var options = this.options;
         this.debug("matchOne", {
           this: this,
-          file,
-          pattern
+          file: file,
+          pattern: pattern
         }), this.debug("matchOne", file.length, pattern.length);
         for (var fi = 0, pi = 0, fl = file.length, pl = pattern.length; fi < fl && pi < pl; fi++, 
         pi++) {
@@ -1230,7 +1230,7 @@
         throw new Error("wtf?");
       };
     },
-    778: (module, __unused_webpack_exports, __webpack_require__) => {
+    778: function(module, __unused_webpack_exports, __webpack_require__) {
       var wrappy = __webpack_require__(479);
       function once(fn) {
         var f = function() {
@@ -1260,7 +1260,7 @@
         });
       }));
     },
-    95: module => {
+    95: function(module) {
       "use strict";
       function posix(path) {
         return "/" === path.charAt(0);
@@ -1272,7 +1272,7 @@
       module.exports = "win32" === process.platform ? win32 : posix, module.exports.posix = posix, 
       module.exports.win32 = win32;
     },
-    479: module => {
+    479: function(module) {
       module.exports = function wrappy(fn, cb) {
         if (fn && cb) return wrappy(fn)(cb);
         if ("function" != typeof fn) throw new TypeError("need wrapper function");
@@ -1288,23 +1288,23 @@
         }
       };
     },
-    491: module => {
+    491: function(module) {
       "use strict";
       module.exports = require("assert");
     },
-    361: module => {
+    361: function(module) {
       "use strict";
       module.exports = require("events");
     },
-    147: module => {
+    147: function(module) {
       "use strict";
       module.exports = require("fs");
     },
-    17: module => {
+    17: function(module) {
       "use strict";
       module.exports = require("path");
     },
-    837: module => {
+    837: function(module) {
       "use strict";
       module.exports = require("util");
     }
@@ -1319,4 +1319,4 @@
     module.exports;
   }(884);
   module.exports = __webpack_exports__;
-})();
+}();
