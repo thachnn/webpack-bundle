@@ -19,7 +19,7 @@
     "clean": "node node_modules/rimraf/bin.js dist node_modules/.cache"
   },
   "devDependencies": {
-    "@babel/core": "thachnn/webpack-bundle#@babel/core-7.17.10",
+    "@babel/core": "thachnn/webpack-bundle#_babel/core-7.17.10",
     "@webassemblyjs/wasm-edit": "1.11.1",
     "globby": "thachnn/webpack-bundle#globby-11.1.0",
     "rimraf": "^2.6.3",

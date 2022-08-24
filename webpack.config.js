@@ -11,7 +11,7 @@ const webpackConfig = (name, config) => ({
     ...(config.output || {}),
   },
   context: __dirname,
-  target: 'node',
+  target: config.target || 'node',
   node: { __filename: false, __dirname: false },
   cache: { type: 'filesystem' },
   stats: { modulesSpace: Infinity, nestedModules: true, nestedModulesSpace: Infinity },
@@ -34,6 +34,7 @@ module.exports = [
   webpackConfig('glob', {
     entry: { glob: './node_modules/glob/glob' },
     output: { libraryTarget: 'commonjs2' },
+    target: 'node0.10',
     plugins: [
       new CopyPlugin({
         patterns: [
@@ -50,8 +51,9 @@ module.exports = [
     ],
   }),
   webpackConfig('ajv', {
-    entry: './node_modules/ajv/lib/ajv',
-    output: { filename: 'lib/ajv.js', libraryTarget: 'commonjs2' },
+    entry: { 'lib/ajv': './node_modules/ajv/lib/ajv' },
+    output: { libraryTarget: 'commonjs2' },
+    target: 'node6',
     plugins: [
       new CopyPlugin({
         patterns: [
@@ -68,8 +70,9 @@ module.exports = [
     ],
   }),
   webpackConfig('fast-glob', {
-    entry: './node_modules/fast-glob/out/index',
-    output: { filename: 'out/index.js', libraryTarget: 'commonjs2' },
+    entry: { 'out/index': './node_modules/fast-glob/out/index' },
+    output: { libraryTarget: 'commonjs2' },
+    target: 'node8.6',
     plugins: [
       new CopyPlugin({
         patterns: [
@@ -89,6 +92,7 @@ module.exports = [
   webpackConfig('globby', {
     entry: { index: './node_modules/globby/index' },
     output: { libraryTarget: 'commonjs2' },
+    target: 'node10',
     externals: ['fast-glob'],
     plugins: [
       new CopyPlugin({
@@ -107,10 +111,12 @@ module.exports = [
     ],
   }),
   webpackConfig('@babel-core', {
-    entry: './node_modules/@babel/core/lib/index',
-    output: { filename: 'lib/index.js', libraryTarget: 'commonjs' },
+    entry: { 'lib/index': './node_modules/@babel/core/lib/index' },
+    output: { libraryTarget: 'commonjs' },
+    target: 'node6.9',
     externals: {
       browserslist: 'commonjs2 browserslist',
+      chalk: 'commonjs2 chalk',
       originalRequire: 'commonjs2 ./originalRequire',
     },
     module: {
@@ -136,9 +142,10 @@ module.exports = [
             from: 'node_modules/@babel/core/package.json',
             transform(content) {
               const { devDependencies: _1, ...pkg } = JSON.parse(content);
-              const { dependencies: dep } = require('@babel/helper-compilation-targets/package.json');
+              const { dependencies: dep1 } = require('@babel/helper-compilation-targets/package.json');
+              const { dependencies: dep2 } = require('@babel/highlight/package.json');
 
-              pkg.dependencies = { browserslist: dep.browserslist };
+              pkg.dependencies = { browserslist: dep1.browserslist, chalk: dep2.chalk };
               return JSON.stringify(pkg, null, 2);
             },
           },
@@ -148,8 +155,9 @@ module.exports = [
     ],
   }),
   webpackConfig('@wasm-ast', {
-    entry: './node_modules/@webassemblyjs/ast/esm/index',
-    output: { filename: 'lib/index.js', libraryTarget: 'commonjs' },
+    entry: { 'lib/index': './node_modules/@webassemblyjs/ast/esm/index' },
+    output: { libraryTarget: 'commonjs' },
+    target: 'node0.10',
     plugins: [
       new CopyPlugin({
         patterns: [
@@ -166,8 +174,9 @@ module.exports = [
     ],
   }),
   webpackConfig('@wasm-parser', {
-    entry: './node_modules/@webassemblyjs/wasm-parser/esm/index',
-    output: { filename: 'lib/index.js', libraryTarget: 'commonjs' },
+    entry: { 'lib/index': './node_modules/@webassemblyjs/wasm-parser/esm/index' },
+    output: { libraryTarget: 'commonjs' },
+    target: 'node0.10',
     externals: ['@webassemblyjs/ast'],
     plugins: [
       new CopyPlugin({
@@ -186,8 +195,9 @@ module.exports = [
     ],
   }),
   webpackConfig('@wasm-edit', {
-    entry: './node_modules/@webassemblyjs/wasm-edit/esm/index',
-    output: { filename: 'lib/index.js', libraryTarget: 'commonjs' },
+    entry: { 'lib/index': './node_modules/@webassemblyjs/wasm-edit/esm/index' },
+    output: { libraryTarget: 'commonjs' },
+    target: 'node0.10',
     externals: ['@webassemblyjs/ast', '@webassemblyjs/wasm-parser'],
     plugins: [
       new CopyPlugin({
