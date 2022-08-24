@@ -11,7 +11,7 @@ const webpackConfig = (name, config) => ({
     ...(config.output || {}),
   },
   context: __dirname,
-  target: 'node',
+  target: config.target || 'node',
   node: { __filename: false, __dirname: false },
   stats: { modulesSpace: Infinity },
   optimization: {
@@ -33,6 +33,7 @@ module.exports = [
   webpackConfig('glob', {
     entry: { glob: './node_modules/glob/glob' },
     output: { libraryTarget: 'commonjs2' },
+    target: 'node0.10',
     plugins: [
       new CopyPlugin({
         patterns: [
