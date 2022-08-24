@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-(() => {
+!function() {
   var __webpack_modules__ = {
-    783: (module, exports, __webpack_require__) => {
+    783: function(module, exports, __webpack_require__) {
       var EventEmitter = __webpack_require__(361).EventEmitter, spawn = __webpack_require__(81).spawn, readlink = __webpack_require__(334).P, path = __webpack_require__(17), dirname = path.dirname, basename = path.basename, fs = __webpack_require__(147);
       function Option(flags, description) {
         this.flags = flags, this.required = ~flags.indexOf("<"), this.optional = ~flags.indexOf("["), 
@@ -157,7 +157,7 @@
         this.emit(option.name(), arg)) : this.emit(option.name()); else arg.length > 1 && "-" == arg[0] ? (unknownOptions.push(arg), 
         argv[i + 1] && "-" != argv[i + 1][0] && unknownOptions.push(argv[++i])) : args.push(arg); else literal = !0;
         return {
-          args,
+          args: args,
           unknown: unknownOptions
         };
       }, Command.prototype.opts = function() {
@@ -238,37 +238,37 @@
         this.outputHelp(cb), process.exit();
       };
     },
-    334: (__unused_webpack_module, exports, __webpack_require__) => {
+    334: function(__unused_webpack_module, exports, __webpack_require__) {
       var fs = __webpack_require__(147), lstat = fs.lstatSync;
       exports.P = function(p) {
         return lstat(p).isSymbolicLink() ? fs.readlinkSync(p) : p;
       };
     },
-    956: module => {
+    956: function(module) {
       "use strict";
       module.exports = require("./index");
     },
-    81: module => {
+    81: function(module) {
       "use strict";
       module.exports = require("child_process");
     },
-    361: module => {
+    361: function(module) {
       "use strict";
       module.exports = require("events");
     },
-    147: module => {
+    147: function(module) {
       "use strict";
       module.exports = require("fs");
     },
-    37: module => {
+    37: function(module) {
       "use strict";
       module.exports = require("os");
     },
-    17: module => {
+    17: function(module) {
       "use strict";
       module.exports = require("path");
     },
-    756: module => {
+    756: function(module) {
       "use strict";
       module.exports = JSON.parse('{"name":"dts-bundle","version":"0.7.3","description":"Export TypeScript .d.ts files as an external module definition"}');
     }
@@ -282,7 +282,7 @@
     return __webpack_modules__[moduleId](module, module.exports, __webpack_require__), 
     module.exports;
   }
-  (() => {
+  !function() {
     var pkg = __webpack_require__(756), program = __webpack_require__(783), dts = __webpack_require__(956), path = __webpack_require__(17), os = __webpack_require__(37);
     program.version(pkg.version).option("--configJson <value>", "path to json config file. Load it first and override options with additional parameters").option("--name <value>", "name of module likein package.json *required").option("--main <value>", "path to entry-point (see documentation) *required").option("--baseDir [value]", "base directory to be used for discovering type declarations").option("--out [value]", "path of output file. Is relative from baseDir but you can use absolute paths. ").option("--externals", 'include typings outside of the "baseDir" (i.e. like node.d.ts)').option("--referenceExternals", 'reference external modules as <reference path="..." /> tags *** Experimental, TEST NEEDED').option("--removeSource", 'delete all source typings (i.e. "<baseDir>/**/*.d.ts")').option("--newline [style]", "newline style to use in output file => unix|windows|currentOsDefault", /^(unix|windows|currentOsDefault)$/i).option("--prefix [value]", "prefix for rewriting module names").option("--verbose", "enable verbose mode, prints detailed info about all references and includes/excludes").option("--emitOnIncludedFileNotFound", 'emit although included files not found. See readme "Files not found" section. ').option("--emitOnNoIncludedFileNotFound", 'emit although no included files not found. See readme "Files not found" section. ').option("--outputAsModuleFolder", 'output as module folder format (no declare module) . See readme "Module folders" section.').option("--headerPath [value]", "path to file that contains the header").parse(process.argv), 
     console.log("%s version %s\n%s\n", pkg.name, pkg.version, pkg.description);
@@ -309,5 +309,5 @@
     }(options);
     result.emitted || (console.log("Result no emitted - use verbose to see details."), 
     process.exit(1));
-  })();
-})();
+  }();
+}();

@@ -1,6 +1,6 @@
-(() => {
+!function() {
   var __webpack_modules__ = {
-    623: module => {
+    623: function(module) {
       function balanced(a, b, str) {
         a instanceof RegExp && (a = maybeMatch(a, str)), b instanceof RegExp && (b = maybeMatch(b, str));
         var r = range(a, b, str);
@@ -28,7 +28,7 @@
       }
       module.exports = balanced, balanced.range = range;
     },
-    644: (module, __unused_webpack_exports, __webpack_require__) => {
+    644: function(module, __unused_webpack_exports, __webpack_require__) {
       var concatMap = __webpack_require__(48), balanced = __webpack_require__(623);
       module.exports = function(str) {
         if (!str) return [];
@@ -102,7 +102,7 @@
         return expansions;
       }
     },
-    48: module => {
+    48: function(module) {
       module.exports = function(xs, fn) {
         for (var res = [], i = 0; i < xs.length; i++) {
           var x = fn(xs[i], i);
@@ -114,7 +114,7 @@
         return "[object Array]" === Object.prototype.toString.call(xs);
       };
     },
-    983: module => {
+    983: function(module) {
       "use strict";
       var RE_MULTILINE_COMMENTS = /\/\*[\S\s]*?\*\//, RE_EMPTY_LINE = /^\s*$/, RE_LEADING_WHITESPACE = /^[ \t]+/;
       function gcd(a, b) {
@@ -138,7 +138,7 @@
         return indentSize > 0 ? new Array(indentSize + 1).join(" ") : null;
       };
     },
-    772: (__unused_webpack_module, exports, __webpack_require__) => {
+    772: function(__unused_webpack_module, exports, __webpack_require__) {
       function ownProp(obj, field) {
         return Object.prototype.hasOwnProperty.call(obj, field);
       }
@@ -225,7 +225,7 @@
           matcher: new Minimatch(pattern, {
             dot: !0
           }),
-          gmatcher
+          gmatcher: gmatcher
         };
       }
       function makeAbs(self, f) {
@@ -237,7 +237,7 @@
         }));
       }
     },
-    884: (module, __unused_webpack_exports, __webpack_require__) => {
+    884: function(module, __unused_webpack_exports, __webpack_require__) {
       module.exports = glob;
       var fs = __webpack_require__(147), minimatch = __webpack_require__(171), inherits = (minimatch.Minimatch, 
       __webpack_require__(378)), EE = __webpack_require__(361).EventEmitter, path = __webpack_require__(17), assert = __webpack_require__(491), isAbsolute = __webpack_require__(95), globSync = __webpack_require__(751), common = __webpack_require__(772), setopts = (common.alphasort, 
@@ -517,7 +517,7 @@
         return this.cache[abs] = this.cache[abs] || c, needDir && "DIR" !== c ? cb() : cb(null, c, stat);
       };
     },
-    751: (module, __unused_webpack_exports, __webpack_require__) => {
+    751: function(module, __unused_webpack_exports, __webpack_require__) {
       module.exports = globSync, globSync.GlobSync = GlobSync;
       var fs = __webpack_require__(147), minimatch = __webpack_require__(171), path = (minimatch.Minimatch, 
       __webpack_require__(884).Glob, __webpack_require__(837), __webpack_require__(17)), assert = __webpack_require__(491), isAbsolute = __webpack_require__(95), common = __webpack_require__(772), setopts = (common.alphasort, 
@@ -704,7 +704,7 @@
         return common.makeAbs(this, f);
       };
     },
-    844: (module, __unused_webpack_exports, __webpack_require__) => {
+    844: function(module, __unused_webpack_exports, __webpack_require__) {
       var wrappy = __webpack_require__(479), reqs = Object.create(null), once = __webpack_require__(778);
       function slice(args) {
         for (var length = args.length, array = [], i = 0; i < length; i++) array[i] = args[i];
@@ -725,7 +725,7 @@
         }(key));
       }));
     },
-    378: (module, __unused_webpack_exports, __webpack_require__) => {
+    378: function(module, __unused_webpack_exports, __webpack_require__) {
       try {
         var util = __webpack_require__(837);
         if ("function" != typeof util.inherits) throw "";
@@ -734,7 +734,7 @@
         module.exports = __webpack_require__(717);
       }
     },
-    717: module => {
+    717: function(module) {
       "function" == typeof Object.create ? module.exports = function(ctor, superCtor) {
         ctor.super_ = superCtor, ctor.prototype = Object.create(superCtor.prototype, {
           constructor: {
@@ -750,7 +750,7 @@
         TempCtor.prototype = superCtor.prototype, ctor.prototype = new TempCtor, ctor.prototype.constructor = ctor;
       };
     },
-    171: (module, __unused_webpack_exports, __webpack_require__) => {
+    171: function(module, __unused_webpack_exports, __webpack_require__) {
       module.exports = minimatch, minimatch.Minimatch = Minimatch;
       var path = {
         sep: "/"
@@ -1042,8 +1042,8 @@
         var options = this.options;
         this.debug("matchOne", {
           this: this,
-          file,
-          pattern
+          file: file,
+          pattern: pattern
         }), this.debug("matchOne", file.length, pattern.length);
         for (var fi = 0, pi = 0, fl = file.length, pl = pattern.length; fi < fl && pi < pl; fi++, 
         pi++) {
@@ -1080,7 +1080,7 @@
         throw new Error("wtf?");
       };
     },
-    890: (module, __unused_webpack_exports, __webpack_require__) => {
+    890: function(module, __unused_webpack_exports, __webpack_require__) {
       var path = __webpack_require__(17), fs = __webpack_require__(147), _0777 = parseInt("0777", 8);
       function mkdirP(p, opts, f, made) {
         "function" == typeof opts ? (f = opts, opts = {}) : opts && "object" == typeof opts || (opts = {
@@ -1120,7 +1120,7 @@
         return made;
       };
     },
-    778: (module, __unused_webpack_exports, __webpack_require__) => {
+    778: function(module, __unused_webpack_exports, __webpack_require__) {
       var wrappy = __webpack_require__(479);
       function once(fn) {
         var f = function() {
@@ -1150,7 +1150,7 @@
         });
       }));
     },
-    95: module => {
+    95: function(module) {
       "use strict";
       function posix(path) {
         return "/" === path.charAt(0);
@@ -1162,7 +1162,7 @@
       module.exports = "win32" === process.platform ? win32 : posix, module.exports.posix = posix, 
       module.exports.win32 = win32;
     },
-    479: module => {
+    479: function(module) {
       module.exports = function wrappy(fn, cb) {
         if (fn && cb) return wrappy(fn)(cb);
         if ("function" != typeof fn) throw new TypeError("need wrapper function");
@@ -1178,31 +1178,31 @@
         }
       };
     },
-    491: module => {
+    491: function(module) {
       "use strict";
       module.exports = require("assert");
     },
-    361: module => {
+    361: function(module) {
       "use strict";
       module.exports = require("events");
     },
-    147: module => {
+    147: function(module) {
       "use strict";
       module.exports = require("fs");
     },
-    37: module => {
+    37: function(module) {
       "use strict";
       module.exports = require("os");
     },
-    17: module => {
+    17: function(module) {
       "use strict";
       module.exports = require("path");
     },
-    837: module => {
+    837: function(module) {
       "use strict";
       module.exports = require("util");
     },
-    756: module => {
+    756: function(module) {
       "use strict";
       module.exports = JSON.parse('{"name":"dts-bundle","version":"0.7.3","description":"Export TypeScript .d.ts files as an external module definition"}');
     }
@@ -1217,7 +1217,7 @@
     module.exports;
   }
   var __webpack_exports__ = {};
-  (() => {
+  !function() {
     "use strict";
     var exports = __webpack_exports__;
     Object.defineProperty(exports, "__esModule", {
@@ -1390,10 +1390,10 @@
           return parse.file === file;
         })).length;
       }, bundleResult = {
-        fileMap,
+        fileMap: fileMap,
         includeFilesNotFound: [],
         noIncludeFilesNotFound: [],
-        options
+        options: options
       };
       for (var p in trace("## files not found ##"), fileMap) {
         (parse = fileMap[p]).fileExists || (inUsed(parse.file) ? (bundleResult.includeFilesNotFound.push(parse.file), 
@@ -1448,9 +1448,9 @@
         var name = getModName(file);
         trace("%s (%s)", name, file);
         var res = {
-          file,
-          name,
-          indent,
+          file: file,
+          name: name,
+          indent: indent,
           exp: getExpName(file),
           refs: [],
           externalImports: [],
@@ -1545,10 +1545,10 @@
         })), res;
       }
     };
-  })();
+  }();
   var __webpack_export_target__ = exports;
   for (var i in __webpack_exports__) __webpack_export_target__[i] = __webpack_exports__[i];
   __webpack_exports__.__esModule && Object.defineProperty(__webpack_export_target__, "__esModule", {
     value: !0
   });
-})();
+}();
