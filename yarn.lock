@@ -4,9 +4,10 @@
 
 "@babel/core@thachnn/webpack-bundle#_babel/core-7.17.10":
   version "7.17.10"
-  resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/94f91d78f7bfecc6314ab2bb8995e770c9906780"
+  resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/04bcdf13ff91721a4c191cfd638b0194d69f60a1"
   dependencies:
     browserslist "^4.20.2"
+    chalk "^2.0.0"
 
 "@babel/preset-env@thachnn/webpack-bundle#_babel/preset-env-7.17.10":
   version "7.17.10"
@@ -23,18 +24,18 @@
 
 "@webassemblyjs/ast@1.11.1", "@webassemblyjs/ast@thachnn/webpack-bundle#_webassemblyjs/ast-1.11.1":
   version "1.11.1"
-  resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/81c4938bc0727dd6b9590ab21165d4a517012c4b"
+  resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/09e221b27da961c1c34a74d653075218734d5337"
 
 "@webassemblyjs/wasm-edit@thachnn/webpack-bundle#_webassemblyjs/wasm-edit-1.11.1":
   version "1.11.1"
-  resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/46cc52b84ca3e2643c480cbb75b68e039d3cdaa0"
+  resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/25a0521c6b12925fab9e6d197ef69a9f7e19efdd"
   dependencies:
     "@webassemblyjs/ast" "1.11.1"
     "@webassemblyjs/wasm-parser" "1.11.1"
 
 "@webassemblyjs/wasm-parser@1.11.1", "@webassemblyjs/wasm-parser@thachnn/webpack-bundle#_webassemblyjs/wasm-parser-1.11.1":
   version "1.11.1"
-  resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/52b80fb8e320d0a4b2c0dd0567677fcc4c0f42a8"
+  resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/40efe357986a5238c0850cdd954b73c367c72028"
   dependencies:
     "@webassemblyjs/ast" "1.11.1"
 
@@ -70,7 +71,7 @@ caniuse-lite@^1.0.30001349:
 
 chalk@^2.0.0, chalk@thachnn/webpack-bundle#chalk-2.4.2:
   version "2.4.2"
-  resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/041110d5fa29e143bf796303c76d9e2e5dbb4729"
+  resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/bd3376de0dbde96589e1afdcdeb7321da6181ddc"
 
 clone-deep@^4.0.1:
   version "4.0.1"
@@ -106,7 +107,7 @@ fast-glob@^3.2.9, fast-glob@thachnn/webpack-bundle#fast-glob-3.2.11:
 
 glob@^7.1.3, glob@thachnn/webpack-bundle#glob-7.2.3:
   version "7.2.3"
-  resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/acff3decae3fd8c316169a7ae6359666619e2b4e"
+  resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/f1d44beae8627abb618944d26dd7cf65de4f7bef"
 
 globby@thachnn/webpack-bundle#globby-11.1.0:
   version "11.1.0"
@@ -161,7 +162,7 @@ picocolors@^1.0.0:
 
 regexpu-core@^5.0.1, regexpu-core@thachnn/webpack-bundle#regexpu-core-5.0.1:
   version "5.0.1"
-  resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/d3e106881a6eb903696f57c34e9af18439d941f9"
+  resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/4cd6de85f90c0bd10c897facf742f87ad61d1b98"
 
 rimraf@^2.6.3:
   version "2.7.1"
