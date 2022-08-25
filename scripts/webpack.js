@@ -1,6 +1,7 @@
 #!/usr/bin/env node
+'use strict';
 
-const webpack = require('webpack');
+const webpack = require('webpack'); // ../dist/lib
 let configSet = require('../webpack.config');
 
 if (!Array.isArray(configSet)) {
@@ -14,9 +15,7 @@ if (names.size > 0) {
   configSet = configSet.filter((cfg) => cfg.name && names.has(cfg.name));
 }
 
-const webpackCompile = (cfg) => {
-  if (!cfg) return;
-
+configSet.forEach((cfg) => {
   webpack(cfg, (err, stats) => {
     // Error handling
     if (err) {
@@ -26,10 +25,5 @@ const webpackCompile = (cfg) => {
 
     // Log result...
     console.log(stats.toString({ colors: true, ...cfg.stats }));
-
-    // Process next
-    webpackCompile(configSet.shift());
   });
-};
-
-webpackCompile(configSet.shift());
+});
