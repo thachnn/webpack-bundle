@@ -2,10 +2,9 @@
 
 const { ReplaceSource } = require('webpack-sources');
 const { validate } = require('schema-utils');
+const { PROCESS_ASSETS_STAGE_ADDITIONS } = require('webpack/lib/Compilation');
 
-// @see {webpack.Compilation}
-const PROCESS_ASSETS_STAGE_ADDITIONS = -100;
-
+/** @type {import("schema-utils/declarations/validate").Schema} */
 const schema = {
   // type: 'array', minItems: 1, items: {
   type: 'object',
@@ -21,7 +20,17 @@ const schema = {
   // },
 };
 
+/** @typedef {{ search: String | RegExp, replace: String, test?: RegExp }} ReplacerOption */
+
+/** @typedef {{ start: Number, end: Number, replace: String }} Replacement */
+
+/**
+ * @param {String} str
+ * @param {ReplacerOption[]} patterns
+ * @returns {Replacement[]}
+ */
 const searchReplacements = (str, patterns) => {
+  /** @type {Replacement[]} */
   const indices = [];
 
   patterns.forEach(({ search, replace }) => {
@@ -47,13 +56,18 @@ const searchReplacements = (str, patterns) => {
 };
 
 class ReplaceCodePlugin {
-  // { search: String | RegExp, replace: String, test?: RegExp }
+  /** @param {ReplacerOption | ReplacerOption[]} options */
   constructor(options) {
     validate(schema, options, { name: 'ReplaceCode Plugin', baseDataPath: 'options' });
 
     this.options = Array.isArray(options) ? options : [options];
   }
 
+  /**
+   * Apply the plugin
+   * @param {import("webpack").Compiler} compiler the compiler instance
+   * @returns {void}
+   */
   apply(compiler) {
     const options = this.options;
     const cache = new WeakMap();

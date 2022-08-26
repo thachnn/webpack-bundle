@@ -12,7 +12,7 @@ trim_trailing_whitespace = true
 
 [*.{js,ts,yml}]
 quote_type = single
-spaces_around_brackets = inside
+spaces_within_object_literal_braces = true
 
 [*.{md,txt}]
 max_line_length = off

@@ -19,11 +19,11 @@ configSet.forEach((cfg) => {
   webpack(cfg, (err, stats) => {
     // Error handling
     if (err) {
-      console.error(err);
+      console.error('\n', err);
       return;
     }
 
     // Log result...
-    console.log(stats.toString({ colors: true, ...cfg.stats }));
+    console.log('\n', stats.toString({ colors: true, ...cfg.stats }));
   });
 });
