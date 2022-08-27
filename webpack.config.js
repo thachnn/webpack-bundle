@@ -113,6 +113,9 @@ module.exports = [
             multiple: [
               { search: /\b_package( = require\("[^"]*\/package\.json"\))/, replace: '_packageVersion$1.version' },
               { search: /\b_package\.version\b/g, replace: '_packageVersion' },
+              // Fix transformAll error
+              { search: /(\.getLazyHashedEtag\([^)]*)\.buffer\(\)\)/g, replace: '$1)' },
+              { search: /\bconst eTag = \w*\.getLazyHashedEtag\((\w+)\);?\s*(.*, )eTag\)/, replace: '$2$1)' },
             ],
           },
         },
