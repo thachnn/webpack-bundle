@@ -16,17 +16,36 @@
   },
   "scripts": {
     "build": "node scripts/build-webpack.js",
-    "clean": "node node_modules/rimraf/bin.js dist node_modules/.cache"
+    "clean": "node node_modules/rimraf/bin.js dist node_modules/.cache",
+    "terser": "node node_modules/terser/bin/terser"
   },
   "devDependencies": {
-    "@webassemblyjs/wasm-edit": "1.11.1",
+    "@webassemblyjs/wasm-edit": "thachnn/webpack-bundle#_webassemblyjs/wasm-edit-1.11.1",
     "browserslist": "^4.14.5",
-    "globby": "^11.0.3",
+    "globby": "thachnn/webpack-bundle#globby-11.1.0",
     "rimraf": "^2.6.3",
     "string-replace-loader": "^3.0.0",
-    "terser": "^5.7.2",
+    "terser": "thachnn/webpack-bundle#terser-5.12.1",
     "webpack": "thachnn/webpack-bundle#v5.74.0"
   },
-  "resolutions": {},
-  "overrides": {}
+  "resolutions": {
+    "**/@webassemblyjs/ast": "thachnn/webpack-bundle#_webassemblyjs/ast-1.11.1",
+    "**/@webassemblyjs/wasm-parser": "thachnn/webpack-bundle#_webassemblyjs/wasm-parser-1.11.1",
+    "**/schema-utils/ajv": "thachnn/webpack-bundle#ajv-6.12.6",
+    "globby/fast-glob": "thachnn/webpack-bundle#fast-glob-3.2.11",
+    "rimraf/glob": "thachnn/webpack-bundle#glob-7.2.3"
+  },
+  "overrides": {
+    "@webassemblyjs/ast": "thachnn/webpack-bundle#_webassemblyjs/ast-1.11.1",
+    "@webassemblyjs/wasm-parser": "thachnn/webpack-bundle#_webassemblyjs/wasm-parser-1.11.1",
+    "schema-utils": {
+      "ajv": "thachnn/webpack-bundle#ajv-6.12.6"
+    },
+    "globby": {
+      "fast-glob": "thachnn/webpack-bundle#fast-glob-3.2.11"
+    },
+    "rimraf": {
+      "glob": "thachnn/webpack-bundle#glob-7.2.3"
+    }
+  }
 }
