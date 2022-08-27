@@ -271,6 +271,14 @@ module.exports = [
           },
         },
         {
+          test: /node_modules.webpack.lib.util.registerExternalSerializer\.js$/i,
+          loader: 'string-replace-loader',
+          options: {
+            search: ' require("schema-utils/dist/ValidationError").default',
+            replace: ' require("schema-utils").ValidationError',
+          },
+        },
+        {
           test: /node_modules.(loader-runner.lib.loadLoader|webpack.lib.serialization.ObjectMiddleware)\.js$/i,
           loader: 'string-replace-loader',
           options: { search: /\brequire(\([\w.]+\))/, replace: 'require("originalRequire")$1' },
