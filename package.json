@@ -20,7 +20,10 @@
     "terser": "node node_modules/terser/bin/terser"
   },
   "devDependencies": {
+    "@babel/core": "^7.11.1",
+    "@babel/preset-env": "^7.11.1",
     "@webassemblyjs/wasm-edit": "thachnn/webpack-bundle#_webassemblyjs/wasm-edit-1.11.1",
+    "babel-loader": "^8.1.0",
     "browserslist": "^4.14.5",
     "globby": "thachnn/webpack-bundle#globby-11.1.0",
     "rimraf": "^2.6.3",
