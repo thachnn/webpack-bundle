@@ -74,6 +74,48 @@ const combineDTS = (assets) => {
 };
 
 module.exports = [
+  webpackConfig('browserslist', {
+    entry: {
+      index: { import: './node_modules/browserslist/index', library: { type: 'commonjs2' } },
+      cli: { import: './node_modules/browserslist/cli' },
+    },
+    target: 'node6',
+    externals: { './': 'commonjs2 ./index', originalRequire: 'commonjs2 ./originalRequire' },
+    module: {
+      rules: [
+        {
+          test: /node_modules.browserslist.node\.js$/i,
+          loader: 'string-replace-loader',
+          options: {
+            search: / require\(require\.resolve\(/g,
+            replace: ' require("originalRequire")(require("originalRequire").resolve(',
+          },
+        },
+        {
+          test: /node_modules.browserslist.package\.json$/i,
+          loader: 'string-replace-loader',
+          options: { search: /,\s*"keywords":[\s\S]*/, replace: '\n}' },
+        },
+      ],
+    },
+    plugins: [
+      newCopyPlugin([
+        { from: 'node_modules/browserslist/{LICENSE*,README*,*.d.ts}', to: '[name][ext]' },
+        {
+          from: 'node_modules/browserslist/package.json',
+          transform(content) {
+            const { dependencies: _1, browser: _2, ...pkg } = JSON.parse(content);
+            return JSON.stringify(pkg, null, 2);
+          },
+        },
+      ]),
+      new BannerPlugin({ banner: '#!/usr/bin/env node', raw: true, test: /\bcli\.js$/i }),
+      new ReplaceCodePlugin({ search: ' require("./originalRequire")', replace: ' require', test: /\bindex\.js$/i }),
+    ],
+    optimization: {
+      minimizer: [{ format: { beautify: true, indent_level: 0 } }],
+    },
+  }),
   webpackConfig('execa', {
     entry: { index: './node_modules/execa/index' },
     output: { libraryTarget: 'commonjs2' },
