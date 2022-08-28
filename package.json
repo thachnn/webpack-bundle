@@ -1,54 +1,31 @@
 {
-  "name": "webpack-bundle",
-  "version": "1.0.0",
-  "description": "Bundle NPM packages using webpack",
-  "keywords": [
-    "npm",
-    "package",
-    "bundle",
-    "webpack",
-    "module"
-  ],
-  "repository": "thachnn/webpack-bundle",
-  "license": "MIT",
-  "engines": {
-    "node": ">=10"
-  },
-  "scripts": {
-    "build": "node scripts/build-webpack.js",
-    "clean": "node node_modules/rimraf/bin.js dist node_modules/.cache",
-    "terser": "node node_modules/terser/bin/terser"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.11.1",
-    "@babel/preset-env": "^7.11.1",
-    "@webassemblyjs/wasm-edit": "thachnn/webpack-bundle#_webassemblyjs/wasm-edit-1.11.1",
-    "babel-loader": "^8.1.0",
-    "browserslist": "^4.14.5",
-    "globby": "thachnn/webpack-bundle#globby-11.1.0",
-    "rimraf": "^2.6.3",
-    "string-replace-loader": "^3.0.0",
-    "terser": "thachnn/webpack-bundle#terser-5.12.1",
-    "webpack": "thachnn/webpack-bundle#v5.74.0"
-  },
-  "resolutions": {
-    "**/@webassemblyjs/ast": "thachnn/webpack-bundle#_webassemblyjs/ast-1.11.1",
-    "**/@webassemblyjs/wasm-parser": "thachnn/webpack-bundle#_webassemblyjs/wasm-parser-1.11.1",
-    "**/schema-utils/ajv": "thachnn/webpack-bundle#ajv-6.12.6",
-    "globby/fast-glob": "thachnn/webpack-bundle#fast-glob-3.2.11",
-    "rimraf/glob": "thachnn/webpack-bundle#glob-7.2.3"
-  },
-  "overrides": {
-    "@webassemblyjs/ast": "thachnn/webpack-bundle#_webassemblyjs/ast-1.11.1",
-    "@webassemblyjs/wasm-parser": "thachnn/webpack-bundle#_webassemblyjs/wasm-parser-1.11.1",
-    "schema-utils": {
-      "ajv": "thachnn/webpack-bundle#ajv-6.12.6"
-    },
-    "globby": {
-      "fast-glob": "thachnn/webpack-bundle#fast-glob-3.2.11"
-    },
-    "rimraf": {
-      "glob": "thachnn/webpack-bundle#glob-7.2.3"
-    }
-  }
+	"name": "object.assign",
+	"version": "4.1.2",
+	"author": "Jordan Harband",
+	"funding": {
+		"url": "https://github.com/sponsors/ljharb"
+	},
+	"description": "ES6 spec-compliant Object.assign shim. From https://github.com/es-shims/es6-shim",
+	"license": "MIT",
+	"main": "index.js",
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/ljharb/object.assign.git"
+	},
+	"keywords": [
+		"Object.assign",
+		"assign",
+		"ES6",
+		"extend",
+		"$.extend",
+		"jQuery",
+		"_.extend",
+		"Underscore",
+		"es-shim API",
+		"polyfill",
+		"shim"
+	],
+	"engines": {
+		"node": ">= 0.4"
+	}
 }
