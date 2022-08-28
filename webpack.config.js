@@ -113,7 +113,7 @@ module.exports = [
           loader: 'string-replace-loader',
           options: {
             search: ' require(path.resolve(argObj.configJson))',
-            replace: ' JSON.parse( require("fs").readFileSync(path.resolve(argObj.configJson)) )',
+            replace: ' JSON.parse(require("fs").readFileSync( path.resolve(argObj.configJson) ))',
           },
         },
         {
@@ -130,7 +130,8 @@ module.exports = [
           from: 'node_modules/dts-bundle/package.json',
           transform(content) {
             const { dependencies: _1, devDependencies: _2, scripts: _3, ...pkg } = JSON.parse(content);
-            return JSON.stringify(pkg, null, 2).replace(/\blib\/dts-bundle\b/, 'cli');
+            pkg.version += '-0';
+            return JSON.stringify(pkg, null, 2).replace(/\blib\/dts-bundle\b/g, 'cli');
           },
         },
       ]),
