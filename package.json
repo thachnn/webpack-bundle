@@ -25,13 +25,13 @@
     "@babel/preset-env": "thachnn/webpack-bundle#_babel/preset-env-7.17.10",
     "@webassemblyjs/wasm-edit": "thachnn/webpack-bundle#_webassemblyjs/wasm-edit-1.11.1",
     "babel-loader": "^8.1.0",
-    "browserslist": "^4.14.5",
     "dts-bundle": "thachnn/webpack-bundle#dts-bundle-0.7.3",
     "globby": "thachnn/webpack-bundle#globby-11.1.0",
     "rimraf": "^2.6.3",
     "string-replace-loader": "^3.0.0",
     "terser": "thachnn/webpack-bundle#terser-5.12.1",
-    "webpack": "thachnn/webpack-bundle#v5.74.0"
+    "webpack": "thachnn/webpack-bundle#v5.74.0",
+    "webpack-cli": "^4.9.1"
   },
   "resolutions": {
     "**/@webassemblyjs/ast": "thachnn/webpack-bundle#_webassemblyjs/ast-1.11.1",

@@ -110,7 +110,7 @@ module.exports = [
         },
       ]),
       new BannerPlugin({ banner: '#!/usr/bin/env node', raw: true, test: /\bcli\.js$/i }),
-      new ReplaceCodePlugin({ search: ' require("./originalRequire")', replace: ' require', test: /\bindex\.js$/i }),
+      new ReplaceCodePlugin({ search: ' require("./originalRequire")', replace: ' require', test: /\bindex\.js$/ }),
     ],
     optimization: {
       minimizer: [{ format: { beautify: true, indent_level: 0 } }],
@@ -165,6 +165,11 @@ module.exports = [
     output: { libraryTarget: 'commonjs' },
     plugins: [
       newCopyPlugin([
+        {
+          from: 'node_modules/webpack-merge/dist/{index,unique,types}.d.ts',
+          to: 'dist/index.d.ts',
+          transformAll: combineDTS,
+        },
         { from: 'node_modules/webpack-merge/{LICENSE*,*.md}', to: '[name][ext]' },
         {
           from: 'node_modules/webpack-merge/package.json',
@@ -173,7 +178,6 @@ module.exports = [
             return JSON.stringify(pkg, null, 2);
           },
         },
-        { from: 'node_modules/webpack-merge/**/*.d.ts', to: 'dist/index.d.ts', transformAll: combineDTS },
       ]),
     ],
   }),
@@ -188,6 +192,11 @@ module.exports = [
           test: /node_modules.rechoir.(index|lib.register)\.js$/i,
           loader: 'string-replace-loader',
           options: { search: /\brequire(\.extensions|\(\w+)\b/, replace: 'require("originalRequire")$1' },
+        },
+        {
+          test: /node_modules.resolve.lib.core\.js$/i,
+          loader: 'string-replace-loader',
+          options: { search: " require('./core.json')", replace: " require('../../is-core-module/core.json')" },
         },
       ],
     },
