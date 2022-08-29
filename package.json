@@ -19,6 +19,7 @@
     "clean": "node node_modules/rimraf/bin.js dist node_modules/.cache",
     "browserslist": "node node_modules/browserslist/cli.js",
     "terser": "node node_modules/terser/bin/terser",
+    "webpack-cli": "node node_modules/webpack-cli/bin/cli.js",
     "dts-bundle": "node node_modules/dts-bundle/cli.js --newline unix"
   },
   "devDependencies": {
@@ -32,14 +33,14 @@
     "string-replace-loader": "^3.0.0",
     "terser": "thachnn/webpack-bundle#terser-5.12.1",
     "webpack": "thachnn/webpack-bundle#v5.74.0",
-    "webpack-cli": "^4.9.1"
+    "webpack-cli": "thachnn/webpack-bundle#cli-4.10.0"
   },
   "resolutions": {
     "**/@webassemblyjs/ast": "thachnn/webpack-bundle#_webassemblyjs/ast-1.11.1",
     "**/@webassemblyjs/wasm-parser": "thachnn/webpack-bundle#_webassemblyjs/wasm-parser-1.11.1",
     "**/schema-utils/ajv": "thachnn/webpack-bundle#ajv-6.12.6",
     "**/browserslist": "thachnn/webpack-bundle#browserslist-4.20.4",
-    "**/chalk": "thachnn/webpack-bundle#chalk-2.4.2",
+    "@babel/**/chalk": "thachnn/webpack-bundle#chalk-2.4.2",
     "@babel/preset-env/regexpu-core": "thachnn/webpack-bundle#regexpu-core-5.0.1",
     "babel-loader/find-cache-dir": "thachnn/webpack-bundle#find-cache-dir-3.3.2",
     "dts-bundle/glob": "thachnn/webpack-bundle#glob-6.0.4",
@@ -53,8 +54,11 @@
       "ajv": "thachnn/webpack-bundle#ajv-6.12.6"
     },
     "browserslist": "thachnn/webpack-bundle#browserslist-4.20.4",
-    "chalk": "thachnn/webpack-bundle#chalk-2.4.2",
+    "@babel/core": {
+      "chalk": "thachnn/webpack-bundle#chalk-2.4.2"
+    },
     "@babel/preset-env": {
+      "chalk": "thachnn/webpack-bundle#chalk-2.4.2",
       "regexpu-core": "thachnn/webpack-bundle#regexpu-core-5.0.1"
     },
     "babel-loader": {
