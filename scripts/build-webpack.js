@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-const webpack = require('webpack'); // ../dist/lib
+const webpack = require('webpack'); // ../dist/
 let configSet = require('../webpack.config');
 
 if (!Array.isArray(configSet)) {
@@ -24,6 +24,6 @@ configSet.forEach((cfg) => {
     }
 
     // Log result...
-    console.log('\n', stats.toString({ colors: true, ...cfg.stats }));
+    console.log('\n', stats.toString(Object.assign({ colors: true }, cfg.stats)));
   });
 });

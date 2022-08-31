@@ -22,6 +22,7 @@ Bundle NPM packages using `webpack` and provide them :)
 
 ## Provided packages
 
+- `webpack` v4.46.0 -> [thachnn/webpack-bundle#v4.46.0](../../tree/v4.46.0)
 - `webpack` v5.74.0 -> [thachnn/webpack-bundle#v5.74.0](../../tree/v5.74.0)
 - `glob` v7.2.3 -> [thachnn/webpack-bundle#glob-7.2.3](../../tree/glob-7.2.3)
 - `ajv` v6.12.6 -> [thachnn/webpack-bundle#ajv-6.12.6](../../tree/ajv-6.12.6)

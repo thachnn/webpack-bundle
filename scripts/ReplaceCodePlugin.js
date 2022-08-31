@@ -1,23 +1,23 @@
 'use strict';
 
 const { ReplaceSource } = require('webpack-sources');
-const { validate } = require('schema-utils');
-const { PROCESS_ASSETS_STAGE_ADDITIONS } = require('webpack/lib/Compilation');
+const validateOptions = require('schema-utils');
 
-/** @type {import("schema-utils/declarations/validate").Schema} */
 const schema = {
-  // type: 'array', minItems: 1, items: {
-  type: 'object',
-  additionalProperties: false,
-  properties: {
-    search: {
-      anyOf: [{ type: 'string', minLength: 1 }, { instanceof: 'RegExp' }],
+  type: 'array',
+  minItems: 1,
+  items: {
+    type: 'object',
+    additionalProperties: false,
+    properties: {
+      search: {
+        anyOf: [{ type: 'string', minLength: 1 }, { instanceof: 'RegExp' }],
+      },
+      replace: { type: 'string' },
+      test: { instanceof: 'RegExp' },
     },
-    replace: { type: 'string' },
-    test: { instanceof: 'RegExp' },
+    required: ['search', 'replace'],
   },
-  required: ['search', 'replace'],
-  // },
 };
 
 /** @typedef {{ search: String | RegExp, replace: String, test?: RegExp }} ReplacerOption */
@@ -58,9 +58,9 @@ const searchReplacements = (str, patterns) => {
 class ReplaceCodePlugin {
   /** @param {ReplacerOption | ReplacerOption[]} options */
   constructor(options) {
-    validate(schema, options, { name: 'ReplaceCode Plugin', baseDataPath: 'options' });
-
     this.options = Array.isArray(options) ? options : [options];
+
+    validateOptions(schema, this.options, 'ReplaceCode Plugin');
   }
 
   /**
@@ -70,46 +70,32 @@ class ReplaceCodePlugin {
    */
   apply(compiler) {
     const options = this.options;
-    const cache = new WeakMap();
 
     compiler.hooks.compilation.tap('ReplaceCodePlugin', (compilation) => {
-      compilation.hooks.processAssets.tap(
-        {
-          name: 'ReplaceCodePlugin',
-          stage: PROCESS_ASSETS_STAGE_ADDITIONS,
-        },
-        () => {
-          for (const chunk of compilation.chunks) {
-            for (const file of chunk.files) {
-              // Test filename
-              const filtered = options.filter(({ test }) => !test || test.test(file));
-              if (!filtered.length) {
-                continue;
-              }
-
-              const patterns = filtered.map(({ search, replace }) => ({ search, replace }));
-              // const data = { chunk, filename: file };
-              // patterns = compilation.getPath(() => patterns, data);
-
-              compilation.updateAsset(file, (old) => {
-                const cached = cache.get(old);
-                // Is cached?
-                if (cached && JSON.stringify(cached.patterns) === JSON.stringify(patterns)) {
-                  return cached.source;
-                }
-
-                const indices = searchReplacements(old.source(), patterns);
-
-                const source = new ReplaceSource(old);
-                indices.forEach(({ start, end, replace }) => source.replace(start, end, replace));
-
-                cache.set(old, { source, patterns });
-                return source;
-              });
+      compilation.hooks.optimizeChunkAssets.tap('ReplaceCodePlugin', (chunks) => {
+        for (const chunk of chunks) {
+          for (const file of chunk.files) {
+            // Test filename
+            const filtered = options.filter(({ test }) => !test || test.test(file));
+            if (!filtered.length) {
+              continue;
             }
+
+            const patterns = filtered.map(({ search, replace }) => ({ search, replace }));
+            // const data = { chunk, filename: file };
+            // patterns = compilation.getPath(() => patterns, data);
+
+            compilation.updateAsset(file, (old) => {
+              const indices = searchReplacements(old.source(), patterns);
+
+              const source = new ReplaceSource(old);
+              indices.forEach(({ start, end, replace }) => source.replace(start, end, replace));
+
+              return source;
+            });
           }
         }
-      );
+      });
     });
   }
 }
