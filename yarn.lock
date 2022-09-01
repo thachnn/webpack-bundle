@@ -1453,4 +1453,4 @@ unicode-property-aliases-ecmascript@^2.0.0:
 
 webpack@thachnn/webpack-bundle#v5.74.0:
   version "5.74.0-0"
-  resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/af3426dc802e244dac3bb272a83eccaf21c83dd5"
+  resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/8a5388e051a67b251b832d836bf4cd66c53bdbb5"
