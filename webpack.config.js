@@ -80,6 +80,7 @@ module.exports = [
       '@webassemblyjs/wasm-parser': 'commonjs ./wasm-parser',
     },
   }),
+  //
   webpackConfig('/fast-glob', {
     entry: { 'vendor/fast-glob': './node_modules/fast-glob/out/index' },
     output: { libraryTarget: 'commonjs2' },
@@ -146,6 +147,7 @@ module.exports = [
       minimizer: [{ format: { beautify: true, indent_level: 0 } }],
     },
   }),
+  //
   webpackConfig('/terser', {
     entry: { 'vendor/terser': './node_modules/terser/main' },
     output: { library: { name: 'Terser', type: 'umd' } },
@@ -245,6 +247,11 @@ module.exports = [
       new ReplaceCodePlugin({ search: ' require("./originalRequire")', replace: ' require' }), //
     ],
   }),
+  //
+  webpackConfig('/watchpack', {
+    entry: { 'lib/watchpack': './node_modules/watchpack/lib/watchpack' },
+    output: { libraryTarget: 'commonjs2' },
+  }),
   webpackConfig('/webpack', {
     entry: {
       'lib/index': './node_modules/webpack/lib/index',
@@ -258,6 +265,7 @@ module.exports = [
       'schema-utils': 'commonjs2 ./schema-utils',
       'terser-webpack-plugin': 'commonjs2 ./terser-plugin',
       'copy-webpack-plugin': 'commonjs2 ./copy-plugin',
+      watchpack: 'commonjs2 ./watchpack',
       originalRequire: 'commonjs2 ./originalRequire',
     },
     module: {
@@ -280,6 +288,11 @@ module.exports = [
             search: ' require("schema-utils/dist/ValidationError").default',
             replace: ' require("schema-utils").ValidationError',
           },
+        },
+        {
+          test: /node_modules.webpack.lib.config.defaults\.js$/i,
+          loader: 'string-replace-loader',
+          options: { search: /\brequire\.resolve\("(watchpack)"\)/g, replace: 'path.resolve(__dirname, "./$1.js")' },
         },
         {
           test: /node_modules.(loader-runner.lib.loadLoader|webpack.lib.serialization.ObjectMiddleware)\.js$/i,
