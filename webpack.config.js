@@ -263,6 +263,7 @@ module.exports = [
             flags: 'm',
             replace:
               '$1TerserPlugin: () => require("terser-webpack-plugin"),\n\
+              I18nPlugin: () => require("i18n-webpack-plugin"),\n\
               CopyPlugin: () => require("copy-webpack-plugin"),\n\
               ReplaceCodePlugin: () => require("../../../scripts/ReplaceCodePlugin"),\n$&',
           },
