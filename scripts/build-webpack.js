@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-const webpack = require('webpack'); // ../dist/
+const webpack = require('webpack');
 let configSet = require('../webpack.config');
 
 if (!Array.isArray(configSet)) {
