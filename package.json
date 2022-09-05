@@ -1,49 +1,43 @@
 {
-  "name": "webpack-bundle",
-  "version": "1.0.0",
-  "description": "Bundle NPM packages using webpack",
-  "keywords": [
-    "npm",
-    "package",
-    "bundle",
-    "webpack",
-    "module"
-  ],
-  "repository": "thachnn/webpack-bundle",
+  "name": "webpack-cli",
+  "version": "3.3.12",
+  "description": "CLI for webpack & friends",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/webpack/webpack-cli.git"
+  },
+  "bin": {
+    "webpack-cli": "./bin/cli.js"
+  },
+  "main": "./bin/cli.js",
   "engines": {
-    "node": ">=6"
+    "node": ">=6.11.5"
   },
-  "scripts": {
-    "build": "node scripts/build-webpack.js",
-    "clean": "node node_modules/rimraf/bin.js dist node_modules/.cache"
-  },
-  "devDependencies": {
-    "rimraf": "^2.6.3",
-    "string-replace-loader": "^2.2.0",
-    "webpack": "thachnn/webpack-bundle#v4.46.0",
-    "webpack-cli": "^3.3.12"
-  },
-  "resolutions": {
-    "**/define-property": "^2.0.2",
-    "**/chalk/supports-color": "^6.1.0",
-    "**/resolve-dir/global-modules": "^2.0.0",
-    "**/unset-value/has-value": "^1.0.0",
-    "rimraf/glob": "thachnn/webpack-bundle#glob-7.2.3"
-  },
-  "overrides": {
-    "define-property": "^2.0.2",
-    "chalk": {
-      "supports-color": "^6.1.0"
+  "keywords": [
+    "webpack",
+    "cli",
+    "scaffolding",
+    "module",
+    "bundler",
+    "web"
+  ],
+  "files": [
+    "bin",
+    "vendor"
+  ],
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-customizable"
     },
-    "resolve-dir": {
-      "global-modules": "^2.0.0"
-    },
-    "unset-value": {
-      "has-value": "^1.0.0"
-    },
-    "rimraf": {
-      "glob": "thachnn/webpack-bundle#glob-7.2.3"
+    "cz-customizable": {
+      "config": "./.cz-config.js"
     }
+  },
+  "dependencies": {
+    "v8-compile-cache": "^2.1.1"
+  },
+  "peerDependencies": {
+    "webpack": "4.x.x"
   }
 }
