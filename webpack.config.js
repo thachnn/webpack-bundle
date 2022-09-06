@@ -1,7 +1,6 @@
 'use strict';
 
 const path = require('path');
-const fs = require('fs');
 const { minify: terserMinify } = require('webpack/vendor/terser');
 const { TerserPlugin, BannerPlugin, CopyPlugin, ReplaceCodePlugin } = require('webpack');
 
@@ -49,137 +48,197 @@ const webpackConfig = (name, config, clean = name.charAt(0) !== '/') =>
 const minifyContent = (content, opts = {}) =>
   terserMinify(String(content), Object.assign({}, baseTerserOpts, typeof opts === 'object' ? opts : {})).code;
 
-const getFileContent = (filename, encoding = 'utf8') =>
-  fs.readFileSync(path.resolve(__dirname, 'node_modules', filename), encoding);
-
 module.exports = [
-  webpackConfig('/chalk', {
-    entry: { 'vendor/chalk': './node_modules/chalk/index' },
+  webpackConfig('regexpu-core', {
+    entry: { 'rewrite-pattern': './node_modules/regexpu-core/rewrite-pattern' },
     output: { libraryTarget: 'commonjs2' },
-  }),
-  webpackConfig('/cross-spawn', {
-    entry: { 'vendor/cross-spawn': './node_modules/cross-spawn/index' },
-    output: { libraryTarget: 'commonjs2' },
-  }),
-  webpackConfig('/readable-stream', {
-    entry: { 'vendor/readable-stream': './node_modules/readable-stream/readable' },
-    output: { libraryTarget: 'commonjs2' },
-  }),
-  webpackConfig('/micromatch', {
-    entry: { 'vendor/micromatch': './node_modules/micromatch/index' },
-    output: { libraryTarget: 'commonjs2' },
-  }),
-  //
-  webpackConfig('/import-local', {
-    entry: { 'vendor/import-local': './node_modules/import-local/index' },
-    output: { libraryTarget: 'commonjs2' },
-    externals: { originalRequire: 'commonjs2 ./originalRequire' },
-    module: {
-      rules: [
-        {
-          test: /node_modules.import-local.index\.js$/i,
-          loader: 'string-replace-loader',
-          options: { search: '\\brequire(\\([\\w.]+[()])', flags: 'g', replace: 'require("originalRequire")$1' },
-        },
-      ],
-    },
     plugins: [
-      new ReplaceCodePlugin({ search: ' require("./originalRequire")', replace: ' require' }), //
-    ],
-  }),
-  webpackConfig('/yargs', {
-    entry: { 'vendor/yargs': './node_modules/yargs/index' },
-    output: { libraryTarget: 'commonjs2' },
-    externals: { originalRequire: 'commonjs2 ./originalRequire' },
-    module: {
-      rules: [
+      new CopyPlugin([
+        { from: 'node_modules/regexpu-core/{LICENSE*,README*}', to: '[name].[ext]' },
         {
-          test: /node_modules.(yargs.(index|yargs)|require-main-filename.index)\.js$/i,
-          loader: 'string-replace-loader',
-          options: { search: '(,|\\|\\|) require(;|\\)|$)', flags: 'gm', replace: '$1 require("originalRequire")$2' },
-        },
-        {
-          test: /node_modules.(yargs.lib.apply-extends|yargs-parser.index)\.js$/i,
-          loader: 'string-replace-loader',
-          options: {
-            search: '\\brequire((\\.resolve)?\\([\\w.]+\\))',
-            flags: 'g',
-            replace: 'require("originalRequire")$1',
+          from: 'node_modules/regexpu-core/package.json',
+          transform(content) {
+            const pkg = JSON.parse(content);
+            ['dependencies', 'devDependencies', 'scripts'].forEach((k) => delete pkg[k]);
+            return JSON.stringify(pkg, null, '\t');
           },
         },
-      ],
-    },
-    plugins: [
-      new ReplaceCodePlugin({ search: ' require("./originalRequire")', replace: ' require' }), //
+      ]),
     ],
   }),
-  //
-  webpackConfig('/webpack-cli', {
-    entry: { 'bin/cli': './node_modules/webpack-cli/bin/cli' },
+  webpackConfig('@babel-core', {
+    entry: { 'lib/index': './node_modules/@babel/core/lib/index' },
+    output: { libraryTarget: 'commonjs' },
     externals: {
-      webpack: 'commonjs2 webpack',
-      'v8-compile-cache': 'commonjs2 v8-compile-cache',
-      chalk: 'commonjs2 ../vendor/chalk',
-      'cross-spawn': 'commonjs2 ../vendor/cross-spawn',
-      'readable-stream': 'commonjs2 ../vendor/readable-stream',
-      micromatch: 'commonjs2 ../vendor/micromatch',
-      'import-local': 'commonjs2 ../vendor/import-local',
-      yargs: 'commonjs2 ../vendor/yargs',
+      chalk: 'commonjs2 chalk',
+      'supports-color': 'commonjs2 supports-color',
       originalRequire: 'commonjs2 ./originalRequire',
     },
     module: {
       rules: [
         {
-          test: /node_modules.webpack-cli.bin.cli\.js$/i,
-          loader: 'string-replace-loader',
-          options: { search: '^#!.*[\\r\\n]+', flags: '', replace: '' },
-        },
-        {
-          test: /node_modules.webpack-cli.bin.utils.(prompt-command|convert-argv)\.js$/i,
-          loader: 'string-replace-loader',
-          options: {
-            search: '\\brequire((\\.resolve)?\\([\\w.]+[()])',
-            flags: 'g',
-            replace: 'require("originalRequire")$1',
-          },
-        },
-        {
-          test: /node_modules.interpret.index\.js$/i,
+          test: /node_modules.@babel.core.lib.config.files.(plugins|module-types|import)\.js$/i,
           loader: 'string-replace-loader',
           options: {
             multiple: [
-              { search: '^var (path|mjsStub) = .*', flags: 'gm', replace: '' },
-              {
-                search: ' mjsStub,',
-                replace: ` {module:'mjs-stub', register:function(hook){ ${getFileContent('interpret/mjs-stub.js')} }},`,
-              },
-              { search: '\\brequire(\\.extensions)\\b', flags: 'g', replace: "require('originalRequire')$1" },
+              { search: ' require(\\(\\w+\\))', flags: '', replace: ' require("originalRequire")$1' },
+              { search: ' import(filepath)', replace: ' import(/* webpackIgnore: true */ filepath)' },
             ],
           },
         },
         {
-          test: /node_modules.webpack-cli.package\.json$/i,
+          test: /node_modules.@babel.core.package\.json$/i,
           loader: 'string-replace-loader',
-          options: { search: ',\\s*"license":[\\s\\S]*', flags: '', replace: '\n}' },
+          options: { search: ',\\s*"main":[\\s\\S]*', flags: '', replace: '\n}' },
         },
       ],
     },
     plugins: [
       new CopyPlugin([
-        { from: 'node_modules/webpack-cli/{LICENSE*,*.md}', to: '[name].[ext]' },
+        { from: 'node_modules/@babel/core/{LICENSE*,README*}', to: '[name].[ext]' },
         {
-          from: 'node_modules/webpack-cli/package.json',
+          from: 'node_modules/@babel/core/package.json',
           transform(content) {
             const pkg = JSON.parse(content);
-            ['devDependencies', 'scripts', 'husky', 'lint-staged', 'jest', 'nyc'].forEach((k) => delete pkg[k]);
+            ['devDependencies'].forEach((k) => delete pkg[k]);
 
-            pkg.dependencies = { 'v8-compile-cache': pkg.dependencies['v8-compile-cache'] };
-            return JSON.stringify(pkg, null, 2).replace('"scripts"', '"vendor"');
+            const { dependencies: d1 } = require('@babel/highlight/package.json');
+            pkg.dependencies = { chalk: d1.chalk };
+
+            return JSON.stringify(pkg, null, 2);
           },
         },
       ]),
       new ReplaceCodePlugin({ search: ' require("./originalRequire")', replace: ' require' }),
-      new BannerPlugin({ banner: '#!/usr/bin/env node', raw: true }),
     ],
+  }),
+  webpackConfig('@babel-preset', {
+    entry: { 'lib/index': './node_modules/@babel/preset-env/lib/index' },
+    output: { libraryTarget: 'commonjs' },
+    externals: {
+      '@babel/core': 'commonjs @babel/core',
+      browserslist: 'commonjs2 browserslist',
+      'regexpu-core': 'commonjs2 regexpu-core',
+      chalk: 'commonjs2 chalk',
+      'supports-color': 'commonjs2 supports-color',
+    },
+    module: {
+      rules: [
+        {
+          test: /node_modules.@babel.(helper-create-(class|regexp)-features-plugin|plugin-proposal-dynamic-import).package\.json$/i,
+          loader: 'string-replace-loader',
+          options: { search: ',\\s*"(author|description)":[\\s\\S]*', flags: '', replace: '\n}' },
+        },
+      ],
+    },
+    plugins: [
+      new CopyPlugin([
+        { from: 'node_modules/@babel/preset-env/{LICENSE*,README*}', to: '[name].[ext]' },
+        {
+          from: 'node_modules/@babel/preset-env/package.json',
+          transform(content) {
+            const pkg = JSON.parse(content);
+            ['devDependencies'].forEach((k) => delete pkg[k]);
+
+            const { browserslist } = pkg.dependencies;
+            const { dependencies: d1 } = require('@babel/highlight/package.json');
+            const { dependencies: d2 } = require('@babel/helper-create-regexp-features-plugin/package.json');
+            pkg.dependencies = { browserslist, chalk: d1.chalk, 'regexpu-core': d2['regexpu-core'] };
+
+            return JSON.stringify(pkg, null, 2);
+          },
+        },
+      ]),
+    ],
+  }),
+  //
+  webpackConfig('object.assign', {
+    entry: { index: './node_modules/object.assign/index' },
+    output: { libraryTarget: 'commonjs2' },
+    plugins: [
+      new CopyPlugin([
+        { from: 'node_modules/object.assign/{LICENSE*,*.md}', to: '[name].[ext]' },
+        {
+          from: 'node_modules/object.assign/package.json',
+          transform(content) {
+            const pkg = JSON.parse(content);
+            ['dependencies', 'devDependencies', 'scripts', 'testling'].forEach((k) => delete pkg[k]);
+            return JSON.stringify(pkg, null, '\t');
+          },
+        },
+      ]),
+    ],
+  }),
+  webpackConfig('find-cache-dir', {
+    entry: { index: './node_modules/find-cache-dir/index' },
+    output: { libraryTarget: 'commonjs2' },
+    plugins: [
+      new CopyPlugin([
+        { from: 'node_modules/find-cache-dir/{license*,readme*}', to: '[name].[ext]' },
+        {
+          from: 'node_modules/find-cache-dir/package.json',
+          transform(content) {
+            const pkg = JSON.parse(content);
+            ['dependencies', 'devDependencies', 'scripts', 'nyc'].forEach((k) => delete pkg[k]);
+            return JSON.stringify(pkg, null, '\t');
+          },
+        },
+      ]),
+    ],
+  }),
+  //
+  webpackConfig('browserslist', {
+    entry: {
+      index: './node_modules/browserslist/index',
+      cli: './node_modules/browserslist/cli',
+    },
+    externals: { './': 'commonjs2 ./index', originalRequire: 'commonjs2 ./originalRequire' },
+    module: {
+      rules: [
+        {
+          test: /node_modules.browserslist.cli\.js$/i,
+          loader: 'string-replace-loader',
+          options: { search: '^#!.*[\\r\\n]+', flags: '', replace: '' },
+        },
+        {
+          test: /node_modules.browserslist.node\.js$/i,
+          loader: 'string-replace-loader',
+          options: {
+            search: ' require\\(\\s*require\\.resolve\\(',
+            flags: 'g',
+            replace: ' require("originalRequire")(require("originalRequire").resolve(',
+          },
+        },
+        {
+          test: /node_modules.browserslist.update-db\.js$/i,
+          loader: 'string-replace-loader',
+          options: { search: "require('escalade/sync')", replace: "require('escalade/sync/index.js')" },
+        },
+        {
+          test: /node_modules.browserslist.package\.json$/i,
+          loader: 'string-replace-loader',
+          options: { search: ',\\s*"keywords":[\\s\\S]*', flags: '', replace: '\n}' },
+        },
+      ],
+    },
+    plugins: [
+      new CopyPlugin([
+        { from: 'node_modules/browserslist/{LICENSE*,*.md}', to: '[name].[ext]' },
+        {
+          from: 'node_modules/browserslist/package.json',
+          transform(content) {
+            const pkg = JSON.parse(content);
+            ['dependencies', 'browser'].forEach((k) => delete pkg[k]);
+            return JSON.stringify(pkg, null, 2);
+          },
+        },
+      ]),
+      new BannerPlugin({ banner: '#!/usr/bin/env node', raw: true, test: /cli\.js$/i }),
+      new BannerPlugin({ banner: 'module.exports =', raw: true, test: /index\.js$/i }),
+      new ReplaceCodePlugin({ search: ' require("./originalRequire")', replace: ' require', test: /index\.js$/i }),
+    ],
+    optimization: {
+      minimizer: [{ output: Object.assign({}, baseTerserOpts.output, { indent_level: 0 }) }],
+    },
   }),
 ];
