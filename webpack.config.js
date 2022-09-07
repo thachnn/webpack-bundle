@@ -68,7 +68,7 @@ module.exports = [
   }),
   webpackConfig('@babel-core', {
     entry: { 'lib/index': './node_modules/@babel/core/lib/index' },
-    output: { libraryTarget: 'commonjs' },
+    output: { libraryTarget: 'commonjs-module' },
     externals: {
       chalk: 'commonjs2 chalk',
       'supports-color': 'commonjs2 supports-color',
@@ -114,7 +114,7 @@ module.exports = [
   }),
   webpackConfig('@babel-preset', {
     entry: { 'lib/index': './node_modules/@babel/preset-env/lib/index' },
-    output: { libraryTarget: 'commonjs' },
+    output: { libraryTarget: 'commonjs-module' },
     externals: {
       '@babel/core': 'commonjs @babel/core',
       browserslist: 'commonjs2 browserslist',
@@ -234,7 +234,7 @@ module.exports = [
         },
       ]),
       new BannerPlugin({ banner: '#!/usr/bin/env node', raw: true, test: /cli\.js$/i }),
-      new BannerPlugin({ banner: 'module.exports =', raw: true, test: /index\.js$/i }),
+      new BannerPlugin({ banner: 'module.exports = ', raw: true, test: /index\.js$/i }),
       new ReplaceCodePlugin({ search: ' require("./originalRequire")', replace: ' require', test: /index\.js$/i }),
     ],
     optimization: {
