@@ -1,46 +1,45 @@
 {
-  "name": "webpack-bundle",
-  "version": "1.0.0",
-  "description": "Bundle NPM packages using webpack",
-  "keywords": [
-    "npm",
-    "package",
-    "bundle",
-    "webpack",
-    "module"
-  ],
-  "repository": "thachnn/webpack-bundle",
-  "license": "MIT",
-  "engines": {
-    "node": ">=6"
-  },
-  "scripts": {
-    "build": "node scripts/build-webpack.js",
-    "clean": "node node_modules/rimraf/bin.js dist node_modules/.cache"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.8.3",
-    "@babel/preset-env": "^7.8.3",
-    "babel-loader": "^8.0.6",
-    "rimraf": "^2.6.3",
-    "string-replace-loader": "^2.2.0",
-    "webpack": "thachnn/webpack-bundle#v4.46.0",
-    "webpack-cli": "thachnn/webpack-bundle#cli-3.3.12"
-  },
-  "resolutions": {
-    "**/@babel/highlight/chalk": "thachnn/webpack-bundle#chalk-2.4.2",
-    "**/schema-utils/ajv": "thachnn/webpack-bundle#ajv-6.12.6",
-    "rimraf/glob": "thachnn/webpack-bundle#glob-7.2.3"
-  },
-  "overrides": {
-    "@babel/highlight": {
-      "chalk": "thachnn/webpack-bundle#chalk-2.4.2"
-    },
-    "schema-utils": {
-      "ajv": "thachnn/webpack-bundle#ajv-6.12.6"
-    },
-    "rimraf": {
-      "glob": "thachnn/webpack-bundle#glob-7.2.3"
-    }
-  }
+	"name": "regexpu-core",
+	"version": "4.7.1",
+	"description": "regexpu’s core functionality (i.e. `rewritePattern(pattern, flag)`), capable of translating ES6 Unicode regular expressions to ES5.",
+	"homepage": "https://mths.be/regexpu",
+	"main": "rewrite-pattern.js",
+	"engines": {
+		"node": ">=4"
+	},
+	"keywords": [
+		"codegen",
+		"desugaring",
+		"ecmascript",
+		"es5",
+		"es6",
+		"harmony",
+		"javascript",
+		"refactoring",
+		"regex",
+		"regexp",
+		"regular expressions",
+		"rewriting",
+		"syntax",
+		"transformation",
+		"transpile",
+		"transpiler",
+		"unicode"
+	],
+	"license": "MIT",
+	"author": {
+		"name": "Mathias Bynens",
+		"url": "https://mathiasbynens.be/"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/mathiasbynens/regexpu-core.git"
+	},
+	"bugs": "https://github.com/mathiasbynens/regexpu-core/issues",
+	"files": [
+		"LICENSE-MIT.txt",
+		"rewrite-pattern.js",
+		"data/character-class-escape-sets.js",
+		"data/iu-mappings.js"
+	]
 }
