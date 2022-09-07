@@ -1,45 +1,28 @@
 {
-	"name": "regexpu-core",
-	"version": "4.7.1",
-	"description": "regexpu’s core functionality (i.e. `rewritePattern(pattern, flag)`), capable of translating ES6 Unicode regular expressions to ES5.",
-	"homepage": "https://mths.be/regexpu",
-	"main": "rewrite-pattern.js",
-	"engines": {
-		"node": ">=4"
-	},
-	"keywords": [
-		"codegen",
-		"desugaring",
-		"ecmascript",
-		"es5",
-		"es6",
-		"harmony",
-		"javascript",
-		"refactoring",
-		"regex",
-		"regexp",
-		"regular expressions",
-		"rewriting",
-		"syntax",
-		"transformation",
-		"transpile",
-		"transpiler",
-		"unicode"
-	],
+	"name": "object.assign",
+	"version": "4.1.0",
+	"author": "Jordan Harband",
+	"description": "ES6 spec-compliant Object.assign shim. From https://github.com/es-shims/es6-shim",
 	"license": "MIT",
-	"author": {
-		"name": "Mathias Bynens",
-		"url": "https://mathiasbynens.be/"
-	},
+	"main": "index.js",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/mathiasbynens/regexpu-core.git"
+		"url": "git://github.com/ljharb/object.assign.git"
 	},
-	"bugs": "https://github.com/mathiasbynens/regexpu-core/issues",
-	"files": [
-		"LICENSE-MIT.txt",
-		"rewrite-pattern.js",
-		"data/character-class-escape-sets.js",
-		"data/iu-mappings.js"
-	]
+	"keywords": [
+		"Object.assign",
+		"assign",
+		"ES6",
+		"extend",
+		"$.extend",
+		"jQuery",
+		"_.extend",
+		"Underscore",
+		"es-shim API",
+		"polyfill",
+		"shim"
+	],
+	"engines": {
+		"node": ">= 0.4"
+	}
 }

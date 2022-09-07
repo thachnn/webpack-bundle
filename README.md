@@ -1,146 +1,135 @@
-# regexpu-core [![Build status](https://travis-ci.org/mathiasbynens/regexpu-core.svg?branch=main)](https://travis-ci.org/mathiasbynens/regexpu-core) [![Code coverage status](https://img.shields.io/codecov/c/github/mathiasbynens/regexpu-core.svg)](https://codecov.io/gh/mathiasbynens/regexpu-core)
+#object.assign <sup>[![Version Badge][npm-version-svg]][npm-url]</sup>
 
-_regexpu_ is a source code transpiler that enables the use of ES2015 Unicode regular expressions in JavaScript-of-today (ES5).
+[![Build Status][travis-svg]][travis-url]
+[![dependency status][deps-svg]][deps-url]
+[![dev dependency status][dev-deps-svg]][dev-deps-url]
+[![License][license-image]][license-url]
+[![Downloads][downloads-image]][downloads-url]
 
-_regexpu-core_ contains _regexpu_’s core functionality, i.e. `rewritePattern(pattern, flag)`, which enables rewriting regular expressions that make use of [the ES2015 `u` flag](https://mathiasbynens.be/notes/es6-unicode-regex) into equivalent ES5-compatible regular expression patterns.
+[![npm badge][npm-badge-png]][npm-url]
 
-## Installation
+[![browser support][testling-png]][testling-url]
 
-To use _regexpu-core_ programmatically, install it as a dependency via [npm](https://www.npmjs.com/):
+An Object.assign shim. Invoke its "shim" method to shim Object.assign if it is unavailable.
 
-```bash
-npm install regexpu-core --save
+This package implements the [es-shim API](https://github.com/es-shims/api) interface. It works in an ES3-supported environment and complies with the [spec](http://www.ecma-international.org/ecma-262/6.0/#sec-object.assign). In an ES6 environment, it will also work properly with `Symbol`s.
+
+Takes a minimum of 2 arguments: `target` and `source`.
+Takes a variable sized list of source arguments - at least 1, as many as you want.
+Throws a TypeError if the `target` argument is `null` or `undefined`.
+
+Most common usage:
+```js
+var assign = require('object.assign').getPolyfill(); // returns native method if compliant
+	/* or */
+var assign = require('object.assign/polyfill')(); // returns native method if compliant
 ```
 
-Then, `require` it:
+## Example
 
 ```js
-const rewritePattern = require('regexpu-core');
+var assert = require('assert');
+
+// Multiple sources!
+var target = { a: true };
+var source1 = { b: true };
+var source2 = { c: true };
+var sourceN = { n: true };
+
+var expected = {
+	a: true,
+	b: true,
+	c: true,
+	n: true
+};
+
+assign(target, source1, source2, sourceN);
+assert.deepEqual(target, expected); // AWESOME!
 ```
 
-## API
-
-This module exports a single function named `rewritePattern`.
-
-### `rewritePattern(pattern, flags, options)`
-
-This function takes a string that represents a regular expression pattern as well as a string representing its flags, and returns an ES5-compatible version of the pattern.
-
 ```js
-rewritePattern('foo.bar', 'u');
-// → 'foo(?:[\\0-\\t\\x0B\\f\\x0E-\\u2027\\u202A-\\uD7FF\\uDC00-\\uFFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF]|[\\uD800-\\uDBFF])bar'
+var target = {
+	a: true,
+	b: true,
+	c: true
+};
+var source1 = {
+	c: false,
+	d: false
+};
+var sourceN = {
+	e: false
+};
 
-rewritePattern('[\\u{1D306}-\\u{1D308}a-z]', 'u');
-// → '(?:[a-z]|\\uD834[\\uDF06-\\uDF08])'
-
-rewritePattern('[\\u{1D306}-\\u{1D308}a-z]', 'ui');
-// → '(?:[a-z\\u017F\\u212A]|\\uD834[\\uDF06-\\uDF08])'
-```
-
-_regexpu-core_ can rewrite non-ES6 regular expressions too, which is useful to demonstrate how their behavior changes once the `u` and `i` flags are added:
-
-```js
-// In ES5, the dot operator only matches BMP symbols:
-rewritePattern('foo.bar');
-// → 'foo(?:[\\0-\\t\\x0B\\f\\x0E-\\u2027\\u202A-\\uFFFF])bar'
-
-// But with the ES2015 `u` flag, it matches astral symbols too:
-rewritePattern('foo.bar', 'u');
-// → 'foo(?:[\\0-\\t\\x0B\\f\\x0E-\\u2027\\u202A-\\uD7FF\\uDC00-\\uFFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF]|[\\uD800-\\uDBFF])bar'
-```
-
-The optional `options` argument recognizes the following properties:
-
-#### `dotAllFlag` (default: `false`)
-
-Setting this option to `true` enables support for [the `s` (`dotAll`) flag](https://github.com/mathiasbynens/es-regexp-dotall-flag).
-
-```js
-rewritePattern('.');
-// → '[\\0-\\t\\x0B\\f\\x0E-\\u2027\\u202A-\\uFFFF]'
-
-rewritePattern('.', '', {
-  'dotAllFlag': true
-});
-// → '[\\0-\\t\\x0B\\f\\x0E-\\u2027\\u202A-\\uFFFF]'
-
-rewritePattern('.', 's', {
-  'dotAllFlag': true
-});
-// → '[\\0-\\uFFFF]'
-
-rewritePattern('.', 'su', {
-  'dotAllFlag': true
-});
-// → '(?:[\\0-\\uD7FF\\uE000-\\uFFFF]|[\\uD800-\\uDBFF][\\uDC00-\\uDFFF]|[\\uD800-\\uDBFF](?![\\uDC00-\\uDFFF])|(?:[^\\uD800-\\uDBFF]|^)[\\uDC00-\\uDFFF])'
-```
-
-#### `unicodePropertyEscape` (default: `false`)
-
-Setting this option to `true` enables [support for Unicode property escapes](property-escapes.md):
-
-```js
-rewritePattern('\\p{Script_Extensions=Anatolian_Hieroglyphs}', 'u', {
-  'unicodePropertyEscape': true
-});
-// → '(?:\\uD811[\\uDC00-\\uDE46])'
-```
-
-#### `lookbehind` (default: `false`)
-
-Setting this option to `true` enables support for [lookbehind assertions](https://github.com/tc39/proposal-regexp-lookbehind).
-
-```js
-rewritePattern('(?<=.)a', '', {
-  'lookbehind': true
-});
-// → '(?<=[\\0-\\t\\x0B\\f\\x0E-\\u2027\\u202A-\\uFFFF])a'
-```
-
-#### `namedGroup` (default: `false`)
-
-Setting this option to `true` enables support for [named capture groups](https://github.com/tc39/proposal-regexp-named-groups).
-
-```js
-rewritePattern('(?<name>.)\k<name>', '', {
-  'namedGroup': true
-});
-// → '(.)\1'
-```
-
-#### `onNamedGroup`
-
-This option is a function that gets called when a named capture group is found. It receives two parameters:
-the name of the group, and its index.
-
-```js
-rewritePattern('(?<name>.)\k<name>', '', {
-  'namedGroup': true,
-  onNamedGroup(name, index) {
-    console.log(name, index);
-    // → 'name', 1
-  }
+var assigned = assign(target, source1, sourceN);
+assert.equal(target, assigned); // returns the target object
+assert.deepEqual(assigned, {
+	a: true,
+	b: true,
+	c: false,
+	d: false,
+	e: false
 });
 ```
 
-#### `useUnicodeFlag` (default: `false`)
-
-Setting this option to `true` enables the use of Unicode code point escapes of the form `\u{…}`. Note that in regular expressions, such escape sequences only work correctly when the ES2015 `u` flag is set. Enabling this setting often results in more compact output, although there are cases (such as `\p{Lu}`) where it actually _increases_ the output size.
-
 ```js
-rewritePattern('\\p{Script_Extensions=Anatolian_Hieroglyphs}', 'u', {
-  'unicodePropertyEscape': true,
-  'useUnicodeFlag': true
-});
-// → '[\\u{14400}-\\u{14646}]'
+/* when Object.assign is not present */
+delete Object.assign;
+var shimmedAssign = require('object.assign').shim();
+	/* or */
+var shimmedAssign = require('object.assign/shim')();
+
+assert.equal(shimmedAssign, assign);
+
+var target = {
+	a: true,
+	b: true,
+	c: true
+};
+var source = {
+	c: false,
+	d: false,
+	e: false
+};
+
+var assigned = assign(target, source);
+assert.deepEqual(Object.assign(target, source), assign(target, source));
 ```
 
-## Author
+```js
+/* when Object.assign is present */
+var shimmedAssign = require('object.assign').shim();
+assert.equal(shimmedAssign, Object.assign);
 
-| [![twitter/mathias](https://gravatar.com/avatar/24e08a9ea84deb17ae121074d0f17125?s=70)](https://twitter.com/mathias "Follow @mathias on Twitter") |
-|---|
-| [Mathias Bynens](https://mathiasbynens.be/) |
+var target = {
+	a: true,
+	b: true,
+	c: true
+};
+var source = {
+	c: false,
+	d: false,
+	e: false
+};
 
-## License
+assert.deepEqual(Object.assign(target, source), assign(target, source));
+```
 
-_regexpu-core_ is available under the [MIT](https://mths.be/mit) license.
+## Tests
+Simply clone the repo, `npm install`, and run `npm test`
+
+[npm-url]: https://npmjs.org/package/object.assign
+[npm-version-svg]: http://versionbadg.es/ljharb/object.assign.svg
+[travis-svg]: https://travis-ci.org/ljharb/object.assign.svg
+[travis-url]: https://travis-ci.org/ljharb/object.assign
+[deps-svg]: https://david-dm.org/ljharb/object.assign.svg?theme=shields.io
+[deps-url]: https://david-dm.org/ljharb/object.assign
+[dev-deps-svg]: https://david-dm.org/ljharb/object.assign/dev-status.svg?theme=shields.io
+[dev-deps-url]: https://david-dm.org/ljharb/object.assign#info=devDependencies
+[testling-png]: https://ci.testling.com/ljharb/object.assign.png
+[testling-url]: https://ci.testling.com/ljharb/object.assign
+[npm-badge-png]: https://nodei.co/npm/object.assign.png?downloads=true&stars=true
+[license-image]: http://img.shields.io/npm/l/object.assign.svg
+[license-url]: LICENSE
+[downloads-image]: http://img.shields.io/npm/dm/object.assign.svg
+[downloads-url]: http://npm-stat.com/charts.html?package=object.assign
