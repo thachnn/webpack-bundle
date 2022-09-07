@@ -1,23 +1,49 @@
 {
-  "name": "browserslist",
-  "version": "4.14.7",
-  "description": "Share target browsers between different front-end tools, like Autoprefixer, Stylelint and babel-env-preset",
+  "name": "@babel/core",
+  "version": "7.10.5",
+  "description": "Babel compiler core.",
+  "main": "lib/index.js",
+  "author": "Sebastian McKenzie <sebmck@gmail.com>",
+  "homepage": "https://babeljs.io/",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/babel/babel.git",
+    "directory": "packages/babel-core"
+  },
   "keywords": [
-    "caniuse",
-    "browsers",
-    "target"
+    "6to5",
+    "babel",
+    "classes",
+    "const",
+    "es6",
+    "harmony",
+    "let",
+    "modules",
+    "transpile",
+    "transpiler",
+    "var",
+    "babel-core",
+    "compiler"
   ],
+  "engines": {
+    "node": ">=6.9.0"
+  },
   "funding": {
     "type": "opencollective",
-    "url": "https://opencollective.com/browserslist"
+    "url": "https://opencollective.com/babel"
   },
-  "author": "Andrey Sitnik <andrey@sitnik.ru>",
-  "license": "MIT",
-  "repository": "browserslist/browserslist",
-  "engines": {
-    "node": "^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7"
+  "browser": {
+    "./lib/config/files/index.js": "./lib/config/files/index-browser.js",
+    "./lib/transform-file.js": "./lib/transform-file-browser.js",
+    "./src/config/files/index.js": "./src/config/files/index-browser.js",
+    "./src/transform-file.js": "./src/transform-file-browser.js"
   },
-  "bin": {
-    "browserslist": "cli.js"
-  }
+  "dependencies": {
+    "chalk": "^2.0.0"
+  },
+  "gitHead": "f7964a9ac51356f7df6404a25b27ba1cffba1ba7"
 }
