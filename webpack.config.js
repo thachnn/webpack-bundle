@@ -1,6 +1,7 @@
 'use strict';
 
 const path = require('path');
+const fs = require('fs');
 const { minify: terserMinify } = require('webpack/vendor/terser');
 const { TerserPlugin, BannerPlugin, CopyPlugin, ReplaceCodePlugin } = require('webpack');
 
@@ -48,6 +49,15 @@ const webpackConfig = (name, config, clean = name.charAt(0) !== '/') =>
 const minifyContent = (content, opts = {}) =>
   terserMinify(String(content), Object.assign({}, baseTerserOpts, typeof opts === 'object' ? opts : {})).code;
 
+let babelPresetPlugins = () => {
+  const re = /(?<=\brequire\(")@babel\/(plugin-|preset-modules\/lib\/plugins\/)[^"]+/g;
+  const file = path.join(__dirname, 'node_modules', '@babel', 'preset-env', 'lib', 'available-plugins.js');
+
+  const data = fs.readFileSync(file, 'utf8').match(re);
+  babelPresetPlugins = () => data;
+  return data;
+};
+
 module.exports = [
   webpackConfig('regexpu-core', {
     entry: { 'rewrite-pattern': './node_modules/regexpu-core/rewrite-pattern' },
@@ -67,9 +77,16 @@ module.exports = [
     ],
   }),
   webpackConfig('@babel-core', {
-    entry: { 'lib/index': './node_modules/@babel/core/lib/index' },
+    entry: {
+      'lib/index': './node_modules/@babel/core/lib/index',
+      'lib/types': './node_modules/@babel/types/lib/index',
+      'lib/traverse': './node_modules/@babel/traverse/lib/index',
+    },
     output: { libraryTarget: 'commonjs-module' },
     externals: {
+      '@babel/types': 'commonjs ./types',
+      '@babel/traverse': 'commonjs ./traverse',
+      '@babel/parser': 'commonjs ./parser',
       chalk: 'commonjs2 chalk',
       'supports-color': 'commonjs2 supports-color',
       originalRequire: 'commonjs2 ./originalRequire',
@@ -82,7 +99,7 @@ module.exports = [
           options: {
             multiple: [
               { search: ' require(\\(\\w+\\))', flags: '', replace: ' require("originalRequire")$1' },
-              { search: ' import(filepath)', replace: ' import(/* webpackIgnore: true */ filepath)' },
+              { search: ' import(filepath)', replace: ' Promise.resolve(() => require("originalRequire")(filepath))' },
             ],
           },
         },
@@ -108,20 +125,43 @@ module.exports = [
             return JSON.stringify(pkg, null, 2);
           },
         },
+        { from: 'node_modules/@babel/parser/lib/*.js', to: 'lib/parser.js', transform: minifyContent },
       ]),
-      new ReplaceCodePlugin({ search: ' require("./originalRequire")', replace: ' require' }),
+      new ReplaceCodePlugin({ search: ' require("./originalRequire")', replace: ' require', test: /index\.js$/i }),
     ],
   }),
   webpackConfig('@babel-preset', {
-    entry: { 'lib/index': './node_modules/@babel/preset-env/lib/index' },
+    entry: Object.assign(
+      {
+        'lib/index': './node_modules/@babel/preset-env/lib/index',
+        'lib/types': './node_modules/@babel/types/lib/index',
+        'lib/traverse': './node_modules/@babel/traverse/lib/index',
+      },
+      babelPresetPlugins().reduce((acc, p) => {
+        const m = /^@babel\/(plugin-|preset-modules\/lib\/plugins\/)(.*)/.exec(p);
+        acc[`plugins/${m[2]}`] = `./node_modules/${p}/${m[1] === 'plugin-' ? 'lib/index' : 'index'}`;
+        return acc;
+      }, {})
+    ),
     output: { libraryTarget: 'commonjs-module' },
-    externals: {
-      '@babel/core': 'commonjs @babel/core',
-      browserslist: 'commonjs2 browserslist',
-      'regexpu-core': 'commonjs2 regexpu-core',
-      chalk: 'commonjs2 chalk',
-      'supports-color': 'commonjs2 supports-color',
-    },
+    externals: Object.assign(
+      {
+        '@babel/core': 'commonjs @babel/core',
+        browserslist: 'commonjs2 browserslist',
+        'regexpu-core': 'commonjs2 regexpu-core',
+        chalk: 'commonjs2 chalk',
+        'supports-color': 'commonjs2 supports-color',
+        '@babel/types': 'commonjs ../lib/types',
+        '@babel/traverse': 'commonjs ../lib/traverse',
+        '@babel/parser': 'commonjs ../lib/parser',
+        '@babel/helper-plugin-utils': 'commonjs ../lib/plugin-utils',
+      },
+      babelPresetPlugins().reduce((acc, p) => {
+        const re = /^@babel\/(plugin-|preset-modules\/lib\/plugins\/)/;
+        acc[p] = `commonjs ../plugins/${p.replace(re, '')}`;
+        return acc;
+      }, {})
+    ),
     module: {
       rules: [
         {
@@ -148,6 +188,8 @@ module.exports = [
             return JSON.stringify(pkg, null, 2);
           },
         },
+        { from: 'node_modules/@babel/helper-plugin-utils/*/*.js', to: 'lib/plugin-utils.js', transform: minifyContent },
+        { from: 'node_modules/@babel/parser/lib/*.js', to: 'lib/parser.js', transform: minifyContent },
       ]),
     ],
   }),
