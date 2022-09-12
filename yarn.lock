@@ -4,14 +4,14 @@
 
 "@babel/core@thachnn/webpack-bundle#_babel/core-7.17.10":
   version "7.17.10"
-  resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/644edf5b114a3e3b87f210a644843a69be50e763"
+  resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/2f6c5d723269fb22154c2fb7f2a05e3a37a9bcfa"
   dependencies:
     browserslist "^4.20.2"
     chalk "^2.0.0"
 
 "@babel/preset-env@thachnn/webpack-bundle#_babel/preset-env-7.17.10":
   version "7.17.10"
-  resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/9f054b09afe534756cc4b69b57b1e2af20aa65f2"
+  resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/46fed1fc242d428bb4d2de9f605ca553c63eefe6"
   dependencies:
     browserslist "^4.20.3"
     chalk "^2.0.0"
