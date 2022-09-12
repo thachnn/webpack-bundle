@@ -1,6 +1,7 @@
 'use strict';
 
 const path = require('path');
+const fs = require('fs');
 const { TerserPlugin, CopyPlugin, BannerPlugin, ReplaceCodePlugin } = require('webpack');
 
 /** @typedef {import("webpack").Configuration} Configuration */
@@ -73,6 +74,15 @@ const combineDTS = (assets) => {
   }, '');
 };
 
+let babelPresetPlugins = () => {
+  const re = /(?<=\brequire\(")@babel\/(plugin-|preset-modules\/lib\/plugins\/)[^"]+/g;
+  const file = path.join(__dirname, 'node_modules', '@babel', 'preset-env', 'lib', 'available-plugins.js');
+
+  const data = fs.readFileSync(file, 'utf8').match(re);
+  babelPresetPlugins = () => data;
+  return data;
+};
+
 module.exports = [
   webpackConfig('chalk', {
     entry: { index: './node_modules/chalk/index' },
@@ -109,10 +119,17 @@ module.exports = [
     ],
   }),
   webpackConfig('@babel-core', {
-    entry: { 'lib/index': './node_modules/@babel/core/lib/index' },
+    entry: {
+      'lib/index': './node_modules/@babel/core/lib/index',
+      'lib/types': './node_modules/@babel/types/lib/index',
+      'lib/traverse': './node_modules/@babel/traverse/lib/index',
+    },
     output: { libraryTarget: 'commonjs' },
     target: 'node6.9',
     externals: {
+      '@babel/types': 'commonjs ./types',
+      '@babel/traverse': 'commonjs ./traverse',
+      '@babel/parser': 'commonjs ./parser',
       browserslist: 'commonjs2 browserslist',
       chalk: 'commonjs2 chalk',
       originalRequire: 'commonjs2 ./originalRequire',
@@ -146,15 +163,22 @@ module.exports = [
             return JSON.stringify(pkg, null, 2);
           },
         },
+        { from: 'node_modules/@babel/parser/lib/*.js', to: 'lib/parser.js' },
       ]),
-      new ReplaceCodePlugin({ search: ' require("./originalRequire")', replace: ' require' }),
+      new ReplaceCodePlugin({ search: ' require("./originalRequire")', replace: ' require', test: /index\.js$/i }),
     ],
-    optimization: {
-      minimizer: [{ format: { beautify: true, indent_level: 0 } }],
-    },
   }),
   webpackConfig('@babel-preset', {
-    entry: { 'lib/index': './node_modules/@babel/preset-env/lib/index' },
+    entry: {
+      'lib/index': './node_modules/@babel/preset-env/lib/index',
+      'lib/types': './node_modules/@babel/types/lib/index',
+      'lib/traverse': './node_modules/@babel/traverse/lib/index',
+      ...babelPresetPlugins().reduce((acc, p) => {
+        const m = /^@babel\/(plugin-|preset-modules\/lib\/plugins\/)(.*)/.exec(p);
+        acc[`plugins/${m[2]}`] = `./node_modules/${p}/${m[1] === 'plugin-' ? 'lib/index' : 'index'}`;
+        return acc;
+      }, {}),
+    },
     output: { libraryTarget: 'commonjs' },
     target: 'node6.9',
     externals: {
@@ -163,6 +187,15 @@ module.exports = [
       chalk: 'commonjs2 chalk',
       'regexpu-core': 'commonjs2 regexpu-core',
       originalRequire: 'commonjs2 ./originalRequire',
+      '@babel/types': 'commonjs ../lib/types',
+      '@babel/traverse': 'commonjs ../lib/traverse',
+      '@babel/parser': 'commonjs ../lib/parser',
+      '@babel/helper-plugin-utils': 'commonjs ../lib/plugin-utils',
+      ...babelPresetPlugins().reduce((acc, p) => {
+        const re = /^@babel\/(plugin-|preset-modules\/lib\/plugins\/)/;
+        acc[p] = `commonjs ../plugins/${p.replace(re, '')}`;
+        return acc;
+      }, {}),
     },
     module: {
       rules: [
@@ -188,12 +221,11 @@ module.exports = [
             return JSON.stringify(pkg, null, 2);
           },
         },
+        { from: 'node_modules/@babel/helper-plugin-utils/lib/*.js', to: 'lib/plugin-utils.js' },
+        { from: 'node_modules/@babel/parser/lib/*.js', to: 'lib/parser.js' },
       ]),
-      new ReplaceCodePlugin({ search: ' require("./originalRequire")', replace: ' require' }),
+      new ReplaceCodePlugin({ search: ' require("./originalRequire")', replace: ' require', test: /index\.js$/i }),
     ],
-    optimization: {
-      minimizer: [{ format: { beautify: true, indent_level: 0 } }],
-    },
   }),
   webpackConfig('object.assign', {
     entry: { index: './node_modules/object.assign/index' },
