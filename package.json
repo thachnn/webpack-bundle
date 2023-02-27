@@ -1,40 +1,47 @@
 {
-  "name": "webpack-bundle",
-  "version": "1.0.0",
-  "description": "Bundle NPM packages using webpack",
+  "version": "6.14.18-4b",
+  "name": "npm",
+  "description": "a package manager for JavaScript",
   "keywords": [
-    "npm",
-    "package",
-    "bundle",
-    "webpack",
-    "module"
+    "install",
+    "modules",
+    "package manager",
+    "package.json"
   ],
-  "repository": "thachnn/webpack-bundle",
-  "license": "MIT",
-  "engines": {
-    "node": ">=10"
+  "preferGlobal": true,
+  "config": {
+    "publishtest": false
   },
-  "dependencies": {
-    "v8-compile-cache": "2"
+  "homepage": "https://docs.npmjs.com/",
+  "author": "Isaac Z. Schlueter <i@izs.me> (http://blog.izs.me)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/npm/cli"
   },
-  "scripts": {
-    "build": "node scripts/build-webpack.js",
-    "clean": "node node_modules/rimraf/bin.js dist/ node_modules/.cache",
-    "webpack": "node node_modules/webpack-cli/bin/cli.js --progress"
+  "bugs": {
+    "url": "https://npm.community/c/bugs"
   },
-  "devDependencies": {
-    "npm": "thachnn/npm#release-6.14.18-4",
-    "rimraf": "^2.2.8",
-    "string-replace-loader": "^3.0.0",
-    "webpack": "thachnn/webpack-bundle#v5.74.0",
-    "webpack-cli": "thachnn/webpack-bundle#cli-4.10.0"
+  "directories": {
+    "bin": "./bin",
+    "doc": "./docs",
+    "lib": "./lib",
+    "man": "./man"
   },
-  "resolutions": {
-    "**/schema-utils/ajv": "thachnn/webpack-bundle#ajv-6.12.6"
+  "main": "./lib/npm.js",
+  "bin": {
+    "npm": "./bin/npm-cli.js",
+    "npx": "./bin/npx-cli.js"
   },
   "overrides": {
-    "schema-utils": {
-      "ajv": "thachnn/webpack-bundle#ajv-6.12.6"
+    "boxen": {
+      "term-size": "^2.2.0"
+    },
+    "http-proxy-agent": {
+      "debug": "^3.1.0"
     }
+  },
+  "license": "Artistic-2.0",
+  "engines": {
+    "node": "6 >=6.2.0 || 8 || >=9.3.0"
   }
 }
