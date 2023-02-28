@@ -40,9 +40,9 @@ loader-utils@^2.0.0:
     emojis-list "^3.0.0"
     json5 "^2.1.2"
 
-npm@thachnn/npm#release-6.14.18-4:
-  version "6.14.18-4"
-  resolved "https://codeload.github.com/thachnn/npm/tar.gz/712a034e14d44bad7c4c7d71b3e1d4b856f4546b"
+npm@thachnn/npm#release-8.19.4:
+  version "8.19.4-2"
+  resolved "https://codeload.github.com/thachnn/npm/tar.gz/58c9d3487ac58aec2873c7b532281eab593483ca"
 
 rimraf@^2.2.8:
   version "2.2.8"
