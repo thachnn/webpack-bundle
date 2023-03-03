@@ -1,40 +1,56 @@
 {
-  "name": "webpack-bundle",
-  "version": "1.0.0",
-  "description": "Bundle NPM packages using webpack",
-  "keywords": [
-    "npm",
-    "package",
-    "bundle",
-    "webpack",
-    "module"
+  "version": "8.19.4-2b",
+  "name": "npm",
+  "description": "a package manager for JavaScript",
+  "files": [
+    "bin/",
+    "lib/",
+    "index.js",
+    "docs/content/",
+    "docs/output/",
+    "man/"
   ],
-  "repository": "thachnn/webpack-bundle",
-  "license": "MIT",
+  "keywords": [
+    "install",
+    "modules",
+    "package manager",
+    "package.json"
+  ],
+  "preferGlobal": true,
+  "config": {
+    "publishtest": false
+  },
+  "homepage": "https://docs.npmjs.com/",
+  "author": "GitHub Inc.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/npm/cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/npm/cli/issues"
+  },
+  "directories": {
+    "bin": "./bin",
+    "doc": "./docs",
+    "lib": "./lib",
+    "man": "./man"
+  },
+  "main": "./index.js",
+  "bin": {
+    "npm": "bin/npm-cli.js",
+    "npx": "bin/npx-cli.js"
+  },
+  "exports": {
+    ".": [
+      {
+        "default": "./index.js"
+      },
+      "./index.js"
+    ],
+    "./package.json": "./package.json"
+  },
+  "license": "Artistic-2.0",
   "engines": {
-    "node": ">=10"
-  },
-  "dependencies": {
-    "v8-compile-cache": "2"
-  },
-  "scripts": {
-    "build": "node scripts/build-webpack.js",
-    "clean": "node node_modules/rimraf/bin.js dist/ node_modules/.cache",
-    "webpack": "node node_modules/webpack-cli/bin/cli.js --progress"
-  },
-  "devDependencies": {
-    "npm": "thachnn/npm#release-8.19.4",
-    "rimraf": "^2.2.8",
-    "string-replace-loader": "^3.0.0",
-    "webpack": "thachnn/webpack-bundle#v5.74.0",
-    "webpack-cli": "thachnn/webpack-bundle#cli-4.10.0"
-  },
-  "resolutions": {
-    "**/schema-utils/ajv": "thachnn/webpack-bundle#ajv-6.12.6"
-  },
-  "overrides": {
-    "schema-utils": {
-      "ajv": "thachnn/webpack-bundle#ajv-6.12.6"
-    }
+    "node": "^12.13.0 || ^14.15.0 || >=16.0.0"
   }
 }
