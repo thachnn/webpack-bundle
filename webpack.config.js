@@ -74,7 +74,10 @@ const combineDTS = (assets) => {
   }, '');
 };
 
-const isPathExists = (rel) => fs.existsSync(path.resolve(__dirname, rel));
+const resolveDepPath = (rel, alt = '', base = 'node_modules/npm/node_modules') =>
+  fs.existsSync((rel = path.resolve(__dirname, base, rel))) ? rel : alt && path.resolve(__dirname, base, alt);
+
+const camelize = (s) => s.replace(/[^A-Za-z0-9]+(.)/g, (_, c) => c.toUpperCase());
 
 module.exports = [
   webpackConfig('/npm', {
@@ -111,9 +114,7 @@ module.exports = [
       },
       'vendor/sshpk': { import: './node_modules/npm/node_modules/sshpk/lib/index', library: { type: 'commonjs2' } },
       'vendor/ajv': {
-        import: `./node_modules/npm/node_modules${
-          isPathExists('node_modules/npm/node_modules/ajv') ? '' : '/har-validator/node_modules'
-        }/ajv/lib/ajv`,
+        import: `${resolveDepPath('ajv', 'har-validator/node_modules/ajv')}/lib/ajv`,
         library: { type: 'commonjs2' },
       },
       'vendor/request': { import: './node_modules/npm/node_modules/request/index', library: { type: 'commonjs2' } },
@@ -155,10 +156,6 @@ module.exports = [
       },
       //
       'lib/pacote': { import: './node_modules/npm/node_modules/pacote/index', library: { type: 'commonjs2' } },
-      'lib/extract-worker': {
-        import: './node_modules/npm/lib/install/action/extract-worker',
-        library: { type: 'commonjs2' },
-      },
       'lib/libnpx': { import: './node_modules/npm/node_modules/libnpx/index', library: { type: 'commonjs2' } },
       'vendor/update-notifier': {
         import: './node_modules/npm/node_modules/update-notifier/index',
@@ -193,6 +190,8 @@ module.exports = [
       'node-fetch-npm': 'commonjs2 ../lib/node-fetch-npm',
       'make-fetch-happen': 'commonjs2 ../vendor/make-fetch-happen',
       //
+      './utils/metrics-launch.js': 'commonjs2 ./metrics-launch',
+      './metrics-launch.js': 'commonjs2 ./metrics-launch',
       pacote: 'commonjs2 ../lib/pacote',
       './extract-worker.js': 'commonjs2 ../lib/extract-worker',
       './install/action/extract-worker.js': 'commonjs2 ../lib/extract-worker',
@@ -228,11 +227,20 @@ module.exports = [
         {
           test: /node_modules.npm.node_modules.init-package-json.init-package-json\.js$/i,
           loader: 'string-replace-loader',
+          options: { search: " require.resolve('./default-input", replace: " path.join(__dirname, 'init-package-json" },
+        },
+        {
+          test: /node_modules.npm.node_modules.npm-lifecycle.index\.js$/i,
+          loader: 'string-replace-loader',
           options: {
-            search: /( require)(\.resolve\('\.\/)default-input\b/,
-            replace: "$1('originalRequire')$2init-package-json",
+            multiple: [
+              { search: /^const resolveFrom *= *require\b/m, replace: '// $&' },
+              { search: /\b(resolve)From(\(__dirname, ')node-gyp(\/bin\/node-gyp)'/, replace: "path.$1$2..$3.js'" },
+              { search: ".join(__dirname, 'node-gyp-bin'", replace: ".resolve(__dirname, '../bin/node-gyp-bin'" },
+            ],
           },
         },
+        //
         {
           test: /node_modules.npm.lib.npm\.js$/i,
           loader: 'string-replace-loader',
@@ -241,9 +249,9 @@ module.exports = [
               { search: " require(path.join(__dirname, a + '.js'))", replace: " require('./' + a + '.js')" },
               {
                 search: /^ *var inspect *= *require\b.*/m,
-                replace: `$&
-            npm._unsupported = unsupported; npm._config = npmconf;
-            Object.defineProperty(npm, '_errorHandler', { get: () => require('./utils/error-handler.js') });`,
+                replace: `$&\nnpm._unsupported = unsupported; npm._config = npmconf;\n${['error-handler', 'metrics']
+                  .map((f) => `Object.defineProperty(npm, '_${camelize(f)}', { get: () => require('./utils/${f}') })`)
+                  .join('\n')}`,
               },
             ],
           },
@@ -262,33 +270,23 @@ module.exports = [
         {
           test: /node_modules.npm.node_modules.encoding.lib.iconv-loader\.js$/i,
           loader: 'string-replace-loader',
-          options: { search: /^ *(iconv_package) *= *('\w+');([\s\S]*)require\(\1\)/m, replace: '$3require($2)' },
+          options: { search: /^ *(iconv_package) *= *('\w+').*([\s\S]*)require\(\1\)/m, replace: '$3require($2)' },
         },
         {
           test: /node_modules.npm.node_modules.(got|npm-registry-fetch|make-fetch-happen|node-gyp).package\.json$/i,
           loader: 'string-replace-loader',
           options: {
             search: /^[\s\S]*/,
-            replace: (m) =>
-              `{ ${m.match(/^  "(name|(installV|v)ersion|license|description)": (".*"|\w+)/gm).join(',')} }`,
+            replace: (m) => `{ ${m.match(/^  "(name|(installV|v)ersion|description)": (".*"|\w+)/gm).join(',')} }`,
           },
         },
-        /* Remove `execa` dependency
-        {
-          test: /node_modules.npm.node_modules.execa.index\.js$/i,
-          loader: 'string-replace-loader',
-          options: {
-            search: /= (require\('cross-spawn)('\))/,
-            replace: '= { _parse: $1/lib/parse$2, _enoent: $1/lib/enoent$2 }',
-          },
-        },
-        */
+        // Remove `execa` dependency
         {
           test: /node_modules.npm.node_modules.term-size.index\.js$/i,
           loader: 'string-replace-loader',
           options: {
             multiple: [
-              { search: /\stry \{\s*const columns *= *execa\b/, replace: 'if (process.env.TERM)\n$&' },
+              { search: /^\s*try \{\s*const columns *= *execa\b/m, replace: 'if (process.env.TERM)\n$&' },
               {
                 search: /^const execa *= *require\b.*/m,
                 replace: `const {execFileSync} = require('child_process');
@@ -307,15 +305,7 @@ module.exports = [
         {
           test: /node_modules.npm.lib.publish\.js$/i,
           loader: 'string-replace-loader',
-          options: {
-            search: "{ tarball, extract } = require('libnpm')",
-            replace: "tarball = require('libnpm/tarball'), extract = require('libnpm/extract')",
-          },
-        },
-        {
-          test: /node_modules.npm.node_modules.mime-types.index\.js$/i,
-          loader: 'string-replace-loader',
-          options: { search: " require('mime-db')", replace: " require('mime-db/db.json')" },
+          options: { search: /\{ *(\w+), *(\w+) *\}( *= *require\('libnpm)('\))/, replace: '$1$3/$1$4, $2$3/$2$4' },
         },
         {
           test: /node_modules.npm.node_modules.ecc-jsbn.index\.js$/i,
@@ -334,7 +324,7 @@ module.exports = [
           },
         },
         {
-          test: /node_modules.npm.node_modules.*\breadable-stream.lib._stream_readable\.js$/i,
+          test: /node_modules.readable-stream.lib._stream_readable\.js$/i,
           loader: 'string-replace-loader',
           options: { search: / require\('string_decoder\/'\)/g, replace: " require('string_decoder')" },
         },
@@ -346,18 +336,7 @@ module.exports = [
         {
           test: /node_modules.npm.node_modules.sorted-union-stream.node_modules.from2.index\.js$/i,
           loader: 'string-replace-loader',
-          options: { search: " require('readable-stream')", replace: " require('readable-stream/readable')" },
-        },
-        {
-          test: /node_modules.npm.node_modules.npm-lifecycle.index\.js$/i,
-          loader: 'string-replace-loader',
-          options: {
-            multiple: [
-              { search: /^const resolveFrom *= *require\b/m, replace: '// $&' },
-              { search: " resolveFrom(__dirname, 'node-gyp/", replace: " require('originalRequire').resolve('../" },
-              { search: ".join(__dirname, 'node-gyp-bin'", replace: ".resolve(__dirname, '../bin/node-gyp-bin'" },
-            ],
-          },
+          options: { search: " require('readable-stream')", replace: " require('../readable-stream')" },
         },
         /* Bundle package `punycode`
         {
@@ -403,6 +382,12 @@ module.exports = [
           loader: 'string-replace-loader',
           options: { search: " require('iferr')", replace: " require('gentle-fs/node_modules/iferr')" },
         },
+        // Correct paths
+        {
+          test: /node_modules.npm.node_modules.node-gyp.lib.find-node-directory\.js$/i,
+          loader: 'string-replace-loader',
+          options: { search: /(\.join\(scriptLocation, '\.\.)(\/\.\.){3}'/, replace: "$1/..'" },
+        },
       ],
     },
     plugins: [
@@ -414,17 +399,36 @@ module.exports = [
           transform: (content) => String(content).replace(" require('.')", " require('./update-notifier')"),
         },
         { from: 'node_modules/npm/node_modules/{semver/semver,uid-number/get-uid-*}.js', to: 'lib/[name].js' },
+        {
+          from: 'node_modules/npm/lib/install/action/extract-worker.js',
+          to: 'lib/',
+          transform(content) {
+            return String(content)
+              .replace(" require('bluebird')", " require('../vendor/bluebird')")
+              .replace(" require('pacote/extract')", " require('./pacote').extract");
+          },
+        },
+        {
+          from: 'node_modules/npm/lib/utils/metrics-launch.js',
+          to: 'lib/',
+          transform(content) {
+            return String(content)
+              .replace(" require('graceful-fs')", " require('../vendor/graceful-fs')")
+              .replace(" require('../npm.js')", " require('./npm.js')")
+              .replace(" require('./metrics.js')", " require('./npm.js')._metrics");
+          },
+        },
         // { from: 'node_modules/npm/node_modules/lodash.clonedeep/index.js', to: 'vendor/lodash.clonedeep.js' },
         {
           from: 'node_modules/npm/node_modules/{cacache,libnpx,yargs}/locales/*.json',
-          to: ({ absoluteFilename: f }) => `locales/${path.basename(path.dirname(path.dirname(f)))}/[name][ext]`,
+          to: ({ absoluteFilename: f }) => `locales/${f.replace(/^.*\bnode_modules[\\/]|[\\/].*$/g, '')}/[name][ext]`,
         },
-        { from: 'vendor/**', to: 'vendor/', context: 'node_modules/npm/node_modules/term-size' },
+        { from: 'node_modules/npm/node_modules/term-size/vendor/', to: 'vendor/vendor/' },
         { from: '{lib/*.cs,gyp/!(samples)**,*.gypi,src/*.cc}', context: 'node_modules/npm/node_modules/node-gyp' },
         {
           from: '{bin/node-gyp-bin/*,lib/**/*.sh,npmrc}',
           context: 'node_modules/npm',
-          transform: (content) => String(content).replace(/\bnode_modules[\\/]node-gyp[\\/]/g, ''),
+          transform: (content) => String(content).replace(/\bnode_modules[\\/]node-gyp[\\/]/, ''),
         },
       ]),
       new ReplaceCodePlugin([
@@ -436,9 +440,16 @@ module.exports = [
     resolve: {
       // Use modules instead
       alias: {
-        'uri-js$': path.resolve(__dirname, 'node_modules/npm/node_modules/uri-js/dist/esnext/index.js'),
-        'es6-promise$': path.resolve(__dirname, 'node_modules/npm/node_modules/es6-promise/lib/es6-promise.js'),
-        'byte-size$': path.resolve(__dirname, 'node_modules/npm/node_modules/byte-size/index.mjs'),
+        'uri-js$': resolveDepPath('uri-js/dist/esnext/index.js'),
+        'es6-promise$': resolveDepPath('es6-promise/lib/es6-promise.js'),
+        'byte-size$': resolveDepPath('byte-size/index.mjs'),
+        // Prune the output
+        'mime-db$': resolveDepPath('mime-db/db.json'),
+        'cli-boxes$': resolveDepPath('cli-boxes/boxes.json'),
+        retry$: resolveDepPath('retry/lib/retry.js'),
+        'cli-table3$': resolveDepPath('cli-table3/src/table.js'),
+        'colors/safe': resolveDepPath('colors/lib/colors.js'),
+        cacache$: resolveDepPath('cacache/locales/en.js'),
       },
       restrictions: [/.*(?<!\.cs)$/i],
     },
@@ -446,20 +457,16 @@ module.exports = [
   webpackConfig('/npm-cli', {
     entry: {
       'bin/npm-cli': { import: './node_modules/npm/bin/npm-cli' },
-      'bin/npx-cli': { import: './node_modules/npm/bin/npx-cli' },
       'bin/node-gyp': { import: './node_modules/npm/node_modules/node-gyp/bin/node-gyp' },
     },
     target: 'node6.2',
     externals: {
       '../': 'commonjs2 ../lib/node-gyp',
-      libnpx: 'commonjs2 ../lib/libnpx',
+      //
       'update-notifier': 'commonjs2 ../vendor/update-notifier',
       nopt: 'commonjs2 ../lib/nopt',
       npmlog: 'commonjs2 ../lib/npmlog',
       '../lib/npm.js': 'commonjs2 ../lib/npm',
-      '../lib/utils/unsupported.js': 'commonjs ../lib/_unsupported',
-      '../lib/config/core.js': 'commonjs ../lib/_config',
-      '../lib/utils/error-handler.js': 'commonjs2 ../lib/_errorHandler',
     },
     module: {
       rules: [
@@ -468,32 +475,45 @@ module.exports = [
           loader: 'string-replace-loader',
           options: { search: /,\s*"keywords":[\s\S]*(,\s*"license":)/, replace: '$1' },
         },
+        {
+          test: /node_modules.npm.bin.npm-cli\.js$/i,
+          loader: 'string-replace-loader',
+          options: {
+            multiple: [
+              { search: /^( *var unsupported *=[\s\S]*)\n( *var npm *= *require\b.*)/m, replace: '$2\n$1' },
+              { search: " require('../lib/config/core.js')", replace: ' npm._config' },
+              { search: /\brequire\('\.+\/lib\/utils\/([eu][\w-]*).*'\)/g, replace: (_, f) => `npm._${camelize(f)}` },
+            ],
+          },
+        },
       ],
     },
     plugins: [
       newCopyPlugin([
         { from: 'node_modules/v8-compile-cache/v8-compile-cache.js', to: 'vendor/' },
-        { from: 'node_modules/npm/{LICENSE,README,AUTHORS,CHANGELOG}*', to: '[name][ext]' },
         {
           from: 'node_modules/npm/package.json',
           transform(content) {
-            const { dependencies, bundleDependencies, devDependencies, scripts, ...pkg } = JSON.parse(content);
+            const pkg = JSON.parse(String(content).replace(/"dependencies":[\s\S]*("license":)/, '$1'));
 
+            pkg.version += /-\d*$/.test(pkg.version) ? 'b' : '-0';
             pkg.directories.doc = pkg.directories.doc.replace(/doc$/, '$&s');
-            pkg.version = pkg.version.replace(/[-.]\d+$/, (m) => m + (m[0] === '-' ? 'b' : '-0'));
             return JSON.stringify(pkg, null, 2);
           },
         },
-        { from: '{bin/{*.cmd,np[mx]},{docs/content,docs/output,man}/**}', context: 'node_modules/npm' },
+        { from: '{bin/{*.cmd,np[mx]},{LICENSE,README}*,{docs/{content,output},man}/**}', context: 'node_modules/npm' },
+        {
+          from: 'node_modules/npm/bin/npx-cli.js',
+          to: 'bin/',
+          transform: (content) =>
+            String(content).replace(/^(.* )(require\(')(libnpx)\b/m, "$2../vendor/v8-compile-cache')\n$1$2../lib/$3"),
+        },
       ]),
       new BannerPlugin({
         banner: '#!/usr/bin/env node\nrequire("../vendor/v8-compile-cache");',
         raw: true,
-        test: /\b(cli|node-gyp)\.js$/,
+        test: /\b-(cli|gyp)\.js$/,
       }),
-      new ReplaceCodePlugin([
-        { search: / require\("\.\.\/lib\/(_\w+)"\)/g, replace: ' require("../lib/npm").$1', test: /\bnpm-cli\.js$/ },
-      ]),
     ],
   }),
 ];

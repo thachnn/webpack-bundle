@@ -42,7 +42,7 @@ loader-utils@^2.0.0:
 
 npm@thachnn/npm#release-6.14.18-4:
   version "6.14.18-4"
-  resolved "https://codeload.github.com/thachnn/npm/tar.gz/712a034e14d44bad7c4c7d71b3e1d4b856f4546b"
+  resolved "https://codeload.github.com/thachnn/npm/tar.gz/de33048c74fbf27ba635252ca7a99da08a62d5b4"
 
 rimraf@^2.2.8:
   version "2.2.8"
