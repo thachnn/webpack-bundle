@@ -1706,7 +1706,7 @@
     29097: (module, __unused_webpack_exports, __webpack_require__) => {
       "use strict";
       let Cache;
-      const url = __webpack_require__(57310), CachePolicy = __webpack_require__(11162), fetch = __webpack_require__(57813), pkg = __webpack_require__(52293), retry = __webpack_require__(49776);
+      const url = __webpack_require__(57310), CachePolicy = __webpack_require__(11162), fetch = __webpack_require__(57813), pkg = __webpack_require__(71481), retry = __webpack_require__(49776);
       let ssri;
       const Stream = __webpack_require__(12781), getAgent = __webpack_require__(52349), setWarning = __webpack_require__(98936), isURL = /^https?:/, USER_AGENT = `${pkg.name}/${pkg.version} (+https://npm.im/${pkg.name})`, RETRY_ERRORS = [ "ECONNRESET", "ECONNREFUSED", "EADDRINUSE", "ETIMEDOUT" ], RETRY_TYPES = [ "request-timeout" ];
       function initializeCache(opts) {
@@ -1979,7 +1979,7 @@
     },
     49776: (module, __unused_webpack_exports, __webpack_require__) => {
       "use strict";
-      var errcode = __webpack_require__(50141), retry = __webpack_require__(88290), hasOwn = Object.prototype.hasOwnProperty;
+      var errcode = __webpack_require__(50141), retry = __webpack_require__(64876), hasOwn = Object.prototype.hasOwnProperty;
       function isRetryError(err) {
         return err && "EPROMISERETRY" === err.code && hasOwn.call(err, "retried");
       }
@@ -2000,9 +2000,6 @@
           }));
         }));
       };
-    },
-    88290: (module, __unused_webpack_exports, __webpack_require__) => {
-      module.exports = __webpack_require__(64876);
     },
     64876: (__unused_webpack_module, exports, __webpack_require__) => {
       var RetryOperation = __webpack_require__(32120);
@@ -3585,9 +3582,9 @@
       "use strict";
       module.exports = require("util");
     },
-    52293: module => {
+    71481: module => {
       "use strict";
-      module.exports = JSON.parse('{"name":"make-fetch-happen","version":"5.0.2","description":"Opinionated, caching, retrying fetch client","license":"ISC"}');
+      module.exports = JSON.parse('{"name":"make-fetch-happen","version":"5.0.2","description":"Opinionated, caching, retrying fetch client"}');
     }
   }, __webpack_module_cache__ = {};
   var __webpack_exports__ = function __webpack_require__(moduleId) {

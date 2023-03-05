@@ -362,7 +362,7 @@
     },
     99072: (module, __unused_webpack_exports, __webpack_require__) => {
       module.exports = Readable;
-      var isArray = __webpack_require__(42972), Buffer = __webpack_require__(14300).Buffer;
+      var Duplex, isArray = __webpack_require__(42972), Buffer = __webpack_require__(14300).Buffer;
       Readable.ReadableState = ReadableState;
       var EE = __webpack_require__(82361).EventEmitter;
       EE.listenerCount || (EE.listenerCount = function(emitter, type) {
@@ -372,7 +372,8 @@
       util.inherits = __webpack_require__(90741);
       var debug = __webpack_require__(73837);
       function ReadableState(options, stream) {
-        var Duplex = __webpack_require__(4152), hwm = (options = options || {}).highWaterMark, defaultHwm = options.objectMode ? 16 : 16384;
+        Duplex = Duplex || __webpack_require__(4152);
+        var hwm = (options = options || {}).highWaterMark, defaultHwm = options.objectMode ? 16 : 16384;
         this.highWaterMark = hwm || 0 === hwm ? hwm : defaultHwm, this.highWaterMark = ~~this.highWaterMark, 
         this.buffer = [], this.length = 0, this.pipes = null, this.pipesCount = 0, this.flowing = null, 
         this.ended = !1, this.endEmitted = !1, this.reading = !1, this.sync = !0, this.needReadable = !1, 
@@ -383,8 +384,7 @@
         this.decoder = new StringDecoder(options.encoding), this.encoding = options.encoding);
       }
       function Readable(options) {
-        __webpack_require__(4152);
-        if (!(this instanceof Readable)) return new Readable(options);
+        if (Duplex = Duplex || __webpack_require__(4152), !(this instanceof Readable)) return new Readable(options);
         this._readableState = new ReadableState(options, this), this.readable = !0, Stream.call(this);
       }
       function readableAddChunk(stream, state, chunk, encoding, addToFront) {

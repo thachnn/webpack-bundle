@@ -151,7 +151,7 @@
     },
     84568: (module, __unused_webpack_exports, __webpack_require__) => {
       "use strict";
-      const stringWidth = __webpack_require__(41055), chalk = __webpack_require__(33983), widestLine = __webpack_require__(31132), cliBoxes = __webpack_require__(12589), camelCase = __webpack_require__(1371), ansiAlign = __webpack_require__(13860), termSize = __webpack_require__(20767), getObject = detail => {
+      const stringWidth = __webpack_require__(41055), chalk = __webpack_require__(33983), widestLine = __webpack_require__(31132), cliBoxes = __webpack_require__(27055), camelCase = __webpack_require__(1371), ansiAlign = __webpack_require__(13860), termSize = __webpack_require__(36008), getObject = detail => {
         let obj;
         return obj = "number" == typeof detail ? {
           top: detail,
@@ -412,10 +412,6 @@
         }
         return chunks.join("");
       };
-    },
-    12589: (module, __unused_webpack_exports, __webpack_require__) => {
-      "use strict";
-      module.exports = __webpack_require__(27055);
     },
     47072: (module, __unused_webpack_exports, __webpack_require__) => {
       var cssKeywords = __webpack_require__(23435), reverseKeywords = {};
@@ -1204,7 +1200,7 @@
     },
     16391: (module, __unused_webpack_exports, __webpack_require__) => {
       "use strict";
-      const EventEmitter = __webpack_require__(82361), http = __webpack_require__(13685), https = __webpack_require__(95687), PassThrough = __webpack_require__(12781).PassThrough, urlLib = __webpack_require__(57310), querystring = __webpack_require__(63477), duplexer3 = __webpack_require__(98244), isStream = __webpack_require__(13600), getStream = __webpack_require__(14726), timedOut = __webpack_require__(86103), urlParseLax = __webpack_require__(32639), lowercaseKeys = __webpack_require__(45178), isRedirect = __webpack_require__(1022), unzipResponse = __webpack_require__(38044), createErrorClass = __webpack_require__(71007), isRetryAllowed = __webpack_require__(11372), Buffer = __webpack_require__(28618).Buffer, pkg = __webpack_require__(23436);
+      const EventEmitter = __webpack_require__(82361), http = __webpack_require__(13685), https = __webpack_require__(95687), PassThrough = __webpack_require__(12781).PassThrough, urlLib = __webpack_require__(57310), querystring = __webpack_require__(63477), duplexer3 = __webpack_require__(98244), isStream = __webpack_require__(13600), getStream = __webpack_require__(14726), timedOut = __webpack_require__(86103), urlParseLax = __webpack_require__(32639), lowercaseKeys = __webpack_require__(45178), isRedirect = __webpack_require__(1022), unzipResponse = __webpack_require__(38044), createErrorClass = __webpack_require__(71007), isRetryAllowed = __webpack_require__(11372), Buffer = __webpack_require__(28618).Buffer, pkg = __webpack_require__(82226);
       function requestAsEventEmitter(opts) {
         opts = opts || {};
         const ee = new EventEmitter, requestUrl = opts.href || urlLib.resolve(urlLib.format(opts), opts.path);
@@ -2432,7 +2428,7 @@
       exports.data && exports.dataDirs.unshift(exports.data), exports.configDirs = (env.XDG_CONFIG_DIRS || "/etc/xdg").split(":"), 
       exports.config && exports.configDirs.unshift(exports.config);
     },
-    91623: (module, __unused_webpack_exports, __webpack_require__) => {
+    6452: (module, __unused_webpack_exports, __webpack_require__) => {
       "use strict";
       const spawn = __webpack_require__(32081).spawn, path = __webpack_require__(71017), format = __webpack_require__(73837).format, configstore = __webpack_require__(32656), chalk = __webpack_require__(33983), semverDiff = __webpack_require__(62113), latestVersion = __webpack_require__(28155), isNpm = __webpack_require__(15569), isInstalledGlobally = __webpack_require__(84310), boxen = __webpack_require__(84568), xdgBasedir = __webpack_require__(3401), isCi = __webpack_require__(73973);
       class UpdateNotifier {
@@ -2502,7 +2498,7 @@
         return updateNotifier.check(), updateNotifier;
       }, module.exports.UpdateNotifier = UpdateNotifier;
     },
-    20767: (module, __unused_webpack_exports, __webpack_require__) => {
+    36008: (module, __unused_webpack_exports, __webpack_require__) => {
       "use strict";
       const {execFileSync} = __webpack_require__(32081), path = __webpack_require__(71017), exec = (command, arguments_, shell) => execFileSync(command, arguments_, {
         encoding: "utf8",
@@ -2616,9 +2612,9 @@
       "use strict";
       module.exports = JSON.parse('[{"name":"AppVeyor","constant":"APPVEYOR","env":"APPVEYOR","pr":"APPVEYOR_PULL_REQUEST_NUMBER"},{"name":"Bamboo","constant":"BAMBOO","env":"bamboo_planKey"},{"name":"Bitbucket Pipelines","constant":"BITBUCKET","env":"BITBUCKET_COMMIT"},{"name":"Bitrise","constant":"BITRISE","env":"BITRISE_IO","pr":"BITRISE_PULL_REQUEST"},{"name":"Buddy","constant":"BUDDY","env":"BUDDY_WORKSPACE_ID","pr":"BUDDY_EXECUTION_PULL_REQUEST_ID"},{"name":"Buildkite","constant":"BUILDKITE","env":"BUILDKITE","pr":{"env":"BUILDKITE_PULL_REQUEST","ne":"false"}},{"name":"CircleCI","constant":"CIRCLE","env":"CIRCLECI","pr":"CIRCLE_PULL_REQUEST"},{"name":"Cirrus CI","constant":"CIRRUS","env":"CIRRUS_CI","pr":"CIRRUS_PR"},{"name":"AWS CodeBuild","constant":"CODEBUILD","env":"CODEBUILD_BUILD_ARN"},{"name":"Codeship","constant":"CODESHIP","env":{"CI_NAME":"codeship"}},{"name":"Drone","constant":"DRONE","env":"DRONE","pr":{"DRONE_BUILD_EVENT":"pull_request"}},{"name":"dsari","constant":"DSARI","env":"DSARI"},{"name":"GitLab CI","constant":"GITLAB","env":"GITLAB_CI"},{"name":"GoCD","constant":"GOCD","env":"GO_PIPELINE_LABEL"},{"name":"Hudson","constant":"HUDSON","env":"HUDSON_URL"},{"name":"Jenkins","constant":"JENKINS","env":["JENKINS_URL","BUILD_ID"],"pr":{"any":["ghprbPullId","CHANGE_ID"]}},{"name":"Magnum CI","constant":"MAGNUM","env":"MAGNUM"},{"name":"Sail CI","constant":"SAIL","env":"SAILCI","pr":"SAIL_PULL_REQUEST_NUMBER"},{"name":"Semaphore","constant":"SEMAPHORE","env":"SEMAPHORE","pr":"PULL_REQUEST_NUMBER"},{"name":"Shippable","constant":"SHIPPABLE","env":"SHIPPABLE","pr":{"IS_PULL_REQUEST":"true"}},{"name":"Solano CI","constant":"SOLANO","env":"TDDIUM","pr":"TDDIUM_PR_ID"},{"name":"Strider CD","constant":"STRIDER","env":"STRIDER"},{"name":"TaskCluster","constant":"TASKCLUSTER","env":["TASK_ID","RUN_ID"]},{"name":"Solano CI","constant":"TDDIUM","env":"TDDIUM","pr":"TDDIUM_PR_ID","deprecated":true},{"name":"TeamCity","constant":"TEAMCITY","env":"TEAMCITY_VERSION"},{"name":"Team Foundation Server","constant":"TFS","env":"TF_BUILD"},{"name":"Travis CI","constant":"TRAVIS","env":"TRAVIS","pr":{"env":"TRAVIS_PULL_REQUEST","ne":"false"}}]');
     },
-    23436: module => {
+    82226: module => {
       "use strict";
-      module.exports = JSON.parse('{"name":"got","version":"6.7.1","description":"Simplified HTTP requests","license":"MIT"}');
+      module.exports = JSON.parse('{"name":"got","version":"6.7.1","description":"Simplified HTTP requests"}');
     }
   }, __webpack_module_cache__ = {};
   function __webpack_require__(moduleId) {
@@ -2634,6 +2630,6 @@
   }
   __webpack_require__.nmd = module => (module.paths = [], module.children || (module.children = []), 
   module);
-  var __webpack_exports__ = __webpack_require__(91623);
+  var __webpack_exports__ = __webpack_require__(6452);
   module.exports = __webpack_exports__;
 })();

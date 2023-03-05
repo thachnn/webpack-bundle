@@ -32,14 +32,6 @@
     "npm": "./bin/npm-cli.js",
     "npx": "./bin/npx-cli.js"
   },
-  "overrides": {
-    "boxen": {
-      "term-size": "^2.2.0"
-    },
-    "http-proxy-agent": {
-      "debug": "^3.1.0"
-    }
-  },
   "license": "Artistic-2.0",
   "engines": {
     "node": "6 >=6.2.0 || 8 || >=9.3.0"

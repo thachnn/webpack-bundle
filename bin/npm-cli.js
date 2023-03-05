@@ -98,18 +98,6 @@ require("../vendor/v8-compile-cache"), (() => {
         }
       })), exports.isCI = !!(env.CI || env.CONTINUOUS_INTEGRATION || env.BUILD_NUMBER || env.RUN_ID || exports.name);
     },
-    826: module => {
-      "use strict";
-      module.exports = require("../lib/npm")._config;
-    },
-    264: module => {
-      "use strict";
-      module.exports = require("../lib/npm")._unsupported;
-    },
-    684: module => {
-      "use strict";
-      module.exports = require("../lib/npm")._errorHandler;
-    },
     166: module => {
       "use strict";
       module.exports = require("../lib/nopt");
@@ -152,11 +140,11 @@ require("../vendor/v8-compile-cache"), (() => {
     if ("undefined" != typeof WScript) return WScript.echo("npm does not work when run\nwith the Windows Scripting Host\n\n'cd' to a different directory,\nor type 'npm.cmd <args>',\nor type 'node npm <args>'."), 
     void WScript.quit(1);
     process.title = "npm";
-    var unsupported = __webpack_require__(264);
+    var npm = __webpack_require__(613), unsupported = npm._unsupported;
     unsupported.checkForBrokenNode();
     var log = __webpack_require__(334);
     log.pause(), log.info("it worked if it ends with", "ok"), unsupported.checkForUnsupportedNode();
-    var npm = __webpack_require__(613), npmconf = __webpack_require__(826), errorHandler = __webpack_require__(684), replaceInfo = __webpack_require__(42), configDefs = npmconf.defs, shorthands = configDefs.shorthands, types = configDefs.types, nopt = __webpack_require__(166);
+    var npmconf = npm._config, errorHandler = npm._errorHandler, replaceInfo = __webpack_require__(42), configDefs = npmconf.defs, shorthands = configDefs.shorthands, types = configDefs.types, nopt = __webpack_require__(166);
     "g" === process.argv[1][process.argv[1].length - 1] && process.argv.splice(1, 1, "npm", "-g");
     var args = replaceInfo(process.argv);
     log.verbose("cli", args);
