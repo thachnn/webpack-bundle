@@ -16,7 +16,7 @@
   },
   "scripts": {
     "build": "node scripts/build-webpack.js",
-    "clean": "node node_modules/rimraf/bin.js dist node_modules/.cache"
+    "clean": "node node_modules/rimraf/bin.js dist/ node_modules/.cache"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^9.1.0",
