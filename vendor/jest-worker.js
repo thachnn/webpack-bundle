@@ -247,7 +247,7 @@
             } catch {
               return !1;
             }
-          })() ? __webpack_require__(163).Z : __webpack_require__(518).Z, new Worker(workerOptions);
+          })() ? __webpack_require__(163).Z : __webpack_require__(210).Z, new Worker(workerOptions);
         }
       }
       var _default = WorkerPool;
@@ -523,7 +523,7 @@
         constructor(workerPath, options) {
           _defineProperty(this, "_stderr", void 0), _defineProperty(this, "_stdout", void 0), 
           _defineProperty(this, "_options", void 0), _defineProperty(this, "_workers", void 0), 
-          this._options = options, this._workers = new Array(options.numWorkers), path().isAbsolute(workerPath) || (workerPath = __webpack_require__(965).resolve(workerPath));
+          this._options = options, this._workers = new Array(options.numWorkers), path().isAbsolute(workerPath) || (workerPath = require.resolve(workerPath));
           const stdout = (0, _mergeStream().default)(), stderr = (0, _mergeStream().default)(), {forkOptions, maxRetries, resourceLimits, setupArgs} = options;
           for (let i = 0; i < options.numWorkers; i++) {
             const workerOptions = {
@@ -571,7 +571,7 @@
         }
       };
     },
-    518: (__unused_webpack_module, exports, __webpack_require__) => {
+    210: (__unused_webpack_module, exports, __webpack_require__) => {
       function _child_process() {
         const data = __webpack_require__(81);
         return _child_process = function() {
@@ -624,7 +624,7 @@
         initialize() {
           const forceColor = _supportsColor().stdout ? {
             FORCE_COLOR: "1"
-          } : {}, child = (0, _child_process().fork)(__webpack_require__(17).resolve(__dirname, "./processChild.js"), [], {
+          } : {}, child = (0, _child_process().fork)(require.resolve("./processChild"), [], {
             cwd: process.cwd(),
             env: {
               ...process.env,
@@ -771,9 +771,6 @@
         })
       };
     },
-    965: module => {
-      module.exports = require;
-    },
     81: module => {
       module.exports = require("child_process");
     },
@@ -871,7 +868,7 @@
         (function(workerPath, options) {
           let exposedMethods = options.exposedMethods;
           if (!exposedMethods) {
-            const module = __webpack_require__(965)(workerPath);
+            const module = require(workerPath);
             exposedMethods = Object.keys(module).filter((name => "function" == typeof module[name])), 
             "function" == typeof module && (exposedMethods = [ ...exposedMethods, "default" ]);
           }
@@ -897,7 +894,7 @@
         if (this._ending) throw new Error("Farm is ended, no more calls can be done to it");
         return this._ending = !0, this._workerPool.end();
       }
-    };
+    }, exports._types = __webpack_require__(397);
   })();
   var __webpack_export_target__ = exports;
   for (var i in __webpack_exports__) __webpack_export_target__[i] = __webpack_exports__[i];

@@ -85,95 +85,6 @@
         return getIsIgnoredPredecate(ignores, options.cwd);
       };
     },
-    839: (module, __unused_webpack_exports, __webpack_require__) => {
-      "use strict";
-      const fs = __webpack_require__(147), arrayUnion = __webpack_require__(755), merge2 = __webpack_require__(155), fastGlob = __webpack_require__(404), dirGlob = __webpack_require__(367), gitignore = __webpack_require__(623), {FilterStream, UniqueStream} = __webpack_require__(438), DEFAULT_FILTER = () => !1, isNegative = pattern => "!" === pattern[0], generateGlobTasks = (patterns, taskOptions) => {
-        (patterns => {
-          if (!patterns.every((pattern => "string" == typeof pattern))) throw new TypeError("Patterns must be a string or an array of strings");
-        })(patterns = arrayUnion([].concat(patterns))), ((options = {}) => {
-          if (!options.cwd) return;
-          let stat;
-          try {
-            stat = fs.statSync(options.cwd);
-          } catch {
-            return;
-          }
-          if (!stat.isDirectory()) throw new Error("The `cwd` option must be a path to a directory");
-        })(taskOptions);
-        const globTasks = [];
-        taskOptions = {
-          ignore: [],
-          expandDirectories: !0,
-          ...taskOptions
-        };
-        for (const [index, pattern] of patterns.entries()) {
-          if (isNegative(pattern)) continue;
-          const ignore = patterns.slice(index).filter((pattern => isNegative(pattern))).map((pattern => pattern.slice(1))), options = {
-            ...taskOptions,
-            ignore: taskOptions.ignore.concat(ignore)
-          };
-          globTasks.push({
-            pattern,
-            options
-          });
-        }
-        return globTasks;
-      }, getPattern = (task, fn) => task.options.expandDirectories ? ((task, fn) => {
-        let options = {};
-        return task.options.cwd && (options.cwd = task.options.cwd), Array.isArray(task.options.expandDirectories) ? options = {
-          ...options,
-          files: task.options.expandDirectories
-        } : "object" == typeof task.options.expandDirectories && (options = {
-          ...options,
-          ...task.options.expandDirectories
-        }), fn(task.pattern, options);
-      })(task, fn) : [ task.pattern ], getFilterSync = options => options && options.gitignore ? gitignore.sync({
-        cwd: options.cwd,
-        ignore: options.ignore
-      }) : DEFAULT_FILTER, globToTask = task => glob => {
-        const {options} = task;
-        return options.ignore && Array.isArray(options.ignore) && options.expandDirectories && (options.ignore = dirGlob.sync(options.ignore)), 
-        {
-          pattern: glob,
-          options
-        };
-      };
-      module.exports = async (patterns, options) => {
-        const globTasks = generateGlobTasks(patterns, options), [filter, tasks] = await Promise.all([ (async () => options && options.gitignore ? gitignore({
-          cwd: options.cwd,
-          ignore: options.ignore
-        }) : DEFAULT_FILTER)(), (async () => {
-          const tasks = await Promise.all(globTasks.map((async task => {
-            const globs = await getPattern(task, dirGlob);
-            return Promise.all(globs.map(globToTask(task)));
-          })));
-          return arrayUnion(...tasks);
-        })() ]), paths = await Promise.all(tasks.map((task => fastGlob(task.pattern, task.options))));
-        return arrayUnion(...paths).filter((path_ => {
-          return !filter((p = path_, p.stats instanceof fs.Stats ? p.path : p));
-          var p;
-        }));
-      }, module.exports.sync = (patterns, options) => {
-        const globTasks = generateGlobTasks(patterns, options), tasks = [];
-        for (const task of globTasks) {
-          const newTask = getPattern(task, dirGlob.sync).map(globToTask(task));
-          tasks.push(...newTask);
-        }
-        const filter = getFilterSync(options);
-        let matches = [];
-        for (const task of tasks) matches = arrayUnion(matches, fastGlob.sync(task.pattern, task.options));
-        return matches.filter((path_ => !filter(path_)));
-      }, module.exports.stream = (patterns, options) => {
-        const globTasks = generateGlobTasks(patterns, options), tasks = [];
-        for (const task of globTasks) {
-          const newTask = getPattern(task, dirGlob.sync).map(globToTask(task));
-          tasks.push(...newTask);
-        }
-        const filter = getFilterSync(options), filterStream = new FilterStream((p => !filter(p))), uniqueStream = new UniqueStream;
-        return merge2(tasks.map((task => fastGlob.stream(task.pattern, task.options)))).pipe(filterStream).pipe(uniqueStream);
-      }, module.exports.generateGlobTasks = generateGlobTasks, module.exports.hasMagic = (patterns, options) => [].concat(patterns).some((pattern => fastGlob.isDynamicPattern(pattern, options))), 
-      module.exports.gitignore = gitignore;
-    },
     438: (module, __unused_webpack_exports, __webpack_require__) => {
       "use strict";
       const {Transform} = __webpack_require__(781);
@@ -309,65 +220,6 @@
         checkPath.isNotRelative = path => REGIX_IS_WINDOWS_PATH_ABSOLUTE.test(path) || isNotRelative(path);
       }
     },
-    155: (module, __unused_webpack_exports, __webpack_require__) => {
-      "use strict";
-      const PassThrough = __webpack_require__(781).PassThrough, slice = Array.prototype.slice;
-      function pauseStreams(streams, options) {
-        if (Array.isArray(streams)) for (let i = 0, len = streams.length; i < len; i++) streams[i] = pauseStreams(streams[i], options); else {
-          if (!streams._readableState && streams.pipe && (streams = streams.pipe(PassThrough(options))), 
-          !streams._readableState || !streams.pause || !streams.pipe) throw new Error("Only readable stream can be merged.");
-          streams.pause();
-        }
-        return streams;
-      }
-      module.exports = function() {
-        const streamsQueue = [], args = slice.call(arguments);
-        let merging = !1, options = args[args.length - 1];
-        options && !Array.isArray(options) && null == options.pipe ? args.pop() : options = {};
-        const doEnd = !1 !== options.end, doPipeError = !0 === options.pipeError;
-        null == options.objectMode && (options.objectMode = !0);
-        null == options.highWaterMark && (options.highWaterMark = 65536);
-        const mergedStream = PassThrough(options);
-        function addStream() {
-          for (let i = 0, len = arguments.length; i < len; i++) streamsQueue.push(pauseStreams(arguments[i], options));
-          return mergeStream(), this;
-        }
-        function mergeStream() {
-          if (merging) return;
-          merging = !0;
-          let streams = streamsQueue.shift();
-          if (!streams) return void process.nextTick(endStream);
-          Array.isArray(streams) || (streams = [ streams ]);
-          let pipesCount = streams.length + 1;
-          function next() {
-            --pipesCount > 0 || (merging = !1, mergeStream());
-          }
-          function pipe(stream) {
-            function onend() {
-              stream.removeListener("merge2UnpipeEnd", onend), stream.removeListener("end", onend), 
-              doPipeError && stream.removeListener("error", onerror), next();
-            }
-            function onerror(err) {
-              mergedStream.emit("error", err);
-            }
-            if (stream._readableState.endEmitted) return next();
-            stream.on("merge2UnpipeEnd", onend), stream.on("end", onend), doPipeError && stream.on("error", onerror), 
-            stream.pipe(mergedStream, {
-              end: !1
-            }), stream.resume();
-          }
-          for (let i = 0; i < streams.length; i++) pipe(streams[i]);
-          next();
-        }
-        function endStream() {
-          merging = !1, mergedStream.emit("queueDrain"), doEnd && mergedStream.end();
-        }
-        mergedStream.setMaxListeners(0), mergedStream.add = addStream, mergedStream.on("unpipe", (function(stream) {
-          stream.emit("merge2UnpipeEnd");
-        })), args.length && addStream.apply(null, args);
-        return mergedStream;
-      };
-    },
     847: (__unused_webpack_module, exports, __webpack_require__) => {
       "use strict";
       const {promisify} = __webpack_require__(837), fs = __webpack_require__(147);
@@ -400,6 +252,95 @@
         return isExtendedLengthPath || hasNonAscii ? path : path.replace(/\\/g, "/");
       };
     },
+    631: (module, __unused_webpack_exports, __webpack_require__) => {
+      "use strict";
+      const fs = __webpack_require__(147), arrayUnion = __webpack_require__(755), fastGlob = __webpack_require__(404), merge2 = fastGlob._merge2, dirGlob = __webpack_require__(367), gitignore = __webpack_require__(623), {FilterStream, UniqueStream} = __webpack_require__(438), DEFAULT_FILTER = () => !1, isNegative = pattern => "!" === pattern[0], generateGlobTasks = (patterns, taskOptions) => {
+        (patterns => {
+          if (!patterns.every((pattern => "string" == typeof pattern))) throw new TypeError("Patterns must be a string or an array of strings");
+        })(patterns = arrayUnion([].concat(patterns))), ((options = {}) => {
+          if (!options.cwd) return;
+          let stat;
+          try {
+            stat = fs.statSync(options.cwd);
+          } catch {
+            return;
+          }
+          if (!stat.isDirectory()) throw new Error("The `cwd` option must be a path to a directory");
+        })(taskOptions);
+        const globTasks = [];
+        taskOptions = {
+          ignore: [],
+          expandDirectories: !0,
+          ...taskOptions
+        };
+        for (const [index, pattern] of patterns.entries()) {
+          if (isNegative(pattern)) continue;
+          const ignore = patterns.slice(index).filter((pattern => isNegative(pattern))).map((pattern => pattern.slice(1))), options = {
+            ...taskOptions,
+            ignore: taskOptions.ignore.concat(ignore)
+          };
+          globTasks.push({
+            pattern,
+            options
+          });
+        }
+        return globTasks;
+      }, getPattern = (task, fn) => task.options.expandDirectories ? ((task, fn) => {
+        let options = {};
+        return task.options.cwd && (options.cwd = task.options.cwd), Array.isArray(task.options.expandDirectories) ? options = {
+          ...options,
+          files: task.options.expandDirectories
+        } : "object" == typeof task.options.expandDirectories && (options = {
+          ...options,
+          ...task.options.expandDirectories
+        }), fn(task.pattern, options);
+      })(task, fn) : [ task.pattern ], getFilterSync = options => options && options.gitignore ? gitignore.sync({
+        cwd: options.cwd,
+        ignore: options.ignore
+      }) : DEFAULT_FILTER, globToTask = task => glob => {
+        const {options} = task;
+        return options.ignore && Array.isArray(options.ignore) && options.expandDirectories && (options.ignore = dirGlob.sync(options.ignore)), 
+        {
+          pattern: glob,
+          options
+        };
+      };
+      module.exports = async (patterns, options) => {
+        const globTasks = generateGlobTasks(patterns, options), [filter, tasks] = await Promise.all([ (async () => options && options.gitignore ? gitignore({
+          cwd: options.cwd,
+          ignore: options.ignore
+        }) : DEFAULT_FILTER)(), (async () => {
+          const tasks = await Promise.all(globTasks.map((async task => {
+            const globs = await getPattern(task, dirGlob);
+            return Promise.all(globs.map(globToTask(task)));
+          })));
+          return arrayUnion(...tasks);
+        })() ]), paths = await Promise.all(tasks.map((task => fastGlob(task.pattern, task.options))));
+        return arrayUnion(...paths).filter((path_ => {
+          return !filter((p = path_, p.stats instanceof fs.Stats ? p.path : p));
+          var p;
+        }));
+      }, module.exports.sync = (patterns, options) => {
+        const globTasks = generateGlobTasks(patterns, options), tasks = [];
+        for (const task of globTasks) {
+          const newTask = getPattern(task, dirGlob.sync).map(globToTask(task));
+          tasks.push(...newTask);
+        }
+        const filter = getFilterSync(options);
+        let matches = [];
+        for (const task of tasks) matches = arrayUnion(matches, fastGlob.sync(task.pattern, task.options));
+        return matches.filter((path_ => !filter(path_)));
+      }, module.exports.stream = (patterns, options) => {
+        const globTasks = generateGlobTasks(patterns, options), tasks = [];
+        for (const task of globTasks) {
+          const newTask = getPattern(task, dirGlob.sync).map(globToTask(task));
+          tasks.push(...newTask);
+        }
+        const filter = getFilterSync(options), filterStream = new FilterStream((p => !filter(p))), uniqueStream = new UniqueStream;
+        return merge2(tasks.map((task => fastGlob.stream(task.pattern, task.options)))).pipe(filterStream).pipe(uniqueStream);
+      }, module.exports.generateGlobTasks = generateGlobTasks, module.exports.hasMagic = (patterns, options) => [].concat(patterns).some((pattern => fastGlob.isDynamicPattern(pattern, options))), 
+      module.exports.gitignore = gitignore;
+    },
     404: module => {
       "use strict";
       module.exports = require("./fast-glob");
@@ -429,6 +370,6 @@
     };
     return __webpack_modules__[moduleId](module, module.exports, __webpack_require__), 
     module.exports;
-  }(839);
+  }(631);
   module.exports = __webpack_exports__;
 })();

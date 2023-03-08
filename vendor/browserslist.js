@@ -94554,7 +94554,7 @@ return normalized;
 module.exports = {
 loadQueries: function(ctx, name) {
 ctx.dangerousExtend || process.env.BROWSERSLIST_DANGEROUS_EXTEND || checkExtend(name);
-var queries = __webpack_require__(35965)(__webpack_require__(35965).resolve(name, {
+var queries = require(require.resolve(name, {
 paths: [ ".", ctx.path ]
 }));
 if (queries) {
@@ -94566,7 +94566,7 @@ throw new BrowserslistError("`" + name + "` config exports not an array of queri
 },
 loadStat: function(ctx, name, data) {
 return ctx.dangerousExtend || process.env.BROWSERSLIST_DANGEROUS_EXTEND || checkExtend(name), 
-normalizeStats(data, __webpack_require__(35965)(__webpack_require__(35965).resolve(path.join(name, "browserslist-stats.json"), {
+normalizeStats(data, require(require.resolve(path.join(name, "browserslist-stats.json"), {
 paths: [ "." ]
 })));
 },
@@ -94673,10 +94673,6 @@ currentNode: function() {
 return "node " + process.versions.node;
 }
 };
-},
-35965: module => {
-"use strict";
-module.exports = require;
 },
 57147: module => {
 "use strict";
