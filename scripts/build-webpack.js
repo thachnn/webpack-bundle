@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
+require('v8-compile-cache');
 const webpack = require('webpack');
 let configSet = require('../webpack.config');
 
