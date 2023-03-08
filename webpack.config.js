@@ -30,22 +30,23 @@ const webpackConfig = (name, config, clean = name.charAt(0) !== '/') => ({
   optimization: {
     nodeEnv: false,
     // minimize: false,
-    minimizer: [
-      new TerserPlugin({
-        test: /^(?!docs?[\\/]).*\.[cm]?js$/i,
-        // cache: true,
-        parallel: true,
-        terserOptions: {
-          mangle: false,
-          format: { beautify: true, indent_level: 2, comments: false },
-          compress: { passes: 1 },
-          ...(((config.optimization || {}).minimizer || [])[0] || {}),
-        },
-        extractComments: false,
-      }),
-    ],
+    ...(config.optimization || {}),
+    minimizer: ((config.optimization || {}).minimizer || [null]).map(newTerserPlugin),
   },
 });
+
+const newTerserPlugin = (opt) =>
+  new TerserPlugin({
+    // cache: true,
+    parallel: true,
+    extractComments: { condition: false, banner: false },
+    ...(opt || {}),
+    terserOptions: {
+      mangle: false,
+      format: { beautify: true, indent_level: 2, comments: false, ...((opt || {}).terserOptions || {}) },
+      compress: { passes: 1 },
+    },
+  });
 
 /** @param {Array<ObjectPattern | string>} patterns */
 const newCopyPlugin = (patterns) => new CopyPlugin({ patterns });
@@ -154,7 +155,7 @@ module.exports = [
           test: resolveDepPath('read-package-json-fast/node_modules/npm-normalize-package-bin')
             ? /node_modules.npm.node_modules.read-package-json-fast.index\.js$/i
             : /npm.node_modules.(read-package-json.lib.read-json|(npm-bundled|npm-packlist|npm-pick-manifest).lib.index)\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: {
             search: /\b(require\(')(npm-normalize-package-bin'\))/,
             replace: resolveDepPath('bin-links/node_modules/npm-normalize-package-bin')
@@ -165,7 +166,7 @@ module.exports = [
         //
         {
           test: /node_modules.npm.node_modules.rimraf.rimraf\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: {
             multiple: [
               { search: ' require("glob")', replace: ' require("node-gyp/node_modules/glob")' },
@@ -175,24 +176,24 @@ module.exports = [
         },
         {
           test: /node_modules.npm.node_modules.node-gyp.lib.build\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: " require('glob')", replace: " require('rimraf')._glob" },
         },
         {
           test: /node_modules.node-gyp.node_modules.glob.(glob|common|sync)\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: /\b(require\(['"])minimatch\b/, replace: '$1../minimatch' },
         },
         //
         {
           test: /node_modules.npm.node_modules.semver.classes.range\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: " require('lru-cache')", replace: " require('../node_modules/lru-cache')" },
         },
         // Reuse nested dependencies
         {
           test: /node_modules.npm.node_modules.npm-package-arg.lib.npa\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: {
             search: /^function npa *\(/m,
             replace: 'module.exports._validateName = validatePackageName\nmodule.exports._hostedGit = HostedGit\n$&',
@@ -200,17 +201,17 @@ module.exports = [
         },
         {
           test: /node_modules.npm.(lib.package-url-cmd|node_modules.normalize-package-data.lib.fixer)\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: " require('hosted-git-info')", replace: " require('npm-package-arg')._hostedGit" },
         },
         {
           test: /node_modules.npm.node_modules.@npmcli.arborist.lib.arborist.reify\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: " require('hosted-git-info')", replace: ' npa._hostedGit' },
         },
         {
           test: /node_modules.npm.node_modules.init-package-json.lib.default-input\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: {
             search: /^var validateName *= *require\('validate-npm-package-.*\nvar npa *= *require\b.*/m,
             replace: '// $&\nvar validateName = npa._validateName',
@@ -219,28 +220,28 @@ module.exports = [
         // Fix `node-gyp` usages
         {
           test: /node_modules.npm.node_modules.@npmcli.run-script.lib.make-spawn-args\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: " require.resolve('node-gyp/", replace: " resolve(__dirname, '../" },
         },
         {
           test: /node_modules.npm.node_modules.@npmcli.run-script.lib.set-path\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: "__dirname, '../lib/node-gyp-", replace: "__dirname, '../bin/node-gyp-" },
         },
         // Correct paths
         {
           test: /node_modules.npm.lib.utils.npm-usage\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: 'dirname(dirname(__dirname))', replace: 'dirname(__dirname)' },
         },
         {
           test: /node_modules.npm.lib.commands.(completion|help|help-search)\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: /\b(resolve\(__dirname, ')\.\.(', '|\/)/g, replace: '$1' },
         },
         {
           test: /node_modules.npm.node_modules.init-package-json.lib.init-package-json\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: {
             search: " require.resolve('./default-input.js')",
             replace: " path.join(__dirname, 'init-package-json.js')",
@@ -249,12 +250,12 @@ module.exports = [
         // Optimize the output
         {
           test: /node_modules.readable-stream.lib._stream_readable\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: /\brequire\('string_decoder\/'\)/g, replace: "require('string_decoder')" },
         },
         {
           test: /node_modules.npm.node_modules.(npm-registry-fetch|make-fetch-happen|node-gyp).package\.json$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: {
             search: /^[\s\S]*/,
             replace: (m) => `{ ${m.match(/^  "(name|(installV|v)ersion|description)": (".*"|\w+)/gm).join(',')} }`,
@@ -262,18 +263,18 @@ module.exports = [
         },
         {
           test: /node_modules.npm.node_modules.normalize-package-data.lib.fixer\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: /\b(require\('semver)\/functions\/(\w+)('\))/g, replace: '$1$3.$2' },
         },
         //
         {
           test: /node_modules.npm.lib.utils.config.definitions\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: /\{ *(\w+): (\w+) *\}( *= *require\('\.[^']*\/package\.json'\))/, replace: '$2$3.$1' },
         },
         {
           test: /node_modules.npm.lib.npm\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: {
             multiple: [
               { search: / require\('\.[^']*\/package\.json'\)/, replace: ' { version:$&.version }' },
@@ -288,23 +289,23 @@ module.exports = [
         // Optimize ESM usages
         {
           test: /node_modules.npm.node_modules.libnpmdiff.lib.format-diff\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: / require\('diff'\)/, replace: ' { createTwoFilesPatch:$&.createTwoFilesPatch }' },
         },
         {
           test: /node_modules.npm.node_modules.parse-conflict-json.lib.index\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: /\{ *(\w+) *\}( *= *require\('just-diff(-apply)?'\))/g, replace: '$1$2.$1' },
         },
         {
           test: /node_modules.npm.node_modules.diff.lib.index\.mjs$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: /^var characterDiff *= *new Diff\b/m, replace: '// $&' },
         },
         // Bypass old packages
         {
           test: /node_modules.npm.node_modules.is-core-module.index\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: {
             multiple: [
               { search: /^var has *= *require\('has'\)/m, replace: '// $&' },
@@ -315,7 +316,7 @@ module.exports = [
         // Correct `node-gyp` paths
         {
           test: /node_modules.npm.node_modules.node-gyp.lib.find-node-directory\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: /(\.join\(scriptLocation, '\.\.)(\/\.\.){3}'/, replace: "$1/..'" },
         },
       ],
@@ -374,7 +375,7 @@ module.exports = [
       rules: [
         {
           test: /node_modules.npm.node_modules.env-paths.index\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: {
             search: /^\s*(const (tmpdir|appData|username) *=|(data|config|log|temp):|throw new TypeError)/gm,
             replace: '// $&',
@@ -382,7 +383,7 @@ module.exports = [
         },
         {
           test: /node_modules.npm.lib.cli\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: {
             multiple: [
               { search: /^[ \t]*const Npm *= *require\b/m, replace: '// $&' },
