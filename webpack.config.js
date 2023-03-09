@@ -30,22 +30,23 @@ const webpackConfig = (name, config, clean = name.charAt(0) !== '/') => ({
   optimization: {
     nodeEnv: false,
     // minimize: false,
-    minimizer: [
-      new TerserPlugin({
-        test: /^(?!docs?[\\/]).*\.[cm]?js$/i,
-        // cache: true,
-        parallel: true,
-        terserOptions: {
-          mangle: false,
-          format: { beautify: true, indent_level: 2, comments: false },
-          compress: { passes: 1 },
-          ...(((config.optimization || {}).minimizer || [])[0] || {}),
-        },
-        extractComments: false,
-      }),
-    ],
+    ...(config.optimization || {}),
+    minimizer: ((config.optimization || {}).minimizer || [null]).map(newTerserPlugin),
   },
 });
+
+const newTerserPlugin = (opt) =>
+  new TerserPlugin({
+    // cache: true,
+    parallel: true,
+    extractComments: { condition: false, banner: false },
+    ...(opt || {}),
+    terserOptions: {
+      mangle: false,
+      format: { beautify: true, indent_level: 2, comments: false, ...((opt || {}).terserOptions || {}) },
+      compress: { passes: 1 },
+    },
+  });
 
 /** @param {Array<ObjectPattern | string>} patterns */
 const newCopyPlugin = (patterns) => new CopyPlugin({ patterns });
@@ -179,6 +180,7 @@ module.exports = [
       // 'fs-write-stream-atomic': 'commonjs2 ../lib/fs-write-stream-atomic',
       'move-concurrently': 'commonjs2 ../lib/move-concurrently',
       sshpk: 'commonjs2 ../vendor/sshpk',
+      'uri-js': 'commonjs ../vendor/uri-js',
       ajv: 'commonjs2 ../vendor/ajv',
       request: 'commonjs2 ../vendor/request',
       'normalize-package-data': 'commonjs2 ../lib/normalize-package-data',
@@ -201,37 +203,36 @@ module.exports = [
       nopt: 'commonjs2 ../lib/nopt',
       npmlog: 'commonjs2 ../lib/npmlog',
       '../bin/npm-cli.js': 'commonjs2 ../bin/npm-cli',
-      originalRequire: 'commonjs2 ./originalRequire',
       iconv: 'commonjs2 iconv',
     },
     module: {
       rules: [
         {
           test: /node_modules.npm.(lib.(npm|pack|install.action.extract)|node_modules.((libnpx|require-main-filename|yargs-parser).index|uid-number.uid-number|yargs.(yargs|index|lib.apply-extends)))\.js$/i,
-          loader: 'string-replace-loader',
-          options: { search: /( require)(\(\w+|\.resolve|\)|;?$)/gm, replace: "$1('originalRequire')$2" },
+          loader: 'webpack/lib/replace-loader',
+          options: { search: / require(\(\w+|\.resolve\b|\)|;?$)/gm, replace: '__non_webpack_require__$1' },
         },
         {
           test: /node_modules.npm.node_modules.libcipm.lib.extract\.js$/i,
-          loader: 'string-replace-loader',
-          options: { search: /( require)(\.resolve\('\.\/)worker\b/, replace: "$1('originalRequire')$2extract-worker" },
+          loader: 'webpack/lib/replace-loader',
+          options: { search: / require(\.resolve\('\.\/)worker\b/, replace: '__non_webpack_require__$1extract-worker' },
         },
         {
           test: /node_modules.npm.node_modules.worker-farm.lib.fork\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: {
-            search: /( require)(\.resolve\('\.\/)child\/index\b/,
-            replace: "$1('originalRequire')$2worker-farm-child",
+            search: / require(\.resolve\('\.\/)child\/index\b/,
+            replace: '__non_webpack_require__$1worker-farm-child',
           },
         },
         {
           test: /node_modules.npm.node_modules.init-package-json.init-package-json\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: " require.resolve('./default-input", replace: " path.join(__dirname, 'init-package-json" },
         },
         {
           test: /node_modules.npm.node_modules.npm-lifecycle.index\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: {
             multiple: [
               { search: /^const resolveFrom *= *require\b/m, replace: '// $&' },
@@ -243,7 +244,7 @@ module.exports = [
         //
         {
           test: /node_modules.npm.lib.npm\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: {
             multiple: [
               { search: " require(path.join(__dirname, a + '.js'))", replace: " require('./' + a + '.js')" },
@@ -258,7 +259,7 @@ module.exports = [
         },
         {
           test: /node_modules.npm.node_modules.update-notifier.index\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: {
             multiple: [
               { search: /^const importLazy *= *require\b/m, replace: '// $&' },
@@ -269,12 +270,12 @@ module.exports = [
         },
         {
           test: /node_modules.npm.node_modules.encoding.lib.iconv-loader\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: /^ *(iconv_package) *= *('\w+').*([\s\S]*)require\(\1\)/m, replace: '$3require($2)' },
         },
         {
           test: /node_modules.npm.node_modules.(got|npm-registry-fetch|make-fetch-happen|node-gyp).package\.json$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: {
             search: /^[\s\S]*/,
             replace: (m) => `{ ${m.match(/^  "(name|(installV|v)ersion|description)": (".*"|\w+)/gm).join(',')} }`,
@@ -283,7 +284,7 @@ module.exports = [
         // Remove `execa` dependency
         {
           test: /node_modules.npm.node_modules.term-size.index\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: {
             multiple: [
               { search: /^\s*try \{\s*const columns *= *execa\b/m, replace: 'if (process.env.TERM)\n$&' },
@@ -299,23 +300,23 @@ module.exports = [
         },
         {
           test: /node_modules.npm.(lib.install.action.extract-worker|node_modules.libnpm.[temp]\w*)\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: / require\('pacote\/(\w*)'\)/, replace: " require('pacote').$1" },
         },
         {
           test: /node_modules.npm.lib.publish\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: /\{ *(\w+), *(\w+) *\}( *= *require\('libnpm)('\))/, replace: '$1$3/$1$4, $2$3/$2$4' },
         },
         {
           test: /node_modules.npm.node_modules.ecc-jsbn.index\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: /^var ECPointFp *= *require\b/m, replace: '// $&' },
         },
         // Remove `es-abstract` dependency
         {
           test: /node_modules.npm.node_modules.util-promisify.index\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: {
             multiple: [
               { search: /^(const ObjectGet)(OwnPropertyDescriptors) = require\b.*/m, replace: '$1$2 = Object.get$2;' },
@@ -325,68 +326,84 @@ module.exports = [
         },
         {
           test: /node_modules.readable-stream.lib._stream_readable\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: / require\('string_decoder\/'\)/g, replace: " require('string_decoder')" },
         },
         {
           test: /node_modules.npm.node_modules.through2.through2\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: "require('readable-stream/transform')", replace: "require('readable-stream').Transform" },
         },
         {
           test: /node_modules.npm.node_modules.sorted-union-stream.node_modules.from2.index\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: " require('readable-stream')", replace: " require('../readable-stream')" },
         },
         /* Bundle package `punycode`
         {
           test: /node_modules.npm.node_modules.(tough-cookie.lib.cookie|psl.index|uri-js.dist.esnext.(uri|schemes.mailto))\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: /('|")(punycode)\1/, replace: '$1$2/$1' },
         },
         */
         // Prepare Y18N locales
         {
           test: /node_modules.npm.node_modules.libnpx.y\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: ".join(__dirname, 'locales')", replace: ".resolve(__dirname, '../locales/libnpx')" },
         },
         {
           test: /node_modules.npm.node_modules.cacache.lib.util.y\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: ".join(__dirname, '../../locales'", replace: ".resolve(__dirname, '../locales/cacache'" },
         },
         {
           test: /node_modules.npm.node_modules.yargs.yargs\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: "(__dirname, './locales')", replace: "(__dirname, '../locales/yargs')" },
         },
         // Prevent duplicated packages
         {
           test: /node_modules.npm.node_modules.(run-queue.queue|move-concurrently.move|gentle-fs.lib.rm|copy-concurrently.copy)\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: " require('aproba')", replace: " require('gauge/node_modules/aproba')" },
         },
         {
           test: /node_modules.npm.node_modules.wide-align.align\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: " require('string-width')", replace: " require('gauge/node_modules/string-width')" },
         },
         {
           test: /node_modules.npm.node_modules.(wrap-ansi|cliui).index\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: /( require)\('(string-width|strip-ansi)'\)/g, replace: "$1('yargs/node_modules/$2')" },
         },
         {
           test: /node_modules.npm.node_modules.(fs-write-stream-atomic.index|copy-concurrently.copy)\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: " require('iferr')", replace: " require('gentle-fs/node_modules/iferr')" },
         },
         // Correct paths
         {
           test: /node_modules.npm.node_modules.node-gyp.lib.find-node-directory\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: /(\.join\(scriptLocation, '\.\.)(\/\.\.){3}'/, replace: "$1/..'" },
+        },
+        // Force ES6
+        {
+          test: /node_modules.npm.node_modules.es6-promisify.dist.promisify\.js$/i,
+          loader: 'webpack/lib/replace-loader',
+          options: { search: /\b(var (ES6Promise) *= *require\b[\s\S]*\bnew )\2\b/, replace: '// $1Promise' },
+        },
+        {
+          test: /node_modules.npm.node_modules.tiny-relative-date.lib.index\.js$/i,
+          loader: 'webpack/lib/replace-loader',
+          options: {
+            multiple: [
+              { search: /^.*\b_interopRequireDefault\b/gm, replace: '// $&' },
+              { search: /2(\.default\))\((\w*)2\1/m, replace: '$1($2)' },
+            ],
+          },
         },
       ],
     },
@@ -419,6 +436,7 @@ module.exports = [
           },
         },
         // { from: 'node_modules/npm/node_modules/lodash.clonedeep/index.js', to: 'vendor/lodash.clonedeep.js' },
+        { from: 'node_modules/npm/node_modules/uri-js/dist/es5/uri.all.js', to: 'vendor/uri-js.js' },
         {
           from: 'node_modules/npm/node_modules/{cacache,libnpx,yargs}/locales/*.json',
           to: ({ absoluteFilename: f }) => `locales/${f.replace(/^.*\bnode_modules[\\/]|[\\/].*$/g, '')}/[name][ext]`,
@@ -432,7 +450,6 @@ module.exports = [
         },
       ]),
       new ReplaceCodePlugin([
-        { search: ' require("./originalRequire")', replace: ' require', test: /\b(npm|libnpx)\.js$/ },
         { search: /( require\(")\.\.\/lib\//g, replace: '$1./', test: /\blib[\\/][\w-]*\.js$/ },
         { search: /( require\(")\.\.\/vendor\//g, replace: '$1./', test: /\bvendor[\\/][\w-]*\.js$/ },
       ]),
@@ -440,9 +457,9 @@ module.exports = [
     resolve: {
       // Use modules instead
       alias: {
-        'uri-js$': resolveDepPath('uri-js/dist/esnext/index.js'),
-        'es6-promise$': resolveDepPath('es6-promise/lib/es6-promise.js'),
-        'byte-size$': resolveDepPath('byte-size/index.mjs'),
+        // 'uri-js$': resolveDepPath('uri-js/dist/esnext/index.js'),
+        'tiny-relative-date$': resolveDepPath('tiny-relative-date/lib/index.js'),
+        'byte-size$': resolveDepPath('byte-size/dist/index.js'),
         // Prune the output
         'mime-db$': resolveDepPath('mime-db/db.json'),
         'cli-boxes$': resolveDepPath('cli-boxes/boxes.json'),
@@ -472,12 +489,12 @@ module.exports = [
       rules: [
         {
           test: /node_modules.npm.package\.json$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: { search: /,\s*"keywords":[\s\S]*(,\s*"license":)/, replace: '$1' },
         },
         {
           test: /node_modules.npm.bin.npm-cli\.js$/i,
-          loader: 'string-replace-loader',
+          loader: 'webpack/lib/replace-loader',
           options: {
             multiple: [
               { search: /^( *var unsupported *=[\s\S]*)\n( *var npm *= *require\b.*)/m, replace: '$2\n$1' },
