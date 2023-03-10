@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-(() => {
+require("../lib/v8-compile-cache"), (() => {
   "use strict";
   var __webpack_modules__ = {
     9516: (module, __unused_webpack_exports, __webpack_require__) => {
@@ -205,13 +205,6 @@
       module.exports = (fromDirectory, moduleId) => resolveFrom(fromDirectory, moduleId), 
       module.exports.silent = (fromDirectory, moduleId) => resolveFrom(fromDirectory, moduleId, !0);
     },
-    3516: (module, __unused_webpack_exports, __webpack_require__) => {
-      const path = __webpack_require__(1017), {fileURLToPath} = __webpack_require__(7310), resolveCwd = __webpack_require__(873), pkgDir = __webpack_require__(2553);
-      module.exports = filename => {
-        const normalizedFilename = filename.startsWith("file://") ? fileURLToPath(filename) : filename, globalDir = pkgDir.sync(path.dirname(normalizedFilename)), relativePath = path.relative(globalDir, normalizedFilename), pkg = __webpack_require__(5965)(path.join(globalDir, "package.json")), localFile = resolveCwd.silent(path.join(pkg.name, relativePath)), localNodeModules = path.join(process.cwd(), "node_modules");
-        return !(!path.relative(localNodeModules, normalizedFilename).startsWith("..") && path.parse(localNodeModules).root === path.parse(normalizedFilename).root) && localFile && "" !== path.relative(localFile, normalizedFilename) && __webpack_require__(5965)(localFile);
-      };
-    },
     2784: (module, exports, __webpack_require__) => {
       Object.defineProperty(exports, "__esModule", {
         value: !0
@@ -226,11 +219,15 @@
         }
       };
     },
+    4428: (module, __unused_webpack_exports, __webpack_require__) => {
+      const path = __webpack_require__(1017), {fileURLToPath} = __webpack_require__(7310), resolveCwd = __webpack_require__(873), pkgDir = __webpack_require__(2553);
+      module.exports = filename => {
+        const normalizedFilename = filename.startsWith("file://") ? fileURLToPath(filename) : filename, globalDir = pkgDir.sync(path.dirname(normalizedFilename)), relativePath = path.relative(globalDir, normalizedFilename), pkg = require(path.join(globalDir, "package.json")), localFile = resolveCwd.silent(path.join(pkg.name, relativePath)), localNodeModules = path.join(process.cwd(), "node_modules");
+        return !(!path.relative(localNodeModules, normalizedFilename).startsWith("..") && path.parse(localNodeModules).root === path.parse(normalizedFilename).root) && localFile && "" !== path.relative(localFile, normalizedFilename) && require(localFile);
+      };
+    },
     5857: module => {
       module.exports = require("../lib/index");
-    },
-    5965: module => {
-      module.exports = require;
     },
     7147: module => {
       module.exports = require("fs");
@@ -258,7 +255,7 @@
     module.exports;
   }
   (() => {
-    const importLocal = __webpack_require__(3516), runCLI = __webpack_require__(2784);
+    const importLocal = __webpack_require__(4428), runCLI = __webpack_require__(2784);
     !process.env.WEBPACK_CLI_SKIP_IMPORT_LOCAL && importLocal(__filename) || (process.title = "webpack", 
     runCLI(process.argv));
   })();
