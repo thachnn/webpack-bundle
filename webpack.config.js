@@ -29,22 +29,23 @@ const webpackConfig = (name, config, clean = name.charAt(0) !== '/') => ({
   optimization: {
     nodeEnv: false,
     // minimize: false,
-    minimizer: [
-      new TerserPlugin({
-        test: /(\.[cm]?js|[\\/][^.]+)$/i,
-        // cache: true,
-        parallel: true,
-        terserOptions: {
-          mangle: false,
-          format: { beautify: true, indent_level: 2 },
-          compress: { passes: 1 },
-          ...(((config.optimization || {}).minimizer || [])[0] || {}),
-        },
-        extractComments: { condition: /@preserve|@lic|@cc_on|^\**!/i, banner: false },
-      }),
-    ],
+    ...(config.optimization || {}),
+    minimizer: ((config.optimization || {}).minimizer || [null]).map(newTerserPlugin),
   },
 });
+
+const newTerserPlugin = (opt) =>
+  new TerserPlugin({
+    // cache: true,
+    parallel: true,
+    extractComments: { condition: 'some', banner: false },
+    ...(opt || {}),
+    terserOptions: {
+      mangle: false,
+      format: { beautify: true, indent_level: 2, comments: false, ...((opt || {}).terserOptions || {}) },
+      compress: { passes: 1 },
+    },
+  });
 
 /** @param {Array<ObjectPattern | string>} patterns */
 const newCopyPlugin = (patterns) => new CopyPlugin({ patterns });
@@ -72,6 +73,8 @@ const combineDTS = (assets) => {
     return `${result}\ndeclare module '${moduleName}' {\n${content.trim()}\n}\n`;
   }, '');
 };
+
+const camelize = (s) => s.replace(/[^A-Za-z0-9]+(.)/g, (_, c) => c.toUpperCase());
 
 module.exports = [
   // TODO ...
