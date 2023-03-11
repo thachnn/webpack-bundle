@@ -14,7 +14,7 @@
   "files": [
     "glob.js",
     "sync.js",
-    "common.js"
+    "minimatch.js"
   ],
   "engines": {
     "node": "*"
