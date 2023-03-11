@@ -35,7 +35,7 @@
     },
     623: (module, __unused_webpack_exports, __webpack_require__) => {
       "use strict";
-      const {promisify} = __webpack_require__(837), fs = __webpack_require__(147), path = __webpack_require__(17), fastGlob = __webpack_require__(587), gitIgnore = __webpack_require__(151), slash = __webpack_require__(859), DEFAULT_IGNORE = [ "**/node_modules/**", "**/flow-typed/**", "**/coverage/**", "**/.git" ], readFileP = promisify(fs.readFile), parseGitIgnore = (content, options) => {
+      const {promisify} = __webpack_require__(837), fs = __webpack_require__(147), path = __webpack_require__(17), fastGlob = __webpack_require__(404), gitIgnore = __webpack_require__(151), slash = __webpack_require__(859), DEFAULT_IGNORE = [ "**/node_modules/**", "**/flow-typed/**", "**/coverage/**", "**/.git" ], readFileP = promisify(fs.readFile), parseGitIgnore = (content, options) => {
         const base = slash(path.relative(options.cwd, path.dirname(options.fileName)));
         return content.split(/\r?\n/).filter(Boolean).filter((line => !line.startsWith("#"))).map((base => ignore => ignore.startsWith("!") ? "!" + path.posix.join(base, ignore.slice(1)) : path.posix.join(base, ignore))(base));
       }, reduceIgnore = files => {
@@ -87,7 +87,7 @@
     },
     839: (module, __unused_webpack_exports, __webpack_require__) => {
       "use strict";
-      const fs = __webpack_require__(147), arrayUnion = __webpack_require__(755), merge2 = __webpack_require__(155), fastGlob = __webpack_require__(587), dirGlob = __webpack_require__(367), gitignore = __webpack_require__(623), {FilterStream, UniqueStream} = __webpack_require__(438), DEFAULT_FILTER = () => !1, isNegative = pattern => "!" === pattern[0], generateGlobTasks = (patterns, taskOptions) => {
+      const fs = __webpack_require__(147), arrayUnion = __webpack_require__(755), merge2 = __webpack_require__(155), fastGlob = __webpack_require__(404), dirGlob = __webpack_require__(367), gitignore = __webpack_require__(623), {FilterStream, UniqueStream} = __webpack_require__(438), DEFAULT_FILTER = () => !1, isNegative = pattern => "!" === pattern[0], generateGlobTasks = (patterns, taskOptions) => {
         (patterns => {
           if (!patterns.every((pattern => "string" == typeof pattern))) throw new TypeError("Patterns must be a string or an array of strings");
         })(patterns = arrayUnion([].concat(patterns))), ((options = {}) => {
@@ -400,9 +400,9 @@
         return isExtendedLengthPath || hasNonAscii ? path : path.replace(/\\/g, "/");
       };
     },
-    587: module => {
+    404: module => {
       "use strict";
-      module.exports = require("fast-glob");
+      module.exports = require("./fast-glob");
     },
     147: module => {
       "use strict";

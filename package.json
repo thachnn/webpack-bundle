@@ -16,8 +16,8 @@
 	"files": [
 		"index.js",
 		"index.d.ts",
-		"gitignore.js",
-		"stream-utils.js"
+		"fast-glob.js",
+		"micromatch.js"
 	],
 	"keywords": [
 		"all",
@@ -51,8 +51,5 @@
 		"promise",
 		"gitignore",
 		"git"
-	],
-	"dependencies": {
-		"fast-glob": "^3.2.9"
-	}
+	]
 }
