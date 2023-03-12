@@ -367,26 +367,6 @@
         return index;
       };
     },
-    524: (__unused_webpack_module, exports, __webpack_require__) => {
-      var util = __webpack_require__(454);
-      function MappingList() {
-        this._array = [], this._sorted = !0, this._last = {
-          generatedLine: -1,
-          generatedColumn: 0
-        };
-      }
-      MappingList.prototype.unsortedForEach = function(aCallback, aThisArg) {
-        this._array.forEach(aCallback, aThisArg);
-      }, MappingList.prototype.add = function(aMapping) {
-        var mappingA, mappingB, lineA, lineB, columnA, columnB;
-        mappingA = this._last, mappingB = aMapping, lineA = mappingA.generatedLine, lineB = mappingB.generatedLine, 
-        columnA = mappingA.generatedColumn, columnB = mappingB.generatedColumn, lineB > lineA || lineB == lineA && columnB >= columnA || util.compareByGeneratedPositionsInflated(mappingA, mappingB) <= 0 ? (this._last = aMapping, 
-        this._array.push(aMapping)) : (this._sorted = !1, this._array.push(aMapping));
-      }, MappingList.prototype.toArray = function() {
-        return this._sorted || (this._array.sort(util.compareByGeneratedPositionsInflated), 
-        this._sorted = !0), this._array;
-      }, exports.H = MappingList;
-    },
     94: (__unused_webpack_module, exports) => {
       function swap(ary, x, y) {
         var temp = ary[x];
@@ -525,7 +505,7 @@
           }), mapping = this._originalMappings[++index];
         }
         return mappings;
-      }, exports.SourceMapConsumer = SourceMapConsumer, BasicSourceMapConsumer.prototype = Object.create(SourceMapConsumer.prototype), 
+      }, exports.gi = SourceMapConsumer, BasicSourceMapConsumer.prototype = Object.create(SourceMapConsumer.prototype), 
       BasicSourceMapConsumer.prototype.consumer = SourceMapConsumer, BasicSourceMapConsumer.prototype._findSourceIndex = function(aSource) {
         var i, relativeSource = aSource;
         if (null != this.sourceRoot && (relativeSource = util.relative(this.sourceRoot, relativeSource)), 
@@ -726,262 +706,6 @@
         quickSort(this.__generatedMappings, util.compareByGeneratedPositionsDeflated), quickSort(this.__originalMappings, util.compareByOriginalPositions);
       };
     },
-    880: (__unused_webpack_module, exports, __webpack_require__) => {
-      var base64VLQ = __webpack_require__(503), util = __webpack_require__(454), ArraySet = __webpack_require__(937).I, MappingList = __webpack_require__(524).H;
-      function SourceMapGenerator(aArgs) {
-        aArgs || (aArgs = {}), this._file = util.getArg(aArgs, "file", null), this._sourceRoot = util.getArg(aArgs, "sourceRoot", null), 
-        this._skipValidation = util.getArg(aArgs, "skipValidation", !1), this._sources = new ArraySet, 
-        this._names = new ArraySet, this._mappings = new MappingList, this._sourcesContents = null;
-      }
-      SourceMapGenerator.prototype._version = 3, SourceMapGenerator.fromSourceMap = function(aSourceMapConsumer) {
-        var sourceRoot = aSourceMapConsumer.sourceRoot, generator = new SourceMapGenerator({
-          file: aSourceMapConsumer.file,
-          sourceRoot
-        });
-        return aSourceMapConsumer.eachMapping((function(mapping) {
-          var newMapping = {
-            generated: {
-              line: mapping.generatedLine,
-              column: mapping.generatedColumn
-            }
-          };
-          null != mapping.source && (newMapping.source = mapping.source, null != sourceRoot && (newMapping.source = util.relative(sourceRoot, newMapping.source)), 
-          newMapping.original = {
-            line: mapping.originalLine,
-            column: mapping.originalColumn
-          }, null != mapping.name && (newMapping.name = mapping.name)), generator.addMapping(newMapping);
-        })), aSourceMapConsumer.sources.forEach((function(sourceFile) {
-          var sourceRelative = sourceFile;
-          null !== sourceRoot && (sourceRelative = util.relative(sourceRoot, sourceFile)), 
-          generator._sources.has(sourceRelative) || generator._sources.add(sourceRelative);
-          var content = aSourceMapConsumer.sourceContentFor(sourceFile);
-          null != content && generator.setSourceContent(sourceFile, content);
-        })), generator;
-      }, SourceMapGenerator.prototype.addMapping = function(aArgs) {
-        var generated = util.getArg(aArgs, "generated"), original = util.getArg(aArgs, "original", null), source = util.getArg(aArgs, "source", null), name = util.getArg(aArgs, "name", null);
-        this._skipValidation || this._validateMapping(generated, original, source, name), 
-        null != source && (source = String(source), this._sources.has(source) || this._sources.add(source)), 
-        null != name && (name = String(name), this._names.has(name) || this._names.add(name)), 
-        this._mappings.add({
-          generatedLine: generated.line,
-          generatedColumn: generated.column,
-          originalLine: null != original && original.line,
-          originalColumn: null != original && original.column,
-          source,
-          name
-        });
-      }, SourceMapGenerator.prototype.setSourceContent = function(aSourceFile, aSourceContent) {
-        var source = aSourceFile;
-        null != this._sourceRoot && (source = util.relative(this._sourceRoot, source)), 
-        null != aSourceContent ? (this._sourcesContents || (this._sourcesContents = Object.create(null)), 
-        this._sourcesContents[util.toSetString(source)] = aSourceContent) : this._sourcesContents && (delete this._sourcesContents[util.toSetString(source)], 
-        0 === Object.keys(this._sourcesContents).length && (this._sourcesContents = null));
-      }, SourceMapGenerator.prototype.applySourceMap = function(aSourceMapConsumer, aSourceFile, aSourceMapPath) {
-        var sourceFile = aSourceFile;
-        if (null == aSourceFile) {
-          if (null == aSourceMapConsumer.file) throw new Error('SourceMapGenerator.prototype.applySourceMap requires either an explicit source file, or the source map\'s "file" property. Both were omitted.');
-          sourceFile = aSourceMapConsumer.file;
-        }
-        var sourceRoot = this._sourceRoot;
-        null != sourceRoot && (sourceFile = util.relative(sourceRoot, sourceFile));
-        var newSources = new ArraySet, newNames = new ArraySet;
-        this._mappings.unsortedForEach((function(mapping) {
-          if (mapping.source === sourceFile && null != mapping.originalLine) {
-            var original = aSourceMapConsumer.originalPositionFor({
-              line: mapping.originalLine,
-              column: mapping.originalColumn
-            });
-            null != original.source && (mapping.source = original.source, null != aSourceMapPath && (mapping.source = util.join(aSourceMapPath, mapping.source)), 
-            null != sourceRoot && (mapping.source = util.relative(sourceRoot, mapping.source)), 
-            mapping.originalLine = original.line, mapping.originalColumn = original.column, 
-            null != original.name && (mapping.name = original.name));
-          }
-          var source = mapping.source;
-          null == source || newSources.has(source) || newSources.add(source);
-          var name = mapping.name;
-          null == name || newNames.has(name) || newNames.add(name);
-        }), this), this._sources = newSources, this._names = newNames, aSourceMapConsumer.sources.forEach((function(sourceFile) {
-          var content = aSourceMapConsumer.sourceContentFor(sourceFile);
-          null != content && (null != aSourceMapPath && (sourceFile = util.join(aSourceMapPath, sourceFile)), 
-          null != sourceRoot && (sourceFile = util.relative(sourceRoot, sourceFile)), this.setSourceContent(sourceFile, content));
-        }), this);
-      }, SourceMapGenerator.prototype._validateMapping = function(aGenerated, aOriginal, aSource, aName) {
-        if (aOriginal && "number" != typeof aOriginal.line && "number" != typeof aOriginal.column) throw new Error("original.line and original.column are not numbers -- you probably meant to omit the original mapping entirely and only map the generated position. If so, pass null for the original mapping instead of an object with empty or null values.");
-        if ((!(aGenerated && "line" in aGenerated && "column" in aGenerated && aGenerated.line > 0 && aGenerated.column >= 0) || aOriginal || aSource || aName) && !(aGenerated && "line" in aGenerated && "column" in aGenerated && aOriginal && "line" in aOriginal && "column" in aOriginal && aGenerated.line > 0 && aGenerated.column >= 0 && aOriginal.line > 0 && aOriginal.column >= 0 && aSource)) throw new Error("Invalid mapping: " + JSON.stringify({
-          generated: aGenerated,
-          source: aSource,
-          original: aOriginal,
-          name: aName
-        }));
-      }, SourceMapGenerator.prototype._serializeMappings = function() {
-        for (var next, mapping, nameIdx, sourceIdx, previousGeneratedColumn = 0, previousGeneratedLine = 1, previousOriginalColumn = 0, previousOriginalLine = 0, previousName = 0, previousSource = 0, result = "", mappings = this._mappings.toArray(), i = 0, len = mappings.length; i < len; i++) {
-          if (next = "", (mapping = mappings[i]).generatedLine !== previousGeneratedLine) for (previousGeneratedColumn = 0; mapping.generatedLine !== previousGeneratedLine; ) next += ";", 
-          previousGeneratedLine++; else if (i > 0) {
-            if (!util.compareByGeneratedPositionsInflated(mapping, mappings[i - 1])) continue;
-            next += ",";
-          }
-          next += base64VLQ.encode(mapping.generatedColumn - previousGeneratedColumn), previousGeneratedColumn = mapping.generatedColumn, 
-          null != mapping.source && (sourceIdx = this._sources.indexOf(mapping.source), next += base64VLQ.encode(sourceIdx - previousSource), 
-          previousSource = sourceIdx, next += base64VLQ.encode(mapping.originalLine - 1 - previousOriginalLine), 
-          previousOriginalLine = mapping.originalLine - 1, next += base64VLQ.encode(mapping.originalColumn - previousOriginalColumn), 
-          previousOriginalColumn = mapping.originalColumn, null != mapping.name && (nameIdx = this._names.indexOf(mapping.name), 
-          next += base64VLQ.encode(nameIdx - previousName), previousName = nameIdx)), result += next;
-        }
-        return result;
-      }, SourceMapGenerator.prototype._generateSourcesContent = function(aSources, aSourceRoot) {
-        return aSources.map((function(source) {
-          if (!this._sourcesContents) return null;
-          null != aSourceRoot && (source = util.relative(aSourceRoot, source));
-          var key = util.toSetString(source);
-          return Object.prototype.hasOwnProperty.call(this._sourcesContents, key) ? this._sourcesContents[key] : null;
-        }), this);
-      }, SourceMapGenerator.prototype.toJSON = function() {
-        var map = {
-          version: this._version,
-          sources: this._sources.toArray(),
-          names: this._names.toArray(),
-          mappings: this._serializeMappings()
-        };
-        return null != this._file && (map.file = this._file), null != this._sourceRoot && (map.sourceRoot = this._sourceRoot), 
-        this._sourcesContents && (map.sourcesContent = this._generateSourcesContent(map.sources, map.sourceRoot)), 
-        map;
-      }, SourceMapGenerator.prototype.toString = function() {
-        return JSON.stringify(this.toJSON());
-      }, exports.h = SourceMapGenerator;
-    },
-    121: (__unused_webpack_module, exports, __webpack_require__) => {
-      var SourceMapGenerator = __webpack_require__(880).h, util = __webpack_require__(454), REGEX_NEWLINE = /(\r?\n)/, isSourceNode = "$$$isSourceNode$$$";
-      function SourceNode(aLine, aColumn, aSource, aChunks, aName) {
-        this.children = [], this.sourceContents = {}, this.line = null == aLine ? null : aLine, 
-        this.column = null == aColumn ? null : aColumn, this.source = null == aSource ? null : aSource, 
-        this.name = null == aName ? null : aName, this[isSourceNode] = !0, null != aChunks && this.add(aChunks);
-      }
-      SourceNode.fromStringWithSourceMap = function(aGeneratedCode, aSourceMapConsumer, aRelativePath) {
-        var node = new SourceNode, remainingLines = aGeneratedCode.split(REGEX_NEWLINE), remainingLinesIndex = 0, shiftNextLine = function() {
-          return getNextLine() + (getNextLine() || "");
-          function getNextLine() {
-            return remainingLinesIndex < remainingLines.length ? remainingLines[remainingLinesIndex++] : void 0;
-          }
-        }, lastGeneratedLine = 1, lastGeneratedColumn = 0, lastMapping = null;
-        return aSourceMapConsumer.eachMapping((function(mapping) {
-          if (null !== lastMapping) {
-            if (!(lastGeneratedLine < mapping.generatedLine)) {
-              var code = (nextLine = remainingLines[remainingLinesIndex] || "").substr(0, mapping.generatedColumn - lastGeneratedColumn);
-              return remainingLines[remainingLinesIndex] = nextLine.substr(mapping.generatedColumn - lastGeneratedColumn), 
-              lastGeneratedColumn = mapping.generatedColumn, addMappingWithCode(lastMapping, code), 
-              void (lastMapping = mapping);
-            }
-            addMappingWithCode(lastMapping, shiftNextLine()), lastGeneratedLine++, lastGeneratedColumn = 0;
-          }
-          for (;lastGeneratedLine < mapping.generatedLine; ) node.add(shiftNextLine()), lastGeneratedLine++;
-          if (lastGeneratedColumn < mapping.generatedColumn) {
-            var nextLine = remainingLines[remainingLinesIndex] || "";
-            node.add(nextLine.substr(0, mapping.generatedColumn)), remainingLines[remainingLinesIndex] = nextLine.substr(mapping.generatedColumn), 
-            lastGeneratedColumn = mapping.generatedColumn;
-          }
-          lastMapping = mapping;
-        }), this), remainingLinesIndex < remainingLines.length && (lastMapping && addMappingWithCode(lastMapping, shiftNextLine()), 
-        node.add(remainingLines.splice(remainingLinesIndex).join(""))), aSourceMapConsumer.sources.forEach((function(sourceFile) {
-          var content = aSourceMapConsumer.sourceContentFor(sourceFile);
-          null != content && (null != aRelativePath && (sourceFile = util.join(aRelativePath, sourceFile)), 
-          node.setSourceContent(sourceFile, content));
-        })), node;
-        function addMappingWithCode(mapping, code) {
-          if (null === mapping || void 0 === mapping.source) node.add(code); else {
-            var source = aRelativePath ? util.join(aRelativePath, mapping.source) : mapping.source;
-            node.add(new SourceNode(mapping.originalLine, mapping.originalColumn, source, code, mapping.name));
-          }
-        }
-      }, SourceNode.prototype.add = function(aChunk) {
-        if (Array.isArray(aChunk)) aChunk.forEach((function(chunk) {
-          this.add(chunk);
-        }), this); else {
-          if (!aChunk[isSourceNode] && "string" != typeof aChunk) throw new TypeError("Expected a SourceNode, string, or an array of SourceNodes and strings. Got " + aChunk);
-          aChunk && this.children.push(aChunk);
-        }
-        return this;
-      }, SourceNode.prototype.prepend = function(aChunk) {
-        if (Array.isArray(aChunk)) for (var i = aChunk.length - 1; i >= 0; i--) this.prepend(aChunk[i]); else {
-          if (!aChunk[isSourceNode] && "string" != typeof aChunk) throw new TypeError("Expected a SourceNode, string, or an array of SourceNodes and strings. Got " + aChunk);
-          this.children.unshift(aChunk);
-        }
-        return this;
-      }, SourceNode.prototype.walk = function(aFn) {
-        for (var chunk, i = 0, len = this.children.length; i < len; i++) (chunk = this.children[i])[isSourceNode] ? chunk.walk(aFn) : "" !== chunk && aFn(chunk, {
-          source: this.source,
-          line: this.line,
-          column: this.column,
-          name: this.name
-        });
-      }, SourceNode.prototype.join = function(aSep) {
-        var newChildren, i, len = this.children.length;
-        if (len > 0) {
-          for (newChildren = [], i = 0; i < len - 1; i++) newChildren.push(this.children[i]), 
-          newChildren.push(aSep);
-          newChildren.push(this.children[i]), this.children = newChildren;
-        }
-        return this;
-      }, SourceNode.prototype.replaceRight = function(aPattern, aReplacement) {
-        var lastChild = this.children[this.children.length - 1];
-        return lastChild[isSourceNode] ? lastChild.replaceRight(aPattern, aReplacement) : "string" == typeof lastChild ? this.children[this.children.length - 1] = lastChild.replace(aPattern, aReplacement) : this.children.push("".replace(aPattern, aReplacement)), 
-        this;
-      }, SourceNode.prototype.setSourceContent = function(aSourceFile, aSourceContent) {
-        this.sourceContents[util.toSetString(aSourceFile)] = aSourceContent;
-      }, SourceNode.prototype.walkSourceContents = function(aFn) {
-        for (var i = 0, len = this.children.length; i < len; i++) this.children[i][isSourceNode] && this.children[i].walkSourceContents(aFn);
-        var sources = Object.keys(this.sourceContents);
-        for (i = 0, len = sources.length; i < len; i++) aFn(util.fromSetString(sources[i]), this.sourceContents[sources[i]]);
-      }, SourceNode.prototype.toString = function() {
-        var str = "";
-        return this.walk((function(chunk) {
-          str += chunk;
-        })), str;
-      }, SourceNode.prototype.toStringWithSourceMap = function(aArgs) {
-        var generated = {
-          code: "",
-          line: 1,
-          column: 0
-        }, map = new SourceMapGenerator(aArgs), sourceMappingActive = !1, lastOriginalSource = null, lastOriginalLine = null, lastOriginalColumn = null, lastOriginalName = null;
-        return this.walk((function(chunk, original) {
-          generated.code += chunk, null !== original.source && null !== original.line && null !== original.column ? (lastOriginalSource === original.source && lastOriginalLine === original.line && lastOriginalColumn === original.column && lastOriginalName === original.name || map.addMapping({
-            source: original.source,
-            original: {
-              line: original.line,
-              column: original.column
-            },
-            generated: {
-              line: generated.line,
-              column: generated.column
-            },
-            name: original.name
-          }), lastOriginalSource = original.source, lastOriginalLine = original.line, lastOriginalColumn = original.column, 
-          lastOriginalName = original.name, sourceMappingActive = !0) : sourceMappingActive && (map.addMapping({
-            generated: {
-              line: generated.line,
-              column: generated.column
-            }
-          }), lastOriginalSource = null, sourceMappingActive = !1);
-          for (var idx = 0, length = chunk.length; idx < length; idx++) 10 === chunk.charCodeAt(idx) ? (generated.line++, 
-          generated.column = 0, idx + 1 === length ? (lastOriginalSource = null, sourceMappingActive = !1) : sourceMappingActive && map.addMapping({
-            source: original.source,
-            original: {
-              line: original.line,
-              column: original.column
-            },
-            generated: {
-              line: generated.line,
-              column: generated.column
-            },
-            name: original.name
-          })) : generated.column++;
-        })), this.walkSourceContents((function(sourceFile, sourceContent) {
-          map.setSourceContent(sourceFile, sourceContent);
-        })), {
-          code: generated.code,
-          map
-        };
-      };
-    },
     454: (__unused_webpack_module, exports) => {
       exports.getArg = function(aArgs, aName, aDefaultValue) {
         if (aName in aArgs) return aArgs[aName];
@@ -1084,13 +808,9 @@
         return normalize(sourceURL);
       };
     },
-    745: (__unused_webpack_module, exports, __webpack_require__) => {
-      __webpack_require__(880).h, exports.SourceMapConsumer = __webpack_require__(913).SourceMapConsumer, 
-      __webpack_require__(121);
-    },
-    252: (module, exports, __webpack_require__) => {
+    232: (module, exports, __webpack_require__) => {
       module = __webpack_require__.nmd(module);
-      var fs, SourceMapConsumer = __webpack_require__(745).SourceMapConsumer, path = __webpack_require__(17);
+      var fs, SourceMapConsumer = __webpack_require__(913).gi, path = __webpack_require__(17);
       try {
         (fs = __webpack_require__(147)).existsSync && fs.readFileSync || (fs = null);
       } catch (err) {}
@@ -1327,7 +1047,7 @@
         retrieveFile = handlerExec(retrieveFileHandlers);
       };
     },
-    306: module => {
+    947: module => {
       "use strict";
       module.exports = require("../main");
     },
@@ -1356,7 +1076,7 @@
         s && s.isTTY && s._handle && s._handle.setBlocking && s._handle.setBlocking(!0);
       }));
     },
-    934: module => {
+    366: module => {
       "use strict";
       module.exports = JSON.parse('{"name":"terser","description":"JavaScript parser, mangler/compressor and beautifier toolkit for ES6+","homepage":"https://terser.org","author":"Mihai Bazon <mihai.bazon@gmail.com> (http://lisperator.net/)","license":"BSD-2-Clause","version":"5.12.1"}');
     }
@@ -1377,9 +1097,9 @@
     "use strict";
     __webpack_require__(432);
     try {
-      __webpack_require__(252).install();
+      __webpack_require__(232).install();
     } catch (err) {}
-    const fs = __webpack_require__(147), path = __webpack_require__(17), program = __webpack_require__(783), packageJson = __webpack_require__(934), {_run_cli: run_cli} = __webpack_require__(306);
+    const fs = __webpack_require__(147), path = __webpack_require__(17), program = __webpack_require__(783), packageJson = __webpack_require__(366), {_run_cli: run_cli} = __webpack_require__(947);
     run_cli({
       program,
       packageJson,

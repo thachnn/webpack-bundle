@@ -13,18 +13,6 @@
   ],
   "repository": "https://github.com/terser/terser",
   "main": "main.js",
-  "exports": {
-    ".": [
-      {
-        "import": "./main.js",
-        "require": "./main.js"
-      },
-      "./main.js"
-    ],
-    "./package": "./package.json",
-    "./package.json": "./package.json",
-    "./bin/terser": "./bin/terser"
-  },
   "types": "tools/terser.d.ts",
   "bin": {
     "terser": "bin/terser"
@@ -40,7 +28,6 @@
     "PATRONS.md",
     "main.js"
   ],
-  "dependencies": {},
   "keywords": [
     "uglify",
     "terser",
@@ -59,64 +46,5 @@
     "es2017",
     "async",
     "await"
-  ],
-  "eslintConfig": {
-    "parserOptions": {
-      "sourceType": "module",
-      "ecmaVersion": 2020
-    },
-    "env": {
-      "node": true,
-      "browser": true,
-      "es2020": true
-    },
-    "globals": {
-      "describe": false,
-      "it": false,
-      "require": false,
-      "before": false,
-      "after": false,
-      "global": false,
-      "process": false
-    },
-    "rules": {
-      "brace-style": [
-        "error",
-        "1tbs",
-        {
-          "allowSingleLine": true
-        }
-      ],
-      "quotes": [
-        "error",
-        "double",
-        "avoid-escape"
-      ],
-      "no-debugger": "error",
-      "no-undef": "error",
-      "no-unused-vars": [
-        "error",
-        {
-          "varsIgnorePattern": "^_"
-        }
-      ],
-      "no-tabs": "error",
-      "semi": [
-        "error",
-        "always"
-      ],
-      "no-extra-semi": "error",
-      "no-irregular-whitespace": "error",
-      "space-before-blocks": [
-        "error",
-        "always"
-      ]
-    }
-  },
-  "pre-commit": [
-    "build",
-    "lint-fix",
-    "ls-lint",
-    "test"
   ]
 }
