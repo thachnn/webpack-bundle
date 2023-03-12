@@ -262,7 +262,7 @@ webpack-merge@^5.7.3:
 
 webpack@thachnn/webpack-bundle#v5.74.0:
   version "5.74.0-0"
-  resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/bdeeada858699deef83fe4e1b0d2a149dd970d22"
+  resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/refs/heads/v5.74.0"
 
 which@^2.0.1:
   version "2.0.2"

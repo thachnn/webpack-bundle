@@ -111,7 +111,6 @@ module.exports = [
       commander: 'commonjs2 ./commander',
       envinfo: 'commonjs2 ./envinfo',
       './webpack-cli': 'commonjs2 ../lib/index',
-      originalRequire: 'commonjs2 ./originalRequire',
       //
       webpack: 'commonjs2 webpack',
       'webpack-bundle-analyzer': 'commonjs2 webpack-bundle-analyzer',
@@ -121,12 +120,12 @@ module.exports = [
         {
           test: /node_modules.((interpret|import-local).index|rechoir.(index|lib.register))\.js$/i,
           loader: 'webpack/lib/replace-loader',
-          options: { search: /\brequire(\.extensions|\([a-zA-Z_]\w*)\b/g, replace: 'require("originalRequire")$1' },
+          options: { search: /\brequire(\.extensions|\([a-zA-Z_]\w*)\b/g, replace: '__non_webpack_require__$1' },
         },
         {
           test: /node_modules.@webpack-cli.serve.lib.index\.js$/i,
           loader: 'webpack/lib/replace-loader',
-          options: { search: /\brequire(\([^)]*WEBPACK_DEV_SERVER)/g, replace: 'require("originalRequire")$1' },
+          options: { search: /\brequire(\([^)]*WEBPACK_DEV_SERVER)/g, replace: '__non_webpack_require__$1' },
         },
         {
           test: /node_modules.webpack-cli.lib.webpack-cli\.js$/i,
@@ -143,13 +142,13 @@ module.exports = [
                 search: /\b(result *= *)(require)(\(module\))/,
                 replace:
                   'const m = /@webpack-cli\\/(serve|info|configtest)$/i.exec$3;\n\
-                  $1!m ? $2("originalRequire")$3 : $2(`@webpack-cli/${m[1]}/lib`)',
+                  $1!m ? __non_webpack_require__$3 : $2(`@webpack-cli/${m[1]}/lib`)',
               },
               {
                 search: /\b(result *= *)(require)(\(pathToFile\))/,
                 replace:
                   'const m = /@webpack-cli\\/(serve|info|configtest)\\/package\\.json$/i.exec$3;\n\
-                  $1!m ? $2("originalRequire")$3 : $2(`@webpack-cli/${m[1]}/package.json`)',
+                  $1!m ? __non_webpack_require__$3 : $2(`@webpack-cli/${m[1]}/package.json`)',
               },
               { search: /\bthis\.loadJSONFile(\("\.+\/package\.json"\))/, replace: '{version: require$1.version}' },
             ],
@@ -177,9 +176,9 @@ module.exports = [
           options: { search: /,\s*"(description": *""|main":)[\s\S]*/, replace: '\n}' },
         },
         {
-          test: /node_modules.resolve.lib.core\.js$/i,
+          test: /node_modules.rechoir.lib.register\.js$/i,
           loader: 'webpack/lib/replace-loader',
-          options: { search: /\b(require\(')\.(\/core\.json)\b/, replace: '$1../../is-core-module$2' },
+          options: { search: /\b(require\('resolve)('\))/, replace: '{ sync: $1/lib/sync$2 }' },
         },
         {
           test: /node_modules.isexe.index\.js$/i,
@@ -215,7 +214,6 @@ module.exports = [
         raw: true,
         test: /\bcli\.js$/,
       }),
-      new ReplaceCodePlugin({ search: ' require("./originalRequire")', replace: ' require' }),
     ],
     optimization: {
       minimizer: [{ exclude: /[\\/]envinfo\.js$/ }],
