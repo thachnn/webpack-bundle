@@ -1,11 +1,11 @@
 (() => {
   "use strict";
   var __webpack_modules__ = {
-    3177: module => {
-      module.exports = require("../lib/plugin-utils");
+    5488: module => {
+      module.exports = require("../lib/helper-plugin-utils");
     },
     8593: module => {
-      module.exports = require("../plugins/syntax-json-strings");
+      module.exports = require("./syntax-json-strings");
     }
   }, __webpack_module_cache__ = {};
   function __webpack_require__(moduleId) {
@@ -23,7 +23,7 @@
     Object.defineProperty(exports, "__esModule", {
       value: !0
     }), exports.default = void 0;
-    var _helperPluginUtils = __webpack_require__(3177), _pluginSyntaxJsonStrings = __webpack_require__(8593), _default = (0, 
+    var _helperPluginUtils = __webpack_require__(5488), _pluginSyntaxJsonStrings = __webpack_require__(8593), _default = (0, 
     _helperPluginUtils.declare)((api => {
       api.assertVersion(7);
       const regex = /(\\*)([\u2028\u2029])/g;

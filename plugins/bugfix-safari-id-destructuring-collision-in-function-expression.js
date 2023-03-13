@@ -1,8 +1,8 @@
 (() => {
   "use strict";
   var __webpack_modules__ = {
-    3177: module => {
-      module.exports = require("../lib/plugin-utils");
+    5488: module => {
+      module.exports = require("../lib/helper-plugin-utils");
     }
   }, __webpack_module_cache__ = {};
   function __webpack_require__(moduleId) {
@@ -20,7 +20,7 @@
     Object.defineProperty(exports, "__esModule", {
       value: !0
     });
-    var index = __webpack_require__(3177).declare((api => (api.assertVersion("^7.16.0"), 
+    var index = __webpack_require__(5488).declare((api => (api.assertVersion("^7.16.0"), 
     {
       name: "plugin-bugfix-safari-id-destructuring-collision-in-function-expression",
       visitor: {

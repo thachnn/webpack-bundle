@@ -1151,7 +1151,7 @@
         }
         return code;
       }, exports.getChalk = getChalk, exports.shouldHighlight = shouldHighlight;
-      var _jsTokens = __webpack_require__(6188), _helperValidatorIdentifier = __webpack_require__(720), _chalk = __webpack_require__(3920);
+      var _jsTokens = __webpack_require__(6188), _helperValidatorIdentifier = __webpack_require__(720), _chalk = __webpack_require__(7215);
       const sometimesKeywords = new Set([ "as", "async", "from", "get", "of", "set" ]);
       const NEWLINE = /\r\n|[\n\r\u2028\u2029]/, BRACKET = /^[()[\]{}]$/;
       let tokenize;
@@ -1612,9 +1612,6 @@
         };
       };
     },
-    6113: (module, __unused_webpack_exports, __webpack_require__) => {
-      module.exports = __webpack_require__(7449);
-    },
     6188: (__unused_webpack_module, exports) => {
       Object.defineProperty(exports, "__esModule", {
         value: !0
@@ -1630,13 +1627,13 @@
         token;
       };
     },
+    5488: module => {
+      "use strict";
+      module.exports = require("../lib/helper-plugin-utils");
+    },
     2545: module => {
       "use strict";
       module.exports = require("../lib/parser");
-    },
-    3177: module => {
-      "use strict";
-      module.exports = require("../lib/plugin-utils");
     },
     7098: module => {
       "use strict";
@@ -1650,9 +1647,9 @@
       "use strict";
       module.exports = require("@babel/core");
     },
-    3920: module => {
+    7215: module => {
       "use strict";
-      module.exports = require("chalk");
+      module.exports = require("../lib/chalk");
     },
     9491: module => {
       "use strict";
@@ -1679,7 +1676,7 @@
     Object.defineProperty(exports, "__esModule", {
       value: !0
     }), exports.default = void 0;
-    var _helperPluginUtils = __webpack_require__(3177), _helperModuleTransforms = __webpack_require__(2454), _helperSimpleAccess = __webpack_require__(9196), _core = __webpack_require__(4629), _utils = __webpack_require__(6113), _default = (0, 
+    var _helperPluginUtils = __webpack_require__(5488), _helperModuleTransforms = __webpack_require__(2454), _helperSimpleAccess = __webpack_require__(9196), _core = __webpack_require__(4629), _utils = __webpack_require__(7449), _default = (0, 
     _helperPluginUtils.declare)(((api, options) => {
       var _api$assumption, _api$assumption2, _api$assumption3;
       api.assertVersion(7);

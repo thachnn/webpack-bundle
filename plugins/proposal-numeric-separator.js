@@ -1,11 +1,11 @@
 (() => {
   "use strict";
   var __webpack_modules__ = {
-    3177: module => {
-      module.exports = require("../lib/plugin-utils");
+    5488: module => {
+      module.exports = require("../lib/helper-plugin-utils");
     },
     1901: module => {
-      module.exports = require("../plugins/syntax-numeric-separator");
+      module.exports = require("./syntax-numeric-separator");
     }
   }, __webpack_module_cache__ = {};
   function __webpack_require__(moduleId) {
@@ -23,7 +23,7 @@
     Object.defineProperty(exports, "__esModule", {
       value: !0
     }), exports.default = void 0;
-    var _helperPluginUtils = __webpack_require__(3177), _pluginSyntaxNumericSeparator = __webpack_require__(1901);
+    var _helperPluginUtils = __webpack_require__(5488), _pluginSyntaxNumericSeparator = __webpack_require__(1901);
     function remover({node}) {
       var _extra$raw;
       const {extra} = node;

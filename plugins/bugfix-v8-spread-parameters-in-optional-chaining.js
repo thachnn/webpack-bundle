@@ -17,14 +17,14 @@
         return isTSAsExpression(node) || isTSTypeAssertion(node) || isTSNonNullExpression(node) || isTypeCastExpression(node) || isParenthesizedExpression(node);
       }
     },
-    3177: module => {
-      module.exports = require("../lib/plugin-utils");
+    5488: module => {
+      module.exports = require("../lib/helper-plugin-utils");
     },
     8459: module => {
       module.exports = require("../lib/types");
     },
     6437: module => {
-      module.exports = require("../plugins/proposal-optional-chaining");
+      module.exports = require("./proposal-optional-chaining");
     },
     4629: module => {
       module.exports = require("@babel/core");
@@ -45,7 +45,7 @@
     Object.defineProperty(exports, "__esModule", {
       value: !0
     });
-    var helperPluginUtils = __webpack_require__(3177), pluginProposalOptionalChaining = __webpack_require__(6437), helperSkipTransparentExpressionWrappers = __webpack_require__(4539), core = __webpack_require__(4629);
+    var helperPluginUtils = __webpack_require__(5488), pluginProposalOptionalChaining = __webpack_require__(6437), helperSkipTransparentExpressionWrappers = __webpack_require__(4539), core = __webpack_require__(4629);
     function matchAffectedArguments(argumentNodes) {
       const spreadIndex = argumentNodes.findIndex((node => core.types.isSpreadElement(node)));
       return spreadIndex >= 0 && spreadIndex !== argumentNodes.length - 1;

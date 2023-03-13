@@ -17,8 +17,8 @@
         return isTSAsExpression(node) || isTSTypeAssertion(node) || isTSNonNullExpression(node) || isTypeCastExpression(node) || isParenthesizedExpression(node);
       }
     },
-    3177: module => {
-      module.exports = require("../lib/plugin-utils");
+    5488: module => {
+      module.exports = require("../lib/helper-plugin-utils");
     },
     8459: module => {
       module.exports = require("../lib/types");
@@ -42,7 +42,7 @@
     Object.defineProperty(exports, "__esModule", {
       value: !0
     }), exports.default = void 0;
-    var _helperPluginUtils = __webpack_require__(3177), _helperSkipTransparentExpressionWrappers = __webpack_require__(4539), _core = __webpack_require__(4629), _default = (0, 
+    var _helperPluginUtils = __webpack_require__(5488), _helperSkipTransparentExpressionWrappers = __webpack_require__(4539), _core = __webpack_require__(4629), _default = (0, 
     _helperPluginUtils.declare)(((api, options) => {
       var _api$assumption, _options$allowArrayLi;
       api.assertVersion(7);

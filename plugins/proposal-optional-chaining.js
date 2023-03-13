@@ -17,14 +17,14 @@
         return isTSAsExpression(node) || isTSTypeAssertion(node) || isTSNonNullExpression(node) || isTypeCastExpression(node) || isParenthesizedExpression(node);
       }
     },
-    3177: module => {
-      module.exports = require("../lib/plugin-utils");
+    5488: module => {
+      module.exports = require("../lib/helper-plugin-utils");
     },
     8459: module => {
       module.exports = require("../lib/types");
     },
     5111: module => {
-      module.exports = require("../plugins/syntax-optional-chaining");
+      module.exports = require("./syntax-optional-chaining");
     },
     4629: module => {
       module.exports = require("@babel/core");
@@ -45,7 +45,7 @@
     Object.defineProperty(exports, "__esModule", {
       value: !0
     });
-    var helperPluginUtils = __webpack_require__(3177), syntaxOptionalChaining = __webpack_require__(5111), core = __webpack_require__(4629), helperSkipTransparentExpressionWrappers = __webpack_require__(4539);
+    var helperPluginUtils = __webpack_require__(5488), syntaxOptionalChaining = __webpack_require__(5111), core = __webpack_require__(4629), helperSkipTransparentExpressionWrappers = __webpack_require__(4539);
     function _interopDefaultLegacy(e) {
       return e && "object" == typeof e && "default" in e ? e : {
         default: e

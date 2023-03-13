@@ -73,7 +73,7 @@
           }
         };
       };
-      var _regexpuCore = __webpack_require__(3144), _features = __webpack_require__(1822), _util = __webpack_require__(2888), _core = __webpack_require__(4629), _helperAnnotateAsPure = __webpack_require__(4321);
+      var _regexpuCore = __webpack_require__(8597), _features = __webpack_require__(1822), _util = __webpack_require__(2888), _core = __webpack_require__(4629), _helperAnnotateAsPure = __webpack_require__(4321);
       const version = "7.17.0".split(".").reduce(((v, x) => 1e5 * v + +x), 0), versionKey = "@babel/plugin-regexp-features/version";
     },
     2888: (__unused_webpack_module, exports, __webpack_require__) => {
@@ -113,8 +113,8 @@
     4629: module => {
       module.exports = require("@babel/core");
     },
-    3144: module => {
-      module.exports = require("regexpu-core");
+    8597: module => {
+      module.exports = require("../lib/regexpu-core");
     }
   }, __webpack_module_cache__ = {};
   function __webpack_require__(moduleId) {
