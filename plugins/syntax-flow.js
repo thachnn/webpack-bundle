@@ -1,7 +1,7 @@
 (() => {
   "use strict";
   var __webpack_modules__ = {
-    5488: module => {
+    488: module => {
       module.exports = require("../lib/helper-plugin-utils");
     }
   }, __webpack_module_cache__ = {};
@@ -20,13 +20,21 @@
     Object.defineProperty(exports, "__esModule", {
       value: !0
     }), exports.default = void 0;
-    var _default = (0, __webpack_require__(5488).declare)((api => (api.assertVersion(7), 
-    {
-      name: "syntax-dynamic-import",
-      manipulateOptions(opts, parserOpts) {
-        parserOpts.plugins.push("dynamicImport");
-      }
-    })));
+    var _default = (0, __webpack_require__(488).declare)(((api, options) => {
+      api.assertVersion(7);
+      const {all, enums} = options;
+      if ("boolean" != typeof all && void 0 !== all) throw new Error(".all must be a boolean, or undefined");
+      if ("boolean" != typeof enums && void 0 !== enums) throw new Error(".enums must be a boolean, or undefined");
+      return {
+        name: "syntax-flow",
+        manipulateOptions(opts, parserOpts) {
+          parserOpts.plugins.some((p => "typescript" === (Array.isArray(p) ? p[0] : p))) || parserOpts.plugins.push([ "flow", {
+            all,
+            enums
+          } ]);
+        }
+      };
+    }));
     exports.default = _default;
   })();
   var __webpack_export_target__ = exports;

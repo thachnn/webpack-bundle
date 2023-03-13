@@ -1,19 +1,19 @@
-# @babel/preset-env
+# @babel/preset-flow
 
-> A Babel preset for each environment.
+> Babel preset for all Flow plugins.
 
-See our website [@babel/preset-env](https://babeljs.io/docs/en/babel-preset-env) for more information or the [issues](https://github.com/babel/babel/issues?utf8=%E2%9C%93&q=is%3Aissue+label%3A%22pkg%3A%20preset-env%22+is%3Aopen) associated with this package.
+See our website [@babel/preset-flow](https://babeljs.io/docs/en/babel-preset-flow) for more information or the [issues](https://github.com/babel/babel/issues?utf8=%E2%9C%93&q=is%3Aissue+label%3A%22area%3A%20flow%22+is%3Aopen) associated with this package.
 
 ## Install
 
 Using npm:
 
 ```sh
-npm install --save-dev @babel/preset-env
+npm install --save-dev @babel/preset-flow
 ```
 
 or using yarn:
 
 ```sh
-yarn add @babel/preset-env --dev
+yarn add @babel/preset-flow --dev
 ```
