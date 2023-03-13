@@ -52,8 +52,8 @@
       };
       exports.visitor = visitor;
     },
-    3177: module => {
-      module.exports = require("../lib/plugin-utils");
+    5488: module => {
+      module.exports = require("../lib/helper-plugin-utils");
     },
     4629: module => {
       module.exports = require("@babel/core");
@@ -74,7 +74,7 @@
     Object.defineProperty(exports, "__esModule", {
       value: !0
     }), exports.default = void 0;
-    var _helperPluginUtils = __webpack_require__(3177), _tdz = __webpack_require__(4601), _core = __webpack_require__(4629);
+    var _helperPluginUtils = __webpack_require__(5488), _tdz = __webpack_require__(4601), _core = __webpack_require__(4629);
     const DONE = new WeakSet;
     var _default = (0, _helperPluginUtils.declare)(((api, opts) => {
       api.assertVersion(7);

@@ -265,8 +265,8 @@
         })) : path.replaceWith(argsId);
       }
     },
-    3177: module => {
-      module.exports = require("../lib/plugin-utils");
+    5488: module => {
+      module.exports = require("../lib/helper-plugin-utils");
     },
     4629: module => {
       module.exports = require("@babel/core");
@@ -292,7 +292,7 @@
         return _params.default;
       }
     }), exports.default = void 0;
-    var _helperPluginUtils = __webpack_require__(3177), _params = __webpack_require__(5489), _rest = __webpack_require__(6133), _default = (0, 
+    var _helperPluginUtils = __webpack_require__(5488), _params = __webpack_require__(5489), _rest = __webpack_require__(6133), _default = (0, 
     _helperPluginUtils.declare)(((api, options) => {
       var _api$assumption;
       api.assertVersion(7);

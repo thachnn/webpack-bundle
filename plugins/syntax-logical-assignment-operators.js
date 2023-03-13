@@ -1,8 +1,8 @@
 (() => {
   "use strict";
   var __webpack_modules__ = {
-    3177: module => {
-      module.exports = require("../lib/plugin-utils");
+    5488: module => {
+      module.exports = require("../lib/helper-plugin-utils");
     }
   }, __webpack_module_cache__ = {};
   function __webpack_require__(moduleId) {
@@ -20,7 +20,7 @@
     Object.defineProperty(exports, "__esModule", {
       value: !0
     }), exports.default = void 0;
-    var _default = (0, __webpack_require__(3177).declare)((api => (api.assertVersion(7), 
+    var _default = (0, __webpack_require__(5488).declare)((api => (api.assertVersion(7), 
     {
       name: "syntax-logical-assignment-operators",
       manipulateOptions(opts, parserOpts) {

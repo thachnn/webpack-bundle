@@ -15,11 +15,6 @@
     "directory": "packages/babel-preset-env"
   },
   "main": "./lib/index.js",
-  "dependencies": {
-    "browserslist": "^4.20.3",
-    "chalk": "^2.0.0",
-    "regexpu-core": "^5.0.1"
-  },
   "peerDependencies": {
     "@babel/core": "^7.0.0-0"
   },

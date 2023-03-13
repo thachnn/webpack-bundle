@@ -370,7 +370,7 @@
         }
         return code;
       }, exports.getChalk = getChalk, exports.shouldHighlight = shouldHighlight;
-      var _jsTokens = __webpack_require__(6188), _helperValidatorIdentifier = __webpack_require__(720), _chalk = __webpack_require__(3920);
+      var _jsTokens = __webpack_require__(6188), _helperValidatorIdentifier = __webpack_require__(720), _chalk = __webpack_require__(7215);
       const sometimesKeywords = new Set([ "as", "async", "from", "get", "of", "set" ]);
       const NEWLINE = /\r\n|[\n\r\u2028\u2029]/, BRACKET = /^[()[\]{}]$/;
       let tokenize;
@@ -814,13 +814,13 @@
         token;
       };
     },
+    5488: module => {
+      "use strict";
+      module.exports = require("../lib/helper-plugin-utils");
+    },
     2545: module => {
       "use strict";
       module.exports = require("../lib/parser");
-    },
-    3177: module => {
-      "use strict";
-      module.exports = require("../lib/plugin-utils");
     },
     8459: module => {
       "use strict";
@@ -828,15 +828,15 @@
     },
     5906: module => {
       "use strict";
-      module.exports = require("../plugins/syntax-async-generators");
+      module.exports = require("./syntax-async-generators");
     },
     4629: module => {
       "use strict";
       module.exports = require("@babel/core");
     },
-    3920: module => {
+    7215: module => {
       "use strict";
-      module.exports = require("chalk");
+      module.exports = require("../lib/chalk");
     }
   }, __webpack_module_cache__ = {};
   function __webpack_require__(moduleId) {
@@ -855,7 +855,7 @@
     Object.defineProperty(exports, "__esModule", {
       value: !0
     }), exports.default = void 0;
-    var _helperPluginUtils = __webpack_require__(3177), _helperRemapAsyncToGenerator = __webpack_require__(5108), _pluginSyntaxAsyncGenerators = __webpack_require__(5906), _core = __webpack_require__(4629), _forAwait = __webpack_require__(2288), _default = (0, 
+    var _helperPluginUtils = __webpack_require__(5488), _helperRemapAsyncToGenerator = __webpack_require__(5108), _pluginSyntaxAsyncGenerators = __webpack_require__(5906), _core = __webpack_require__(4629), _forAwait = __webpack_require__(2288), _default = (0, 
     _helperPluginUtils.declare)((api => {
       api.assertVersion(7);
       const yieldStarVisitor = {

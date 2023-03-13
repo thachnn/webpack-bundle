@@ -1,7 +1,7 @@
 (() => {
   "use strict";
   var __webpack_modules__ = {
-    1820: (__unused_webpack_module, exports, __webpack_require__) => {
+    8129: (__unused_webpack_module, exports, __webpack_require__) => {
       Object.defineProperty(exports, "__esModule", {
         value: !0
       }), exports.default = function(opts) {
@@ -20,10 +20,10 @@
           }
         };
       };
-      var _helperExplodeAssignableExpression = __webpack_require__(3538), _t = __webpack_require__(8459);
+      var _helperExplodeAssignableExpression = __webpack_require__(6498), _t = __webpack_require__(8459);
       const {assignmentExpression, sequenceExpression} = _t;
     },
-    3538: (__unused_webpack_module, exports, __webpack_require__) => {
+    6498: (__unused_webpack_module, exports, __webpack_require__) => {
       Object.defineProperty(exports, "__esModule", {
         value: !0
       }), exports.default = function(node, nodes, file, scope, allowedSingleIdent) {
@@ -63,8 +63,8 @@
       var _t = __webpack_require__(8459);
       const {assignmentExpression, cloneNode, isIdentifier, isLiteral, isMemberExpression, isPrivateName, isPureish, isSuper, memberExpression, toComputedKey} = _t;
     },
-    3177: module => {
-      module.exports = require("../lib/plugin-utils");
+    5488: module => {
+      module.exports = require("../lib/helper-plugin-utils");
     },
     8459: module => {
       module.exports = require("../lib/types");
@@ -88,7 +88,7 @@
     Object.defineProperty(exports, "__esModule", {
       value: !0
     }), exports.default = void 0;
-    var _helperPluginUtils = __webpack_require__(3177), _helperBuilderBinaryAssignmentOperatorVisitor = __webpack_require__(1820), _core = __webpack_require__(4629), _default = (0, 
+    var _helperPluginUtils = __webpack_require__(5488), _helperBuilderBinaryAssignmentOperatorVisitor = __webpack_require__(8129), _core = __webpack_require__(4629), _default = (0, 
     _helperPluginUtils.declare)((api => (api.assertVersion(7), {
       name: "transform-exponentiation-operator",
       visitor: (0, _helperBuilderBinaryAssignmentOperatorVisitor.default)({

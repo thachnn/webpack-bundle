@@ -1,11 +1,11 @@
 (() => {
   "use strict";
   var __webpack_modules__ = {
-    3177: module => {
-      module.exports = require("../lib/plugin-utils");
+    5488: module => {
+      module.exports = require("../lib/helper-plugin-utils");
     },
     7797: module => {
-      module.exports = require("../plugins/syntax-nullish-coalescing-operator");
+      module.exports = require("./syntax-nullish-coalescing-operator");
     },
     4629: module => {
       module.exports = require("@babel/core");
@@ -26,7 +26,7 @@
     Object.defineProperty(exports, "__esModule", {
       value: !0
     }), exports.default = void 0;
-    var _helperPluginUtils = __webpack_require__(3177), _pluginSyntaxNullishCoalescingOperator = __webpack_require__(7797), _core = __webpack_require__(4629), _default = (0, 
+    var _helperPluginUtils = __webpack_require__(5488), _pluginSyntaxNullishCoalescingOperator = __webpack_require__(7797), _core = __webpack_require__(4629), _default = (0, 
     _helperPluginUtils.declare)(((api, {loose = !1}) => {
       var _api$assumption;
       api.assertVersion(7);

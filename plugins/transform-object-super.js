@@ -379,8 +379,8 @@
         }
       };
     },
-    3177: module => {
-      module.exports = require("../lib/plugin-utils");
+    5488: module => {
+      module.exports = require("../lib/helper-plugin-utils");
     },
     7098: module => {
       module.exports = require("../lib/traverse");
@@ -407,7 +407,7 @@
     Object.defineProperty(exports, "__esModule", {
       value: !0
     }), exports.default = void 0;
-    var _helperPluginUtils = __webpack_require__(3177), _helperReplaceSupers = __webpack_require__(4149), _core = __webpack_require__(4629);
+    var _helperPluginUtils = __webpack_require__(5488), _helperReplaceSupers = __webpack_require__(4149), _core = __webpack_require__(4629);
     var _default = (0, _helperPluginUtils.declare)((api => (api.assertVersion(7), {
       name: "transform-object-super",
       visitor: {
