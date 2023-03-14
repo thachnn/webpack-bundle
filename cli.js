@@ -268,7 +268,7 @@
       "use strict";
       module.exports = require("path");
     },
-    756: function(module) {
+    634: function(module) {
       "use strict";
       module.exports = JSON.parse('{"name":"dts-bundle","version":"0.7.3","description":"Export TypeScript .d.ts files as an external module definition"}');
     }
@@ -283,11 +283,11 @@
     module.exports;
   }
   !function() {
-    var pkg = __webpack_require__(756), program = __webpack_require__(783), dts = __webpack_require__(956), path = __webpack_require__(17), os = __webpack_require__(37);
+    var pkg = __webpack_require__(634), program = __webpack_require__(783), dts = __webpack_require__(956), path = __webpack_require__(17), os = __webpack_require__(37);
     program.version(pkg.version).option("--configJson <value>", "path to json config file. Load it first and override options with additional parameters").option("--name <value>", "name of module likein package.json *required").option("--main <value>", "path to entry-point (see documentation) *required").option("--baseDir [value]", "base directory to be used for discovering type declarations").option("--out [value]", "path of output file. Is relative from baseDir but you can use absolute paths. ").option("--externals", 'include typings outside of the "baseDir" (i.e. like node.d.ts)').option("--referenceExternals", 'reference external modules as <reference path="..." /> tags *** Experimental, TEST NEEDED').option("--removeSource", 'delete all source typings (i.e. "<baseDir>/**/*.d.ts")').option("--newline [style]", "newline style to use in output file => unix|windows|currentOsDefault", /^(unix|windows|currentOsDefault)$/i).option("--prefix [value]", "prefix for rewriting module names").option("--verbose", "enable verbose mode, prints detailed info about all references and includes/excludes").option("--emitOnIncludedFileNotFound", 'emit although included files not found. See readme "Files not found" section. ').option("--emitOnNoIncludedFileNotFound", 'emit although no included files not found. See readme "Files not found" section. ').option("--outputAsModuleFolder", 'output as module folder format (no declare module) . See readme "Module folders" section.').option("--headerPath [value]", "path to file that contains the header").parse(process.argv), 
     console.log("%s version %s\n%s\n", pkg.name, pkg.version, pkg.description);
     var options = function(argObj) {
-      var result = argObj.configJson ? JSON.parse(__webpack_require__(147).readFileSync(path.resolve(argObj.configJson))) : {};
+      var result = argObj.configJson ? JSON.parse(__webpack_require__(147).readFileSync(path.resolve(argObj.configJson), "utf8")) : {};
       if ([ "main", "name", "baseDir", "out", "prefix", "externals", "removeSource", "verbose", "referenceExternals", "emitOnIncludedFileNotFound", "emitOnNoIncludedFileNotFound", "outputAsModuleFolder", "headerPath" ].forEach((function(optName) {
         argObj.hasOwnProperty(optName) && (result[optName] = argObj[optName]);
       }), this), argObj.hasOwnProperty("newline")) switch (argObj.newline) {
