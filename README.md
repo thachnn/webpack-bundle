@@ -35,4 +35,6 @@ Take a look at [`package.json` file](package.json) for more examples
 - `chalk` v2.4.2 -> [thachnn/webpack-bundle#chalk-2.4.2](../../tree/chalk-2.4.2)
 - `regexpu-core` v5.0.1 -> [thachnn/webpack-bundle#regexpu-core-5.0.1](../../tree/regexpu-core-5.0.1)
 - `browserslist` v4.20.4 -> [thachnn/webpack-bundle#browserslist-4.20.4](../../tree/browserslist-4.20.4)
+- `npm` v8.19.4 -> [thachnn/webpack-bundle#npm-8.19.4-2](../../tree/npm-8.19.4-2)
+- `yarn` v1.22.19 -> [thachnn/webpack-bundle#yarn-1.22.19-1](../../tree/yarn-1.22.19-1)
 - ...
