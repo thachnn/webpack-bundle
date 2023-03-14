@@ -1,6 +1,7 @@
 'use strict';
 
 const path = require('path');
+const fs = require('fs');
 const { TerserPlugin, CopyPlugin, BannerPlugin, ReplaceCodePlugin } = require('webpack');
 
 /** @typedef {import("webpack").Configuration} Configuration */
@@ -74,8 +75,42 @@ const combineDTS = (assets) => {
   }, '');
 };
 
-const camelize = (s) => s.replace(/[^A-Za-z0-9]+(.)/g, (_, c) => c.toUpperCase());
+String.prototype.camelize = function () {
+  return this.replace(/[^A-Za-z0-9]+(.)/g, (_, c) => c.toUpperCase());
+};
+String.prototype.replaceBulk = function (...arr) {
+  return arr.reduce((s, i) => String.prototype.replace.apply(s, i), this);
+};
+
+const resolveDepPath = (rel, alt = '', base = 'node_modules') =>
+  fs.existsSync((rel = path.resolve(__dirname, base, rel))) ? rel : alt && path.resolve(__dirname, base, alt);
 
 module.exports = [
-  // TODO ...
+  /*
+  webpackConfig('import-local', {
+    entry: { index: './node_modules/import-local/index' },
+    output: { libraryTarget: 'commonjs2' },
+    target: 'node8',
+    externals: { originalRequire: 'commonjs2 ./originalRequire' },
+    module: {
+      rules: [
+        {
+          test: /node_modules.import-local.index\.js$/i,
+          loader: 'webpack/lib/replace-loader',
+          options: { search: /\brequire(\(\w+)/g, replace: 'require("originalRequire")$1' },
+        },
+      ],
+    },
+    plugins: [
+      newCopyPlugin([
+        { from: '{license*,readme*,*.d.ts}', context: 'node_modules/import-local' },
+        {
+          from: 'node_modules/import-local/package.json',
+          transform: (content) => String(content).replace(/,\s*"(d(evD)?ependencies|scripts|xo)": *\{[^{}]*\}/g, ''),
+        },
+      ]),
+      new ReplaceCodePlugin({ search: ' require("./originalRequire")', replace: ' require' }),
+    ],
+  }),
+  */
 ];
