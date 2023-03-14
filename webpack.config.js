@@ -1,6 +1,7 @@
 'use strict';
 
 const path = require('path');
+const fs = require('fs');
 const { TerserPlugin, CopyPlugin, BannerPlugin, ReplaceCodePlugin } = require('webpack');
 
 /** @typedef {import("webpack").Configuration} Configuration */
@@ -29,22 +30,23 @@ const webpackConfig = (name, config, clean = name.charAt(0) !== '/') => ({
   optimization: {
     nodeEnv: false,
     // minimize: false,
-    minimizer: [
-      new TerserPlugin({
-        test: /(\.[cm]?js|[\\/][^.]+)$/i,
-        // cache: true,
-        parallel: true,
-        terserOptions: {
-          mangle: false,
-          format: { beautify: true, indent_level: 2 },
-          compress: { passes: 1 },
-          ...(((config.optimization || {}).minimizer || [])[0] || {}),
-        },
-        extractComments: { condition: /@preserve|@lic|@cc_on|^\**!/i, banner: false },
-      }),
-    ],
+    ...(config.optimization || {}),
+    minimizer: ((config.optimization || {}).minimizer || [null]).map(newTerserPlugin),
   },
 });
+
+const newTerserPlugin = (opt) =>
+  new TerserPlugin({
+    // cache: true,
+    parallel: true,
+    extractComments: { condition: 'some', banner: false },
+    ...(opt || {}),
+    terserOptions: {
+      mangle: false,
+      format: { beautify: true, indent_level: 2, comments: false, ...((opt || {}).terserOptions || {}) },
+      compress: { passes: 1 },
+    },
+  });
 
 /** @param {Array<ObjectPattern | string>} patterns */
 const newCopyPlugin = (patterns) => new CopyPlugin({ patterns });
@@ -73,61 +75,40 @@ const combineDTS = (assets) => {
   }, '');
 };
 
+String.prototype.camelize = function () {
+  return this.replace(/[^A-Za-z0-9]+(.)/g, (_, c) => c.toUpperCase());
+};
+String.prototype.replaceBulk = function (...arr) {
+  return arr.reduce((s, i) => String.prototype.replace.apply(s, i), this);
+};
+
+const resolveDepPath = (rel, alt = '', base = 'node_modules') =>
+  fs.existsSync((rel = path.resolve(__dirname, base, rel))) ? rel : alt && path.resolve(__dirname, base, alt);
+
 module.exports = [
-  webpackConfig('browserslist', {
-    entry: {
-      index: { import: './node_modules/browserslist/index', library: { type: 'commonjs2' } },
-      cli: { import: './node_modules/browserslist/cli' },
-    },
-    target: 'node6',
-    externals: { './': 'commonjs2 ./index', originalRequire: 'commonjs2 ./originalRequire' },
+  webpackConfig('execa', {
+    entry: { index: './node_modules/execa/index' },
+    output: { libraryTarget: 'commonjs2' },
     module: {
       rules: [
         {
-          test: /node_modules.browserslist.node\.js$/i,
-          loader: 'string-replace-loader',
-          options: {
-            search: / require\(require\.resolve\(/g,
-            replace: ' require("originalRequire")(require("originalRequire").resolve(',
-          },
+          test: /node_modules.execa.index\.js$/i,
+          loader: 'webpack/lib/replace-loader',
+          options: { search: /\b(require\('cross-spawn)('\))/, replace: '{ _parse: $1/lib/parse$2 }' },
         },
         {
-          test: /node_modules.browserslist.package\.json$/i,
-          loader: 'string-replace-loader',
-          options: { search: /,\s*"keywords":[\s\S]*/, replace: '\n}' },
+          test: /node_modules.isexe.index\.js$/i,
+          loader: 'webpack/lib/replace-loader',
+          options: { search: /^var fs *= *require\b/m, replace: '// $&' },
         },
       ],
     },
     plugins: [
       newCopyPlugin([
-        { from: 'node_modules/browserslist/{LICENSE*,README*,*.d.ts}', to: '[name][ext]' },
-        {
-          from: 'node_modules/browserslist/package.json',
-          transform(content) {
-            const { dependencies: _1, browser: _2, ...pkg } = JSON.parse(content);
-            return JSON.stringify(pkg, null, 2);
-          },
-        },
-      ]),
-      new BannerPlugin({ banner: '#!/usr/bin/env node', raw: true, test: /\bcli\.js$/i }),
-      new ReplaceCodePlugin({ search: ' require("./originalRequire")', replace: ' require', test: /\bindex\.js$/ }),
-    ],
-    optimization: {
-      minimizer: [{ format: { beautify: true, indent_level: 0 } }],
-    },
-  }),
-  webpackConfig('execa', {
-    entry: { index: './node_modules/execa/index' },
-    output: { libraryTarget: 'commonjs2' },
-    plugins: [
-      newCopyPlugin([
         { from: 'node_modules/execa/{license*,readme*,*.d.ts}', to: '[name][ext]' },
         {
           from: 'node_modules/execa/package.json',
-          transform(content) {
-            const { dependencies: _1, devDependencies: _2, scripts: _3, nyc: _4, ...pkg } = JSON.parse(content);
-            return JSON.stringify(pkg, null, '\t');
-          },
+          transform: (content) => String(content).replace(/,\s*"(d(evD)?ependencies|scripts|nyc)": *\{[^{}]*\}/g, ''),
         },
       ]),
     ],
@@ -141,62 +122,48 @@ module.exports = [
       rules: [
         {
           test: /node_modules.import-local.index\.js$/i,
-          loader: 'string-replace-loader',
-          options: { search: / require(\([\w.]+)/g, replace: ' require("originalRequire")$1' },
+          loader: 'webpack/lib/replace-loader',
+          options: { search: /\brequire(\(\w+)/g, replace: 'require("originalRequire")$1' },
         },
       ],
     },
     plugins: [
       newCopyPlugin([
-        { from: '{license*,readme*,*/cli.js}', context: path.join(__dirname, 'node_modules', 'import-local') },
+        { from: '{license*,readme*,*/cli.js}', context: 'node_modules/import-local' },
         {
           from: 'node_modules/import-local/package.json',
-          transform(content) {
-            const { dependencies: _1, devDependencies: _2, scripts: _3, xo: _4, ...pkg } = JSON.parse(content);
-            return JSON.stringify(pkg, null, '\t');
-          },
+          transform: (content) => String(content).replace(/,\s*"(d(evD)?ependencies|scripts|xo)": *\{[^{}]*\}/g, ''),
         },
       ]),
       new ReplaceCodePlugin({ search: ' require("./originalRequire")', replace: ' require' }),
     ],
   }),
-  webpackConfig('webpack-merge', {
-    entry: { 'dist/index': './node_modules/webpack-merge/dist/index' },
-    output: { libraryTarget: 'commonjs' },
-    plugins: [
-      newCopyPlugin([
-        {
-          from: 'node_modules/webpack-merge/dist/{index,unique,types}.d.ts',
-          to: 'dist/index.d.ts',
-          transformAll: combineDTS,
-        },
-        { from: 'node_modules/webpack-merge/{LICENSE*,*.md}', to: '[name][ext]' },
-        {
-          from: 'node_modules/webpack-merge/package.json',
-          transform(content) {
-            const { dependencies: _1, devDependencies: _2, scripts: _3, husky: _4, ...pkg } = JSON.parse(content);
-            return JSON.stringify(pkg, null, 2);
-          },
-        },
-      ]),
-    ],
-  }),
   webpackConfig('rechoir', {
     entry: { index: './node_modules/rechoir/index' },
-    output: { libraryTarget: 'commonjs2' },
+    output: { libraryTarget: 'commonjs' },
     target: 'node0.10',
     externals: { originalRequire: 'commonjs2 ./originalRequire' },
     module: {
       rules: [
         {
           test: /node_modules.rechoir.(index|lib.register)\.js$/i,
-          loader: 'string-replace-loader',
-          options: { search: /\brequire(\.extensions|\(\w+)\b/, replace: 'require("originalRequire")$1' },
+          loader: 'webpack/lib/replace-loader',
+          options: { search: /\brequire(\(\w+|\.extensions\b)/, replace: 'require("originalRequire")$1' },
         },
         {
-          test: /node_modules.resolve.lib.core\.js$/i,
-          loader: 'string-replace-loader',
-          options: { search: " require('./core.json')", replace: " require('../../is-core-module/core.json')" },
+          test: /node_modules.rechoir.lib.register\.js$/i,
+          loader: 'webpack/lib/replace-loader',
+          options: { search: /\b(require\('resolve)('\))/, replace: '{ sync: $1/lib/sync$2 }' },
+        },
+        {
+          test: /node_modules.is-core-module.index\.js$/i,
+          loader: 'webpack/lib/replace-loader',
+          options: {
+            multiple: [
+              { search: /^var has *= *require\b/m, replace: '// $&' },
+              { search: /\bhas(?= *\()/g, replace: 'Object.prototype.hasOwnProperty.call' },
+            ],
+          },
         },
       ],
     },
@@ -205,13 +172,32 @@ module.exports = [
         { from: 'node_modules/rechoir/{LICENSE*,README*}', to: '[name][ext]' },
         {
           from: 'node_modules/rechoir/package.json',
-          transform(content) {
-            const { dependencies: _1, devDependencies: _2, scripts: _3, ...pkg } = JSON.parse(content);
-            return JSON.stringify(pkg, null, 2);
-          },
+          transform: (content) => String(content).replace(/"scripts":[\s\S]*(?="keywords":)/, ''),
         },
       ]),
       new ReplaceCodePlugin({ search: ' require("./originalRequire")', replace: ' require' }),
+    ],
+  }),
+  // TODO: Already exists in branch `webpack-cli`
+  webpackConfig('webpack-merge', {
+    entry: {
+      'dist/index': './node_modules/webpack-merge/dist/index',
+    },
+    output: { libraryTarget: 'commonjs' },
+    plugins: [
+      newCopyPlugin([
+        {
+          from: 'node_modules/webpack-merge/dist/{index,unique,types}.d.ts',
+          to: 'dist/index.d.ts',
+          transformAll: combineDTS,
+        },
+        { from: '{LICENSE*,*.md}', context: 'node_modules/webpack-merge' },
+        {
+          from: 'node_modules/webpack-merge/package.json',
+          transform: (content) =>
+            String(content).replace(/,\s*"((d|devD)ependencies|scripts|jest|husky)": *\{([^{}]|\{[^{}]*\})*\}/g, ''),
+        },
+      ]),
     ],
   }),
 ];
