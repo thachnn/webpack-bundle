@@ -16,54 +16,25 @@
   },
   "scripts": {
     "build": "node scripts/build-webpack.js",
-    "clean": "node node_modules/rimraf/bin.js dist node_modules/.cache",
-    "terser": "node node_modules/terser/bin/terser"
+    "clean": "node node_modules/rimraf/bin.js dist/ node_modules/.cache",
+    "terser": "node node_modules/webpack/bin/terser.js",
+    "webpack": "node node_modules/webpack-cli/bin/cli.js --progress"
   },
   "devDependencies": {
     "@babel/core": "thachnn/webpack-bundle#_babel/core-7.17.10",
     "@babel/preset-env": "thachnn/webpack-bundle#_babel/preset-env-7.17.10",
-    "@webassemblyjs/wasm-edit": "thachnn/webpack-bundle#_webassemblyjs/wasm-edit-1.11.1",
-    "babel-loader": "^8.1.0",
-    "browserslist": "^4.14.5",
+    "babel-loader": "thachnn/webpack-bundle#babel-loader-8.2.5",
     "dts-bundle": "^0.7.3",
-    "globby": "thachnn/webpack-bundle#globby-11.1.0",
-    "rimraf": "^2.6.3",
-    "string-replace-loader": "^3.0.0",
-    "terser": "thachnn/webpack-bundle#terser-5.12.1",
-    "webpack": "thachnn/webpack-bundle#v5.74.0"
+    "rimraf": "^2.2.8",
+    "webpack": "thachnn/webpack-bundle#v5.74.0",
+    "webpack-cli": "thachnn/webpack-bundle#cli-4.10.0"
   },
   "resolutions": {
-    "**/@webassemblyjs/ast": "thachnn/webpack-bundle#_webassemblyjs/ast-1.11.1",
-    "**/@webassemblyjs/wasm-parser": "thachnn/webpack-bundle#_webassemblyjs/wasm-parser-1.11.1",
-    "**/schema-utils/ajv": "thachnn/webpack-bundle#ajv-6.12.6",
-    "**/chalk": "thachnn/webpack-bundle#chalk-2.4.2",
-    "@babel/preset-env/regexpu-core": "thachnn/webpack-bundle#regexpu-core-5.0.1",
-    "babel-loader/find-cache-dir": "thachnn/webpack-bundle#find-cache-dir-3.3.2",
-    "dts-bundle/mkdirp/minimist": "^0.1.0",
-    "globby/fast-glob": "thachnn/webpack-bundle#fast-glob-3.2.11",
-    "rimraf/glob": "thachnn/webpack-bundle#glob-7.2.3"
+    "**/mkdirp/minimist": "^0.1.0"
   },
   "overrides": {
-    "@webassemblyjs/ast": "thachnn/webpack-bundle#_webassemblyjs/ast-1.11.1",
-    "@webassemblyjs/wasm-parser": "thachnn/webpack-bundle#_webassemblyjs/wasm-parser-1.11.1",
-    "schema-utils": {
-      "ajv": "thachnn/webpack-bundle#ajv-6.12.6"
-    },
-    "chalk": "thachnn/webpack-bundle#chalk-2.4.2",
-    "@babel/preset-env": {
-      "regexpu-core": "thachnn/webpack-bundle#regexpu-core-5.0.1"
-    },
-    "babel-loader": {
-      "find-cache-dir": "thachnn/webpack-bundle#find-cache-dir-3.3.2"
-    },
     "mkdirp": {
       "minimist": "^0.1.0"
-    },
-    "globby": {
-      "fast-glob": "thachnn/webpack-bundle#fast-glob-3.2.11"
-    },
-    "rimraf": {
-      "glob": "thachnn/webpack-bundle#glob-7.2.3"
     }
   }
 }
