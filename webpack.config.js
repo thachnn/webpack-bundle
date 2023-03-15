@@ -86,31 +86,39 @@ const resolveDepPath = (rel, alt = '', base = 'node_modules') =>
   fs.existsSync((rel = path.resolve(__dirname, base, rel))) ? rel : alt && path.resolve(__dirname, base, alt);
 
 module.exports = [
-  /*
-  webpackConfig('import-local', {
-    entry: { index: './node_modules/import-local/index' },
+  webpackConfig('prettier-xml', {
+    entry: {
+      'dist/plugin': './node_modules/@prettier/plugin-xml/dist/plugin',
+      'dist/chevrotain': './node_modules/chevrotain/lib_esm/src/api',
+    },
     output: { libraryTarget: 'commonjs2' },
-    target: 'node8',
-    externals: { originalRequire: 'commonjs2 ./originalRequire' },
+    externals: {
+      chevrotain: 'commonjs2 ./chevrotain',
+      'prettier/doc': 'commonjs2 prettier/doc',
+    },
     module: {
       rules: [
         {
-          test: /node_modules.import-local.index\.js$/i,
+          test: /node_modules.regexp-to-ast.lib.regexp-to-ast\.js$/i,
           loader: 'webpack/lib/replace-loader',
-          options: { search: /\brequire(\(\w+)/g, replace: 'require("originalRequire")$1' },
+          options: {
+            search: /^[\s\S]*?(\n[ \t]*)(function RegExpParser\b[\s\S]*)\1return (\{[^{}]*\})[\s\S]*/,
+            replace: '"use strict";\n$2\nmodule.exports = $3;\n',
+          },
         },
       ],
     },
     plugins: [
       newCopyPlugin([
-        { from: '{license*,readme*,*.d.ts}', context: 'node_modules/import-local' },
+        { from: 'node_modules/@prettier/plugin-xml/{LICENSE*,*.md}', to: '[name][ext]' },
         {
-          from: 'node_modules/import-local/package.json',
-          transform: (content) => String(content).replace(/,\s*"(d(evD)?ependencies|scripts|xo)": *\{[^{}]*\}/g, ''),
+          from: 'node_modules/@prettier/plugin-xml/package.json',
+          transform: (content) =>
+            String(content)
+              .replace(/,\s*"(scripts": *\{[^{}]*\}|devDependencies":[\s\S]*(?=\n\}))/g, '')
+              .replace(/"dependencies"(: *\{)\s*"@xml-tools\/parser":.*/m, '"peerDependencies"$1'),
         },
       ]),
-      new ReplaceCodePlugin({ search: ' require("./originalRequire")', replace: ' require' }),
     ],
   }),
-  */
 ];

@@ -24,12 +24,19 @@
   "devDependencies": {
     "@babel/core": "thachnn/webpack-bundle#_babel/core-7.17.10",
     "@babel/preset-env": "thachnn/webpack-bundle#_babel/preset-env-7.17.10",
+    "@prettier/plugin-xml": "^2.2.0",
     "babel-loader": "thachnn/webpack-bundle#babel-loader-8.2.5",
     "dts-bundle": "thachnn/webpack-bundle#dts-bundle-0.7.3",
     "rimraf": "^2.2.8",
     "webpack": "thachnn/webpack-bundle#v5.74.0",
     "webpack-cli": "thachnn/webpack-bundle#cli-4.10.0"
   },
-  "resolutions": {},
-  "overrides": {}
+  "resolutions": {
+    "@prettier/plugin-xml/prettier": "npm:blank-package@7.0.0"
+  },
+  "overrides": {
+    "@prettier/plugin-xml": {
+      "prettier": "npm:blank-package@7.0.0"
+    }
+  }
 }
