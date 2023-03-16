@@ -1,21 +1,30 @@
 {
-  "name": "babel-plugin-inline-import",
-  "version": "3.0.0",
-  "description": "Babel plugin to make raw files importable",
-  "author": "Victor Duarte (Quadric ApS) <contact@quadric.net>",
+  "name": "@babel/plugin-transform-runtime",
+  "version": "7.17.10",
+  "description": "Externalise references to helpers and builtins, automatically polyfilling your code without polluting globals",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/babel/babel.git",
+    "directory": "packages/babel-plugin-transform-runtime"
+  },
   "license": "MIT",
-  "main": "build/index.js",
-  "files": [
-    "build"
-  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "./lib/index.js",
   "keywords": [
-    "babel-plugin",
-    "graphql",
-    "raw",
-    "extension",
-    "wrap",
-    "import",
-    "inline"
+    "babel-plugin"
   ],
-  "repository": "Quadric/babel-plugin-inline-import"
+  "browser": {
+    "./lib/get-runtime-path/index.js": "./lib/get-runtime-path/browser.js",
+    "./src/get-runtime-path/index.ts": "./src/get-runtime-path/browser.ts"
+  },
+  "peerDependencies": {
+    "@babel/core": "^7.0.0-0"
+  },
+  "homepage": "https://babel.dev/docs/en/next/babel-plugin-transform-runtime",
+  "engines": {
+    "node": ">=6.9.0"
+  },
+  "author": "The Babel Team (https://babel.dev/team)"
 }
