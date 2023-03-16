@@ -1,38 +1,106 @@
-# Purpose
+# Babel Inline Import [![Build Status](https://travis-ci.org/Quadric/babel-plugin-inline-import.svg?branch=master)](https://travis-ci.org/Quadric/babel-plugin-inline-import)
+Babel plugin to add the opportunity to use `import` with raw/literal content<br>
+It is good e.g. for importing `*.graphql` files into your code.
 
-Bundle NPM packages using `webpack` and provide them :-)
+## Examples
 
-## Usage
+Before (without Babel-Inline-Import):
+```javascript
+// server.js
 
-```json
-{
-  "dependencies": {
-    "glob": "thachnn/webpack-bundle#glob-7.2.3"
-  },
-  "resolutions": {
-    "**/schema-utils/ajv": "thachnn/webpack-bundle#ajv-6.12.6"
-  },
-  "overrides": {
-    "schema-utils": {
-      "ajv": "thachnn/webpack-bundle#ajv-6.12.6"
-    }
-  }
+// bad syntax highlighting, no syntax checking
+const typeDefinitions = `
+type Query {
+  testString: String
+}
+schema {
+  query: Query
+}
+`;
+
+graphQLServer({
+  schema: [typeDefinitions],
+  ...
+});
+```
+
+Now (with Babel-Inline-Import):
+```javascript
+// /some/schema.graphql
+type Query {
+  testString: String
+}
+schema {
+  query: Query
 }
 ```
 
-Take a look at [`package.json` file](package.json) for more examples
+```javascript
+// server.js
+import schema from '/some/schema.graphql';
 
-## Provided packages
+graphQLServer({
+  schema: [schema],
+  ...
+});
+```
 
-- `webpack` v5.74.0 -> [thachnn/webpack-bundle#v5.74.0](../../tree/v5.74.0)
-- `webpack-cli` v4.10.0 -> [thachnn/webpack-bundle#cli-4.10.0](../../tree/cli-4.10.0)
-- `glob` v7.2.3 -> [thachnn/webpack-bundle#glob-7.2.3](../../tree/glob-7.2.3)
-- `ajv` v6.12.6 -> [thachnn/webpack-bundle#ajv-6.12.6](../../tree/ajv-6.12.6)
-- `fast-glob` v3.2.11 -> [thachnn/webpack-bundle#fast-glob-3.2.1](../../tree/fast-glob-3.2.1)
-- `terser` v5.12.1 -> [thachnn/webpack-bundle#terser-5.12.1](../../tree/terser-5.12.1)
-- `@babel/core` v7.17.10 -> [thachnn/webpack-bundle#\_babel/core-7.17.10](../../tree/_babel/core-7.17.10)
-- `@babel/preset-env` v7.17.10 -> [thachnn/webpack-bundle#\_babel/preset-env-7.17.10](../../tree/_babel/preset-env-7.17.10)
-- `chalk` v2.4.2 -> [thachnn/webpack-bundle#chalk-2.4.2](../../tree/chalk-2.4.2)
-- `regexpu-core` v5.0.1 -> [thachnn/webpack-bundle#regexpu-core-5.0.1](../../tree/regexpu-core-5.0.1)
-- `browserslist` v4.20.4 -> [thachnn/webpack-bundle#browserslist-4.20.4](../../tree/browserslist-4.20.4)
-- ...
+**Note:** both cases are equivalent and will result in similar code after Babel transpile them. Check [How it works](#how-it-works) section for details.
+
+## Install
+```
+npm install babel-plugin-inline-import --save-dev
+```
+
+## Use
+Add a `.babelrc` file and write:
+```javascript
+{
+  "plugins": [
+    "babel-plugin-inline-import"
+  ]
+}
+```
+or pass the plugin with the plugins-flag on CLI
+```
+babel-node myfile.js --plugins babel-plugin-inline-import
+```
+
+By default, Babel-Inline-Import is compatible with the following file extensions:
+
+* .raw
+* .text
+* .graphql
+
+
+## Customize
+If you want to enable different file extensions, you can define them in your `.babelrc` file
+```javascript
+{
+  "plugins": [
+    ["babel-plugin-inline-import", {
+      "extensions": [
+        ".json",
+        ".sql"
+      ]
+    }]
+  ]
+}
+```
+
+## How it works
+
+It inserts the __content__ of the _imported file_ directly into the _importing file_, assigning it to a variable with the same identifier of the _import statement_, thus replacing the _import statement_ and the _file path_ by its resulting raw content (no parsing occurs).
+
+## Caveats
+
+Babel does not track dependency between _imported_ and _importing_ files after the transformation is made. Therefore, you need to change the _importing file_ in order to see your changes in the _imported file_ spread. To overcome this:
+
+* If you are using `babel-node` or `babel-register`, you can [disable babel cache (`BABEL_DISABLE_CACHE=1`)](https://babeljs.io/docs/usage/babel-register/#environment-variables-babel-disable-cache).
+* If you are using webpack with `babel-loader`, you can use [babel-inline-import-loader](https://github.com/elliottsj/babel-inline-import-loader).
+
+Also make sure that your task runner is watching for changes in the _imported file_ as well. You can see it working [here](https://github.com/Quadric/perfect-graphql-starter/blob/master/nodemon.json).
+
+
+## Motivate
+If you like this project just give it a star :) I like stars.

@@ -1,41 +1,21 @@
 {
-  "name": "webpack-bundle",
-  "version": "1.0.0",
-  "description": "Bundle NPM packages using webpack",
-  "keywords": [
-    "npm",
-    "package",
-    "bundle",
-    "webpack",
-    "module"
-  ],
-  "repository": "thachnn/webpack-bundle",
+  "name": "babel-plugin-inline-import",
+  "version": "3.0.0",
+  "description": "Babel plugin to make raw files importable",
+  "author": "Victor Duarte (Quadric ApS) <contact@quadric.net>",
   "license": "MIT",
-  "engines": {
-    "node": ">=10"
-  },
-  "scripts": {
-    "build": "node scripts/build-webpack.js",
-    "clean": "node node_modules/rimraf/bin.js dist/ node_modules/.cache",
-    "terser": "node node_modules/webpack/bin/terser.js",
-    "webpack": "node node_modules/webpack-cli/bin/cli.js --progress"
-  },
-  "devDependencies": {
-    "@babel/core": "thachnn/webpack-bundle#_babel/core-7.17.10",
-    "@babel/preset-env": "thachnn/webpack-bundle#_babel/preset-env-7.17.10",
-    "@babel/preset-flow": "thachnn/webpack-bundle#_babel/preset-flow-7.16.7",
-    "babel-loader": "thachnn/webpack-bundle#babel-loader-8.2.5",
-    "babel-plugin-inline-import": "^3.0.0",
-    "webpack": "thachnn/webpack-bundle#v5.74.0",
-    "webpack-cli": "thachnn/webpack-bundle#cli-4.10.0",
-    "yarn": "https://github.com/yarnpkg/yarn/archive/v1.22.19.tar.gz"
-  },
-  "resolutions": {
-    "babel-runtime": "npm:blank-package@7.0.0",
-    "imports-loader": "npm:blank-package@1.0.0"
-  },
-  "overrides": {
-    "babel-runtime": "npm:blank-package@7.0.0",
-    "imports-loader": "npm:blank-package@1.0.0"
-  }
+  "main": "build/index.js",
+  "files": [
+    "build"
+  ],
+  "keywords": [
+    "babel-plugin",
+    "graphql",
+    "raw",
+    "extension",
+    "wrap",
+    "import",
+    "inline"
+  ],
+  "repository": "Quadric/babel-plugin-inline-import"
 }
