@@ -338,6 +338,40 @@ module.exports = [
       new ReplaceCodePlugin({ search: /( require\(")\.\.\/lib\//g, replace: '$1./', test: /\blib[\\/]\w*\.js$/ }),
     ],
   }),
+  webpackConfig('@babel-typescript', {
+    entry: {
+      'lib/index': './node_modules/@babel/preset-typescript/lib/index',
+      'plugins/transform-typescript': './node_modules/@babel/plugin-transform-typescript/lib/index',
+      'plugins/syntax-typescript': './node_modules/@babel/plugin-syntax-typescript/lib/index',
+    },
+    output: { libraryTarget: 'commonjs' },
+    target: 'node6.9',
+    externals: {
+      '@babel/core': 'commonjs @babel/core',
+      '@babel/helper-plugin-utils': 'commonjs ../lib/helper-plugin-utils',
+      '@babel/plugin-transform-typescript': 'commonjs ../plugins/transform-typescript',
+      '@babel/plugin-syntax-typescript': 'commonjs ./syntax-typescript',
+      '@babel/types': 'commonjs ../lib/types',
+    },
+    resolve: {
+      alias: {
+        '@babel/helper-create-class-features-plugin$': resolveDepPath(
+          '@babel/helper-create-class-features-plugin/lib/misc.js'
+        ),
+      },
+    },
+    plugins: [
+      newCopyPlugin([
+        { from: 'node_modules/@babel/preset-typescript/{LICENSE*,README*}', to: '[name][ext]' },
+        {
+          from: 'node_modules/@babel/preset-typescript/package.json',
+          transform: (content) => String(content).replace(/,\s*"d(evD)?ependencies": *\{[^{}]*\}/g, ''),
+        },
+        { from: 'node_modules/@babel/helper-plugin-utils/lib/*.js', to: 'lib/helper-plugin-utils.js' },
+      ]),
+      new ReplaceCodePlugin({ search: /( require\(")\.\.\/lib\//g, replace: '$1./', test: /\blib[\\/]\w*\.js$/ }),
+    ],
+  }),
   //
   webpackConfig('find-cache-dir', {
     entry: { index: './node_modules/find-cache-dir/index' },
