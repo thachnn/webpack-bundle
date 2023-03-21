@@ -17,24 +17,26 @@
   var __webpack_exports__ = {};
   (() => {
     var exports = __webpack_exports__;
+    function removePlugin(plugins, name) {
+      const indices = [];
+      plugins.forEach(((plugin, i) => {
+        (Array.isArray(plugin) ? plugin[0] : plugin) === name && indices.unshift(i);
+      }));
+      for (const i of indices) plugins.splice(i, 1);
+    }
     Object.defineProperty(exports, "__esModule", {
       value: !0
     }), exports.default = void 0;
-    var _default = (0, __webpack_require__(488).declare)(((api, options) => {
-      api.assertVersion(7);
-      const {all, enums} = options;
-      if ("boolean" != typeof all && void 0 !== all) throw new Error(".all must be a boolean, or undefined");
-      if ("boolean" != typeof enums && void 0 !== enums) throw new Error(".enums must be a boolean, or undefined");
-      return {
-        name: "syntax-flow",
-        manipulateOptions(opts, parserOpts) {
-          parserOpts.plugins.some((p => "typescript" === (Array.isArray(p) ? p[0] : p))) || parserOpts.plugins.push([ "flow", {
-            all,
-            enums
-          } ]);
-        }
-      };
-    }));
+    var _default = (0, __webpack_require__(488).declare)(((api, {isTSX, disallowAmbiguousJSXLike}) => (api.assertVersion(7), 
+    {
+      name: "syntax-typescript",
+      manipulateOptions(opts, parserOpts) {
+        const {plugins} = parserOpts;
+        removePlugin(plugins, "flow"), removePlugin(plugins, "jsx"), plugins.push([ "typescript", {
+          disallowAmbiguousJSXLike
+        } ], "classProperties"), plugins.push("objectRestSpread"), isTSX && plugins.push("jsx");
+      }
+    })));
     exports.default = _default;
   })();
   var __webpack_export_target__ = exports;

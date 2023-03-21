@@ -1,19 +1,19 @@
-# @babel/preset-flow
+# @babel/preset-typescript
 
-> Babel preset for all Flow plugins.
+> Babel preset for TypeScript.
 
-See our website [@babel/preset-flow](https://babeljs.io/docs/en/babel-preset-flow) for more information or the [issues](https://github.com/babel/babel/issues?utf8=%E2%9C%93&q=is%3Aissue+label%3A%22area%3A%20flow%22+is%3Aopen) associated with this package.
+See our website [@babel/preset-typescript](https://babeljs.io/docs/en/babel-preset-typescript) for more information or the [issues](https://github.com/babel/babel/issues?utf8=%E2%9C%93&q=is%3Aissue+label%3A%22area%3A%20typescript%22+is%3Aopen) associated with this package.
 
 ## Install
 
 Using npm:
 
 ```sh
-npm install --save-dev @babel/preset-flow
+npm install --save-dev @babel/preset-typescript
 ```
 
 or using yarn:
 
 ```sh
-yarn add @babel/preset-flow --dev
+yarn add @babel/preset-typescript --dev
 ```
