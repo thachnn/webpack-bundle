@@ -1,0 +1,243 @@
+diff --git a/node_modules/uri-js/dist/es5/uri.all.js b/node_modules/uri-js/dist/es5/uri.all.js
+index 0706116..06f155e 100644
+--- a/node_modules/uri-js/dist/es5/uri.all.js
++++ b/node_modules/uri-js/dist/es5/uri.all.js
+@@ -1,14 +1,8 @@
+ /** @license URI.js v4.4.1 (c) 2011 Gary Court. License: http://github.com/garycourt/uri-js */
+-(function (global, factory) {
+-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+-	typeof define === 'function' && define.amd ? define(['exports'], factory) :
+-	(factory((global.URI = global.URI || {})));
+-}(this, (function (exports) { 'use strict';
++'use strict';
+ 
+ function merge() {
+-    for (var _len = arguments.length, sets = Array(_len), _key = 0; _key < _len; _key++) {
+-        sets[_key] = arguments[_key];
+-    }
++    var sets = Array.prototype.slice.call(arguments);
+ 
+     if (sets.length > 1) {
+         sets[0] = sets[0].slice(0, -1);
+@@ -149,65 +143,6 @@ var URI_PROTOCOL = buildExps(false);
+ 
+ var IRI_PROTOCOL = buildExps(true);
+ 
+-var slicedToArray = function () {
+-  function sliceIterator(arr, i) {
+-    var _arr = [];
+-    var _n = true;
+-    var _d = false;
+-    var _e = undefined;
+-
+-    try {
+-      for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+-        _arr.push(_s.value);
+-
+-        if (i && _arr.length === i) break;
+-      }
+-    } catch (err) {
+-      _d = true;
+-      _e = err;
+-    } finally {
+-      try {
+-        if (!_n && _i["return"]) _i["return"]();
+-      } finally {
+-        if (_d) throw _e;
+-      }
+-    }
+-
+-    return _arr;
+-  }
+-
+-  return function (arr, i) {
+-    if (Array.isArray(arr)) {
+-      return arr;
+-    } else if (Symbol.iterator in Object(arr)) {
+-      return sliceIterator(arr, i);
+-    } else {
+-      throw new TypeError("Invalid attempt to destructure non-iterable instance");
+-    }
+-  };
+-}();
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-var toConsumableArray = function (arr) {
+-  if (Array.isArray(arr)) {
+-    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+-
+-    return arr2;
+-  } else {
+-    return Array.from(arr);
+-  }
+-};
+ 
+ /** Highest positive signed 32-bit float value */
+ 
+@@ -342,7 +277,7 @@ function ucs2decode(string) {
+  * @returns {String} The new Unicode string (UCS-2).
+  */
+ var ucs2encode = function ucs2encode(array) {
+-	return String.fromCodePoint.apply(String, toConsumableArray(array));
++	return String.fromCodePoint.apply(String, Array.from(array));
+ };
+ 
+ /**
+@@ -510,32 +445,12 @@ var encode = function encode(input) {
+ 	var bias = initialBias;
+ 
+ 	// Handle the basic code points.
+-	var _iteratorNormalCompletion = true;
+-	var _didIteratorError = false;
+-	var _iteratorError = undefined;
+-
+-	try {
+-		for (var _iterator = input[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+-			var _currentValue2 = _step.value;
++	for (var _currentValue2 of input) {
+ 
+ 			if (_currentValue2 < 0x80) {
+ 				output.push(stringFromCharCode(_currentValue2));
+ 			}
+ 		}
+-	} catch (err) {
+-		_didIteratorError = true;
+-		_iteratorError = err;
+-	} finally {
+-		try {
+-			if (!_iteratorNormalCompletion && _iterator.return) {
+-				_iterator.return();
+-			}
+-		} finally {
+-			if (_didIteratorError) {
+-				throw _iteratorError;
+-			}
+-		}
+-	}
+ 
+ 	var basicLength = output.length;
+ 	var handledCPCount = basicLength;
+@@ -554,13 +469,7 @@ var encode = function encode(input) {
+ 		// All non-basic code points < n have been handled already. Find the next
+ 		// larger one:
+ 		var m = maxInt;
+-		var _iteratorNormalCompletion2 = true;
+-		var _didIteratorError2 = false;
+-		var _iteratorError2 = undefined;
+-
+-		try {
+-			for (var _iterator2 = input[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+-				var currentValue = _step2.value;
++		for (var currentValue of input) {
+ 
+ 				if (currentValue >= n && currentValue < m) {
+ 					m = currentValue;
+@@ -569,20 +478,6 @@ var encode = function encode(input) {
+ 
+ 			// Increase `delta` enough to advance the decoder's <n,i> state to <m,0>,
+ 			// but guard against overflow.
+-		} catch (err) {
+-			_didIteratorError2 = true;
+-			_iteratorError2 = err;
+-		} finally {
+-			try {
+-				if (!_iteratorNormalCompletion2 && _iterator2.return) {
+-					_iterator2.return();
+-				}
+-			} finally {
+-				if (_didIteratorError2) {
+-					throw _iteratorError2;
+-				}
+-			}
+-		}
+ 
+ 		var handledCPCountPlusOne = handledCPCount + 1;
+ 		if (m - n > floor((maxInt - delta) / handledCPCountPlusOne)) {
+@@ -592,13 +487,7 @@ var encode = function encode(input) {
+ 		delta += (m - n) * handledCPCountPlusOne;
+ 		n = m;
+ 
+-		var _iteratorNormalCompletion3 = true;
+-		var _didIteratorError3 = false;
+-		var _iteratorError3 = undefined;
+-
+-		try {
+-			for (var _iterator3 = input[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+-				var _currentValue = _step3.value;
++		for (var _currentValue of input) {
+ 
+ 				if (_currentValue < n && ++delta > maxInt) {
+ 					error$1('overflow');
+@@ -623,20 +512,6 @@ var encode = function encode(input) {
+ 					++handledCPCount;
+ 				}
+ 			}
+-		} catch (err) {
+-			_didIteratorError3 = true;
+-			_iteratorError3 = err;
+-		} finally {
+-			try {
+-				if (!_iteratorNormalCompletion3 && _iterator3.return) {
+-					_iterator3.return();
+-				}
+-			} finally {
+-				if (_didIteratorError3) {
+-					throw _iteratorError3;
+-				}
+-			}
+-		}
+ 
+ 		++delta;
+ 		++n;
+@@ -799,7 +674,7 @@ function _stripLeadingZeros(str) {
+ function _normalizeIPv4(host, protocol) {
+     var matches = host.match(protocol.IPV4ADDRESS) || [];
+ 
+-    var _matches = slicedToArray(matches, 2),
++    var _matches = matches,
+         address = _matches[1];
+ 
+     if (address) {
+@@ -811,13 +686,13 @@ function _normalizeIPv4(host, protocol) {
+ function _normalizeIPv6(host, protocol) {
+     var matches = host.match(protocol.IPV6ADDRESS) || [];
+ 
+-    var _matches2 = slicedToArray(matches, 3),
++    var _matches2 = matches,
+         address = _matches2[1],
+         zone = _matches2[2];
+ 
+     if (address) {
+         var _address$toLowerCase$ = address.toLowerCase().split('::').reverse(),
+-            _address$toLowerCase$2 = slicedToArray(_address$toLowerCase$, 2),
++            _address$toLowerCase$2 = _address$toLowerCase$,
+             last = _address$toLowerCase$2[0],
+             first = _address$toLowerCase$2[1];
+ 
+@@ -1219,7 +1094,7 @@ var handler$2 = {
+         //reconstruct path from resource name
+         if (wsComponents.resourceName) {
+             var _wsComponents$resourc = wsComponents.resourceName.split('?'),
+-                _wsComponents$resourc2 = slicedToArray(_wsComponents$resourc, 2),
++                _wsComponents$resourc2 = _wsComponents$resourc,
+                 path = _wsComponents$resourc2[0],
+                 query = _wsComponents$resourc2[1];
+ 
+@@ -1438,6 +1313,3 @@ exports.escapeComponent = escapeComponent;
+ exports.unescapeComponent = unescapeComponent;
+ 
+ Object.defineProperty(exports, '__esModule', { value: true });
+-
+-})));
+-//# sourceMappingURL=uri.all.js.map

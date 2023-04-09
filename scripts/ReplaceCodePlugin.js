@@ -13,14 +13,16 @@ const schema = {
     search: {
       anyOf: [{ type: 'string', minLength: 1 }, { instanceof: 'RegExp' }],
     },
-    replace: { type: 'string' },
+    replace: {
+      anyOf: [{ type: 'string' }, { instanceof: 'Function' }],
+    },
     test: { instanceof: 'RegExp' },
   },
   required: ['search', 'replace'],
   // },
 };
 
-/** @typedef {{ search: String | RegExp, replace: String, test?: RegExp }} ReplacerOption */
+/** @typedef {{ search: String | RegExp, replace: String | Function, test?: RegExp }} ReplacerOption */
 
 /** @typedef {{ start: Number, end: Number, replace: String }} Replacement */
 

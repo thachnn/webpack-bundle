@@ -443,7 +443,7 @@ $1 ReplaceCodePlugin() { return require("../../../scripts/ReplaceCodePlugin"); }
           transform(content) {
             const { dependencies: d, scripts: _s, bin: _b, jest: _j, 'lint-staged': _, ...pkg } = JSON.parse(content);
 
-            (pkg.devDependencies = d), (pkg.version += '-0');
+            (pkg.devDependencies = d), (pkg.version += '-1');
             return JSON.stringify(pkg, null, 2).replace('"schemas/"', '"vendor/"');
           },
         },
