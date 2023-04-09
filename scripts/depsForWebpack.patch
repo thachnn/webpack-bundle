@@ -1,0 +1,191 @@
+diff --git a/node_modules/@babel/helper-remap-async-to-generator/lib/index.js b/node_modules/@babel/helper-remap-async-to-generator/lib/index.js
+index 063c433..3d0b468 100644
+--- a/node_modules/@babel/helper-remap-async-to-generator/lib/index.js
++++ b/node_modules/@babel/helper-remap-async-to-generator/lib/index.js
+@@ -32,14 +32,14 @@ const awaitVisitor = {
+ 
+ };
+ 
+-function _default(path, helpers, noNewArrows, ignoreFunctionLength) {
++function _default(path, helpers, noNewArrows, ignoreFunctionLength, loose) {
+   path.traverse(awaitVisitor, {
+     wrapAwait: helpers.wrapAwait
+   });
+   const isIIFE = checkIsIIFE(path);
+   path.node.async = false;
+   path.node.generator = true;
+-  (0, _helperWrapFunction.default)(path, cloneNode(helpers.wrapAsync), noNewArrows, ignoreFunctionLength);
++  (0, _helperWrapFunction.default)(path, cloneNode(helpers.wrapAsync), noNewArrows, ignoreFunctionLength, loose);
+   const isProperty = path.isObjectMethod() || path.isClassMethod() || path.parentPath.isObjectProperty() || path.parentPath.isClassProperty();
+ 
+   if (!isProperty && !isIIFE && path.isExpression()) {
+diff --git a/node_modules/@babel/helper-wrap-function/lib/index.js b/node_modules/@babel/helper-wrap-function/lib/index.js
+index b8e87e6..9bfa342 100644
+--- a/node_modules/@babel/helper-wrap-function/lib/index.js
++++ b/node_modules/@babel/helper-wrap-function/lib/index.js
+@@ -57,7 +57,7 @@ function classOrObjectMethod(path, callId) {
+   path.get("body.body.0.argument.callee.arguments.0").unwrapFunctionEnvironment();
+ }
+ 
+-function plainFunction(path, callId, noNewArrows, ignoreFunctionLength) {
++function plainFunction(path, callId, noNewArrows, ignoreFunctionLength, loose) {
+   const node = path.node;
+   const isDeclaration = path.isFunctionDeclaration();
+   const functionId = node.id;
+@@ -90,7 +90,7 @@ function plainFunction(path, callId, noNewArrows, ignoreFunctionLength) {
+     NAME: functionId || null,
+     REF: path.scope.generateUidIdentifier(functionId ? functionId.name : "ref"),
+     FUNCTION: built,
+-    PARAMS: params
++    PARAMS: !loose ? params : []
+   });
+ 
+   if (isDeclaration) {
+@@ -115,10 +115,10 @@ function plainFunction(path, callId, noNewArrows, ignoreFunctionLength) {
+   }
+ }
+ 
+-function wrapFunction(path, callId, noNewArrows = true, ignoreFunctionLength = false) {
++function wrapFunction(path, callId, noNewArrows = true, ignoreFunctionLength = false, loose = false) {
+   if (path.isMethod()) {
+     classOrObjectMethod(path, callId);
+   } else {
+-    plainFunction(path, callId, noNewArrows, ignoreFunctionLength);
++    plainFunction(path, callId, noNewArrows, ignoreFunctionLength, loose);
+   }
+ }
+\ No newline at end of file
+diff --git a/node_modules/@babel/plugin-proposal-async-generator-functions/lib/index.js b/node_modules/@babel/plugin-proposal-async-generator-functions/lib/index.js
+index c50a622..d339115 100644
+--- a/node_modules/@babel/plugin-proposal-async-generator-functions/lib/index.js
++++ b/node_modules/@babel/plugin-proposal-async-generator-functions/lib/index.js
+@@ -15,8 +15,12 @@ var _core = require("@babel/core");
+ 
+ var _forAwait = require("./for-await");
+ 
+-var _default = (0, _helperPluginUtils.declare)(api => {
++var _default = (0, _helperPluginUtils.declare)((api, options) => {
+   api.assertVersion(7);
++  const loose = options.loose;
++  const noNewArrows = api.assumption("noNewArrows");
++  const ignoreFunctionLength = api.assumption("ignoreFunctionLength");
++
+   const yieldStarVisitor = {
+     Function(path) {
+       path.skip();
+@@ -80,7 +84,7 @@ var _default = (0, _helperPluginUtils.declare)(api => {
+       (0, _helperRemapAsyncToGenerator.default)(path, {
+         wrapAsync: state.addHelper("wrapAsyncGenerator"),
+         wrapAwait: state.addHelper("awaitAsyncGenerator")
+-      });
++      }, noNewArrows, ignoreFunctionLength, loose);
+     }
+ 
+   };
+diff --git a/node_modules/@babel/plugin-transform-async-to-generator/lib/index.js b/node_modules/@babel/plugin-transform-async-to-generator/lib/index.js
+index 7cfea83..6463053 100644
+--- a/node_modules/@babel/plugin-transform-async-to-generator/lib/index.js
++++ b/node_modules/@babel/plugin-transform-async-to-generator/lib/index.js
+@@ -16,6 +16,7 @@ var _core = require("@babel/core");
+ var _default = (0, _helperPluginUtils.declare)((api, options) => {
+   api.assertVersion(7);
+   const {
++    loose,
+     method,
+     module
+   } = options;
+@@ -38,7 +39,7 @@ var _default = (0, _helperPluginUtils.declare)((api, options) => {
+ 
+           (0, _helperRemapAsyncToGenerator.default)(path, {
+             wrapAsync
+-          }, noNewArrows, ignoreFunctionLength);
++          }, noNewArrows, ignoreFunctionLength, loose);
+         }
+ 
+       }
+@@ -52,7 +53,7 @@ var _default = (0, _helperPluginUtils.declare)((api, options) => {
+         if (!path.node.async || path.node.generator) return;
+         (0, _helperRemapAsyncToGenerator.default)(path, {
+           wrapAsync: state.addHelper("asyncToGenerator")
+-        }, noNewArrows, ignoreFunctionLength);
++        }, noNewArrows, ignoreFunctionLength, loose);
+       }
+ 
+     }
+diff --git a/node_modules/@babel/plugin-transform-destructuring/lib/index.js b/node_modules/@babel/plugin-transform-destructuring/lib/index.js
+index 0f26682..37e4af3 100644
+--- a/node_modules/@babel/plugin-transform-destructuring/lib/index.js
++++ b/node_modules/@babel/plugin-transform-destructuring/lib/index.js
+@@ -80,7 +80,7 @@ class DestructuringTransformer {
+   }
+ 
+   buildVariableDeclaration(id, init) {
+-    const declar = core.types.variableDeclaration("var", [core.types.variableDeclarator(core.types.cloneNode(id), core.types.cloneNode(init))]);
++    const declar = core.types.variableDeclaration(this.kind === "const" || this.kind === "let" ? "let" : "var", [core.types.variableDeclarator(core.types.cloneNode(id), core.types.cloneNode(init))]);
+     declar._blockHoist = this.blockHoist;
+     return declar;
+   }
+diff --git a/node_modules/@babel/plugin-transform-parameters/lib/index.js b/node_modules/@babel/plugin-transform-parameters/lib/index.js
+index 767003c..a1fd604 100644
+--- a/node_modules/@babel/plugin-transform-parameters/lib/index.js
++++ b/node_modules/@babel/plugin-transform-parameters/lib/index.js
+@@ -22,6 +22,7 @@ var _default = (0, _helperPluginUtils.declare)((api, options) => {
+ 
+   api.assertVersion(7);
+   const ignoreFunctionLength = (_api$assumption = api.assumption("ignoreFunctionLength")) != null ? _api$assumption : options.loose;
++  const useBuiltIns = options.loose || options.useBuiltIns;
+   const noNewArrows = api.assumption("noNewArrows");
+   return {
+     name: "transform-parameters",
+@@ -34,7 +35,7 @@ var _default = (0, _helperPluginUtils.declare)((api, options) => {
+           if (!path.isFunctionExpression()) return;
+         }
+ 
+-        const convertedRest = (0, _rest.default)(path);
++        const convertedRest = (0, _rest.default)(path, useBuiltIns);
+         const convertedParams = (0, _params.default)(path, ignoreFunctionLength);
+ 
+         if (convertedRest || convertedParams) {
+diff --git a/node_modules/@babel/plugin-transform-parameters/lib/rest.js b/node_modules/@babel/plugin-transform-parameters/lib/rest.js
+index 80a5934..cbdf366 100644
+--- a/node_modules/@babel/plugin-transform-parameters/lib/rest.js
++++ b/node_modules/@babel/plugin-transform-parameters/lib/rest.js
+@@ -16,6 +16,9 @@ const buildRest = (0, _core.template)(`
+     ARRAY[ARRAY_KEY] = ARGUMENTS[KEY];
+   }
+ `);
++const buildLooseRest = (0, _core.template)(`
++  var ARRAY = Array.prototype.slice.call(ARGUMENTS, START)
++`);
+ const restIndex = (0, _core.template)(`
+   (INDEX < OFFSET || ARGUMENTS.length <= INDEX) ? undefined : ARGUMENTS[INDEX]
+ `);
+@@ -204,7 +207,7 @@ function optimiseLengthGetter(path, argsId, offset) {
+   }
+ }
+ 
+-function convertFunctionRest(path) {
++function convertFunctionRest(path, useBuiltIns) {
+   const {
+     node,
+     scope
+@@ -278,7 +281,7 @@ function convertFunctionRest(path) {
+     arrLen = _core.types.identifier(len.name);
+   }
+ 
+-  const loop = buildRest({
++  const loop = !useBuiltIns ? buildRest({
+     ARGUMENTS: argsId,
+     ARRAY_KEY: arrKey,
+     ARRAY_LEN: arrLen,
+@@ -286,6 +289,10 @@ function convertFunctionRest(path) {
+     ARRAY: rest,
+     KEY: key,
+     LEN: len
++  }) : buildLooseRest({
++    ARGUMENTS: argsId,
++    START: start,
++    ARRAY: rest
+   });
+ 
+   if (state.deopted) {

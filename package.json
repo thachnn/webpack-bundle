@@ -15,6 +15,7 @@
     "node": ">=10"
   },
   "scripts": {
+    "postinstall": "git apply --reject --ignore-whitespace scripts/depsForWebpack.patch",
     "build": "node scripts/build-webpack.js",
     "clean": "node node_modules/rimraf/bin.js dist/ node_modules/.cache",
     "terser": "node node_modules/webpack/bin/terser.js",
