@@ -368,7 +368,7 @@
       "use strict";
       Object.defineProperty(exports, "__esModule", {
         value: !0
-      }), exports.default = function(path, helpers, noNewArrows, ignoreFunctionLength) {
+      }), exports.default = function(path, helpers, noNewArrows, ignoreFunctionLength, loose) {
         path.traverse(awaitVisitor, {
           wrapAwait: helpers.wrapAwait
         });
@@ -387,7 +387,7 @@
           }
           return !1;
         }(path);
-        path.node.async = !1, path.node.generator = !0, (0, _helperWrapFunction.default)(path, cloneNode(helpers.wrapAsync), noNewArrows, ignoreFunctionLength);
+        path.node.async = !1, path.node.generator = !0, (0, _helperWrapFunction.default)(path, cloneNode(helpers.wrapAsync), noNewArrows, ignoreFunctionLength, loose);
         path.isObjectMethod() || path.isClassMethod() || path.parentPath.isObjectProperty() || path.parentPath.isClassProperty() || isIIFE || !path.isExpression() || (0, 
         _helperAnnotateAsPure.default)(path);
       };
@@ -511,12 +511,12 @@
       "use strict";
       Object.defineProperty(exports, "__esModule", {
         value: !0
-      }), exports.default = function(path, callId, noNewArrows = !0, ignoreFunctionLength = !1) {
+      }), exports.default = function(path, callId, noNewArrows = !0, ignoreFunctionLength = !1, loose = !1) {
         path.isMethod() ? function(path, callId) {
           const node = path.node, body = node.body, container = functionExpression(null, [], blockStatement(body.body), !0);
           body.body = [ returnStatement(callExpression(callExpression(callId, [ container ]), [])) ], 
           node.async = !1, node.generator = !1, path.get("body.body.0.argument.callee.arguments.0").unwrapFunctionEnvironment();
-        }(path, callId) : function(path, callId, noNewArrows, ignoreFunctionLength) {
+        }(path, callId) : function(path, callId, noNewArrows, ignoreFunctionLength, loose) {
           const node = path.node, isDeclaration = path.isFunctionDeclaration(), functionId = node.id, wrapper = isDeclaration ? buildDeclarationWrapper : functionId ? buildNamedExpressionWrapper : buildAnonymousExpressionWrapper;
           path.isArrowFunctionExpression() && path.arrowFunctionToExpression({
             noNewArrows
@@ -531,7 +531,7 @@
             NAME: functionId || null,
             REF: path.scope.generateUidIdentifier(functionId ? functionId.name : "ref"),
             FUNCTION: built,
-            PARAMS: params
+            PARAMS: loose ? [] : params
           });
           if (isDeclaration) path.replaceWith(container[0]), path.insertAfter(container[1]); else {
             const retFunction = container.callee.body.body[1].argument;
@@ -541,7 +541,7 @@
               scope: path.scope
             }), !retFunction || retFunction.id || !ignoreFunctionLength && params.length ? path.replaceWith(container) : path.replaceWith(built);
           }
-        }(path, callId, noNewArrows, ignoreFunctionLength);
+        }(path, callId, noNewArrows, ignoreFunctionLength, loose);
       };
       var _helperFunctionName = __webpack_require__(1485), _template = __webpack_require__(4847), _t = __webpack_require__(8459);
       const {blockStatement, callExpression, functionExpression, isAssignmentPattern, isRestElement, returnStatement} = _t, buildAnonymousExpressionWrapper = _template.default.expression("\n  (function () {\n    var REF = FUNCTION;\n    return function NAME(PARAMS) {\n      return REF.apply(this, arguments);\n    };\n  })()\n"), buildNamedExpressionWrapper = _template.default.expression("\n  (function () {\n    var REF = FUNCTION;\n    function NAME(PARAMS) {\n      return REF.apply(this, arguments);\n    }\n    return NAME;\n  })()\n"), buildDeclarationWrapper = (0, 
@@ -1035,7 +1035,7 @@
     var _helperPluginUtils = __webpack_require__(5488), _helperRemapAsyncToGenerator = __webpack_require__(5108), _helperModuleImports = __webpack_require__(203), _core = __webpack_require__(4629), _default = (0, 
     _helperPluginUtils.declare)(((api, options) => {
       api.assertVersion(7);
-      const {method, module} = options, noNewArrows = api.assumption("noNewArrows"), ignoreFunctionLength = api.assumption("ignoreFunctionLength");
+      const {loose, method, module} = options, noNewArrows = api.assumption("noNewArrows"), ignoreFunctionLength = api.assumption("ignoreFunctionLength");
       return method && module ? {
         name: "transform-async-to-generator",
         visitor: {
@@ -1045,7 +1045,7 @@
             wrapAsync = wrapAsync ? _core.types.cloneNode(wrapAsync) : state.methodWrapper = (0, 
             _helperModuleImports.addNamed)(path, method, module), (0, _helperRemapAsyncToGenerator.default)(path, {
               wrapAsync
-            }, noNewArrows, ignoreFunctionLength);
+            }, noNewArrows, ignoreFunctionLength, loose);
           }
         }
       } : {
@@ -1054,7 +1054,7 @@
           Function(path, state) {
             path.node.async && !path.node.generator && (0, _helperRemapAsyncToGenerator.default)(path, {
               wrapAsync: state.addHelper("asyncToGenerator")
-            }, noNewArrows, ignoreFunctionLength);
+            }, noNewArrows, ignoreFunctionLength, loose);
           }
         }
       };

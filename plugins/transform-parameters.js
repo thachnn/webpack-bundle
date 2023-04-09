@@ -104,7 +104,7 @@
     6133: (__unused_webpack_module, exports, __webpack_require__) => {
       Object.defineProperty(exports, "__esModule", {
         value: !0
-      }), exports.default = function(path) {
+      }), exports.default = function(path, useBuiltIns) {
         const {node, scope} = path;
         if (!function(node) {
           const length = node.params.length;
@@ -158,7 +158,11 @@
         paramsCount ? (arrKey = _core.types.binaryExpression("-", _core.types.cloneNode(key), _core.types.cloneNode(start)), 
         arrLen = _core.types.conditionalExpression(_core.types.binaryExpression(">", _core.types.cloneNode(len), _core.types.cloneNode(start)), _core.types.binaryExpression("-", _core.types.cloneNode(len), _core.types.cloneNode(start)), _core.types.numericLiteral(0))) : (arrKey = _core.types.identifier(key.name), 
         arrLen = _core.types.identifier(len.name));
-        const loop = buildRest({
+        const loop = useBuiltIns ? buildLooseRest({
+          ARGUMENTS: argsId,
+          START: start,
+          ARRAY: rest
+        }) : buildRest({
           ARGUMENTS: argsId,
           ARRAY_KEY: arrKey,
           ARRAY_LEN: arrLen,
@@ -177,7 +181,8 @@
         return !0;
       };
       var _core = __webpack_require__(4629);
-      const buildRest = (0, _core.template)("\n  for (var LEN = ARGUMENTS.length,\n           ARRAY = new Array(ARRAY_LEN),\n           KEY = START;\n       KEY < LEN;\n       KEY++) {\n    ARRAY[ARRAY_KEY] = ARGUMENTS[KEY];\n  }\n"), restIndex = (0, 
+      const buildRest = (0, _core.template)("\n  for (var LEN = ARGUMENTS.length,\n           ARRAY = new Array(ARRAY_LEN),\n           KEY = START;\n       KEY < LEN;\n       KEY++) {\n    ARRAY[ARRAY_KEY] = ARGUMENTS[KEY];\n  }\n"), buildLooseRest = (0, 
+      _core.template)("\n  var ARRAY = Array.prototype.slice.call(ARGUMENTS, START)\n"), restIndex = (0, 
       _core.template)("\n  (INDEX < OFFSET || ARGUMENTS.length <= INDEX) ? undefined : ARGUMENTS[INDEX]\n"), restIndexImpure = (0, 
       _core.template)("\n  REF = INDEX, (REF < OFFSET || ARGUMENTS.length <= REF) ? undefined : ARGUMENTS[REF]\n"), restLength = (0, 
       _core.template)("\n  ARGUMENTS.length <= OFFSET ? 0 : ARGUMENTS.length - OFFSET\n");
@@ -296,7 +301,7 @@
     _helperPluginUtils.declare)(((api, options) => {
       var _api$assumption;
       api.assertVersion(7);
-      const ignoreFunctionLength = null != (_api$assumption = api.assumption("ignoreFunctionLength")) ? _api$assumption : options.loose, noNewArrows = api.assumption("noNewArrows");
+      const ignoreFunctionLength = null != (_api$assumption = api.assumption("ignoreFunctionLength")) ? _api$assumption : options.loose, useBuiltIns = options.loose || options.useBuiltIns, noNewArrows = api.assumption("noNewArrows");
       return {
         name: "transform-parameters",
         visitor: {
@@ -304,7 +309,8 @@
             if (path.isArrowFunctionExpression() && path.get("params").some((param => param.isRestElement() || param.isAssignmentPattern())) && (path.arrowFunctionToExpression({
               noNewArrows
             }), !path.isFunctionExpression())) return;
-            const convertedRest = (0, _rest.default)(path), convertedParams = (0, _params.default)(path, ignoreFunctionLength);
+            const convertedRest = (0, _rest.default)(path, useBuiltIns), convertedParams = (0, 
+            _params.default)(path, ignoreFunctionLength);
             (convertedRest || convertedParams) && path.scope.crawl();
           }
         }

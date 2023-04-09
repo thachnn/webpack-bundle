@@ -54,7 +54,7 @@
         return node._blockHoist = this.blockHoist, node;
       }
       buildVariableDeclaration(id, init) {
-        const declar = core.types.variableDeclaration("var", [ core.types.variableDeclarator(core.types.cloneNode(id), core.types.cloneNode(init)) ]);
+        const declar = core.types.variableDeclaration("const" === this.kind || "let" === this.kind ? "let" : "var", [ core.types.variableDeclarator(core.types.cloneNode(id), core.types.cloneNode(init)) ]);
         return declar._blockHoist = this.blockHoist, declar;
       }
       push(id, _init) {
