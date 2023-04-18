@@ -13,19 +13,22 @@ const schema = {
       search: {
         anyOf: [{ type: 'string', minLength: 1 }, { instanceof: 'RegExp' }],
       },
-      replace: { type: 'string' },
+      replace: {
+        anyOf: [{ type: 'string' }, { instanceof: 'Function' }],
+      },
       test: { instanceof: 'RegExp' },
     },
     required: ['search', 'replace'],
   },
 };
 
-/** @typedef {{ search: String | RegExp, replace: String, test?: RegExp }} ReplacerOption */
-
-/** @typedef {{ start: Number, end: Number, replace: String }} Replacement */
+/**
+ * @typedef {{search: (string|RegExp), replace: (string|Function), test?: RegExp}} ReplacerOption
+ * @typedef {{start: number, end: number, replace: string}} Replacement
+ */
 
 /**
- * @param {String} str
+ * @param {string} str
  * @param {ReplacerOption[]} patterns
  * @returns {Replacement[]}
  */
@@ -56,7 +59,7 @@ const searchReplacements = (str, patterns) => {
 };
 
 class ReplaceCodePlugin {
-  /** @param {ReplacerOption | ReplacerOption[]} options */
+  /** @param {(ReplacerOption|ReplacerOption[])} options */
   constructor(options) {
     this.options = Array.isArray(options) ? options : [options];
 
@@ -65,8 +68,7 @@ class ReplaceCodePlugin {
 
   /**
    * Apply the plugin
-   * @param {import("webpack").Compiler} compiler the compiler instance
-   * @returns {void}
+   * @param {import('webpack').Compiler} compiler the compiler instance
    */
   apply(compiler) {
     const options = this.options;

@@ -1,0 +1,866 @@
+--- a/node_modules/@webassemblyjs/helper-buffer/esm/index.js
++++ b/node_modules/@webassemblyjs/helper-buffer/esm/index.js
+@@ -4,3 +4 @@ function concatUint8Arrays() {
+-  for (var _len = arguments.length, arrays = new Array(_len), _key = 0; _key < _len; _key++) {
+-    arrays[_key] = arguments[_key];
+-  }
++  var arrays = Array.prototype.slice.call(arguments);
+--- a/node_modules/@webassemblyjs/wasm-edit/esm/apply.js
++++ b/node_modules/@webassemblyjs/wasm-edit/esm/apply.js
+@@ -6 +6 @@ import { encodeNode } from "@webassemblyjs/wasm-gen";
+-import { encodeU32 } from "@webassemblyjs/wasm-gen/lib/encoder";
++import { encodeU32 } from "@webassemblyjs/wasm-gen";
+--- a/node_modules/@webassemblyjs/wasm-edit/esm/index.js
++++ b/node_modules/@webassemblyjs/wasm-edit/esm/index.js
+@@ -3 +3 @@ import { traverse } from "@webassemblyjs/ast";
+-import { cloneNode } from "@webassemblyjs/ast/lib/clone";
++import { cloneNode } from "@webassemblyjs/ast";
+@@ -20,7 +20 @@ function sortBySectionOrder(nodes) {
+-  var _iteratorNormalCompletion = true;
+-  var _didIteratorError = false;
+-  var _iteratorError = undefined;
+-
+-  try {
+-    for (var _iterator = nodes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+-      var _node = _step.value;
++  for (var _node of nodes) {
+@@ -29,14 +23,0 @@ function sortBySectionOrder(nodes) {
+-  } catch (err) {
+-    _didIteratorError = true;
+-    _iteratorError = err;
+-  } finally {
+-    try {
+-      if (!_iteratorNormalCompletion && _iterator.return != null) {
+-        _iterator.return();
+-      }
+-    } finally {
+-      if (_didIteratorError) {
+-        throw _iteratorError;
+-      }
+-    }
+-  }
+--- a/node_modules/@webassemblyjs/wasm-gen/esm/encoder/index.js
++++ b/node_modules/@webassemblyjs/wasm-gen/esm/encoder/index.js
+@@ -26 +26 @@ export function encodeU32(v) {
+-  var array = _toConsumableArray(uint8view);
++  var array = Array.from(uint8view);
+@@ -33 +33 @@ export function encodeI32(v) {
+-  var array = _toConsumableArray(uint8view);
++  var array = Array.from(uint8view);
+@@ -40 +40 @@ export function encodeI64(v) {
+-  var array = _toConsumableArray(uint8view);
++  var array = Array.from(uint8view);
+--- a/node_modules/@webassemblyjs/wasm-opt/esm/leb128.js
++++ b/node_modules/@webassemblyjs/wasm-opt/esm/leb128.js
+@@ -2 +2 @@ import { traverse, shiftSection } from "@webassemblyjs/ast";
+-import { encodeU32 } from "@webassemblyjs/wasm-gen/lib/encoder";
++import { encodeU32 } from "@webassemblyjs/wasm-gen";
+--- a/node_modules/@xtuc/long/src/long.js
++++ b/node_modules/@xtuc/long/src/long.js
+@@ -1 +0,0 @@
+-module.exports = Long;
+@@ -26 +25 @@ try {
+-function Long(low, high, unsigned) {
++export default function Long(low, high, unsigned) {
+--- a/node_modules/acorn/dist/acorn.js
++++ b/node_modules/acorn/dist/acorn.js
+@@ -1,5 +1 @@
+-(function (global, factory) {
+-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+-  typeof define === 'function' && define.amd ? define(['exports'], factory) :
+-  (global = global || self, factory(global.acorn = {}));
+-}(this, (function (exports) { 'use strict';
++ 'use strict';
+@@ -4991,2 +4987 @@
+ 
+-})));
+--- a/node_modules/big.js/big.js
++++ b/node_modules/big.js/big.js
+@@ -7,2 +7 @@
+-;(function (GLOBAL) {
+   'use strict';
+@@ -929,6 +928 @@
+   //AMD.
+-  if (typeof define === 'function' && define.amd) {
+-    define(function () { return Big; });
+-
+-  // Node and other CommonJS-like environments that support module.exports.
+-  } else if (typeof module !== 'undefined' && module.exports) {
+@@ -937,5 +931 @@
+   //Browser.
+-  } else {
+-    GLOBAL.Big = Big;
+-  }
+-})(this);
+--- a/node_modules/concat-stream/index.js
++++ b/node_modules/concat-stream/index.js
+@@ -5,3 +5 @@ var bufferFrom = require('buffer-from')
+-if (typeof Uint8Array === 'undefined') {
+-  var U8 = require('typedarray').Uint8Array
+-} else {
++{
+--- a/node_modules/copy-webpack-plugin/dist/index.js
++++ b/node_modules/copy-webpack-plugin/dist/index.js
+@@ -6,15 +6,14 @@ Object.defineProperty(exports, "__esModule", {
+-exports.default = void 0;
+ 
+-var _path = _interopRequireDefault(require("path"));
++var _path = require("path");
+ 
+-var _schemaUtils = _interopRequireDefault(require("schema-utils"));
++var validateOptions = require("schema-utils");
+ 
+-var _webpackLog = _interopRequireDefault(require("webpack-log"));
++var _webpackLog = require("webpack-log");
+ 
+-var _options = _interopRequireDefault(require("./options.json"));
++var _options = require("./options.json");
+ 
+-var _preProcessPattern = _interopRequireDefault(require("./preProcessPattern"));
++var _preProcessPattern = require("./preProcessPattern").default;
+ 
+-var _processPattern = _interopRequireDefault(require("./processPattern"));
++var _processPattern = require("./processPattern").default;
+ 
+-var _postProcessPattern = _interopRequireDefault(require("./postProcessPattern"));
++var _postProcessPattern = require("./postProcessPattern").default;
+@@ -26 +25 @@ class CopyPlugin {
+-    (0, _schemaUtils.default)(_options.default, patterns, this.constructor.name);
++    validateOptions(_options, patterns, this.constructor.name);
+@@ -41,2 +40,2 @@ class CopyPlugin {
+-    } else if (!_path.default.isAbsolute(this.options.context)) {
+-      context = _path.default.join(compiler.options.context, this.options.context);
++    } else if (!_path.isAbsolute(this.options.context)) {
++      context = _path.join(compiler.options.context, this.options.context);
+@@ -49 +48 @@ class CopyPlugin {
+-    const logger = (0, _webpackLog.default)({
++    const logger = _webpackLog({
+@@ -79,3 +78,3 @@ class CopyPlugin {
+-      Promise.all(patterns.map(pattern => Promise.resolve().then(() => (0, _preProcessPattern.default)(globalRef, pattern)) // Every source (from) is assumed to exist here
++      Promise.all(patterns.map(pattern => Promise.resolve().then(() => _preProcessPattern(globalRef, pattern)) // Every source (from) is assumed to exist here
+       // eslint-disable-next-line no-shadow
+-      .then(pattern => (0, _processPattern.default)(globalRef, pattern).then(files => {
++      .then(pattern => _processPattern(globalRef, pattern).then(files => {
+@@ -86 +85 @@ class CopyPlugin {
+-        return Promise.all(files.filter(Boolean).map(file => (0, _postProcessPattern.default)(globalRef, pattern, file)));
++        return Promise.all(files.filter(Boolean).map(file => _postProcessPattern(globalRef, pattern, file)));
+@@ -121,2 +120,2 @@ class CopyPlugin {
+-var _default = CopyPlugin;
+-exports.default = _default;
+\ No newline at end of file
++module.exports = CopyPlugin;
++module.exports.default = CopyPlugin;
+\ No newline at end of file
+--- a/node_modules/copy-webpack-plugin/dist/postProcessPattern.js
++++ b/node_modules/copy-webpack-plugin/dist/postProcessPattern.js
+@@ -8,15 +8,15 @@ exports.default = postProcessPattern;
+-var _path = _interopRequireDefault(require("path"));
++var _path = require("path");
+ 
+-var _os = _interopRequireDefault(require("os"));
++var _os = require("os");
+ 
+-var _crypto = _interopRequireDefault(require("crypto"));
++var _crypto = require("crypto");
+ 
+-var _loaderUtils = _interopRequireDefault(require("loader-utils"));
++var _loaderUtils = require("loader-utils");
+ 
+-var _cacache = _interopRequireDefault(require("cacache"));
++var _cacache = require("cacache");
+ 
+-var _serializeJavascript = _interopRequireDefault(require("serialize-javascript"));
++var _serializeJavascript = require("serialize-javascript");
+ 
+-var _findCacheDir = _interopRequireDefault(require("find-cache-dir"));
++var _findCacheDir = require("find-cache-dir");
+ 
+-var _normalizePath = _interopRequireDefault(require("normalize-path"));
++var _normalizePath = require("normalize-path");
+@@ -41 +41 @@ function postProcessPattern(globalRef, pattern, file) {
+-  const getStats = pattern.stats ? Promise.resolve().then(() => pattern.stats) : (0, _promisify.stat)(inputFileSystem, file.absoluteFrom);
++  const getStats = pattern.stats ? Promise.resolve().then(() => pattern.stats) : _promisify.stat(inputFileSystem, file.absoluteFrom);
+@@ -55 +55 @@ function postProcessPattern(globalRef, pattern, file) {
+-    return (0, _promisify.readFile)(inputFileSystem, file.absoluteFrom).then(content => {
++    return _promisify.readFile(inputFileSystem, file.absoluteFrom).then(content => {
+@@ -63,6 +63,6 @@ function postProcessPattern(globalRef, pattern, file) {
+-            globalRef.cacheDir = (0, _findCacheDir.default)({
++            globalRef.cacheDir = _findCacheDir({
+               name: 'copy-webpack-plugin'
+-            }) || _os.default.tmpdir();
++            }) || _os.tmpdir();
+           }
+ 
+-          const cacheKey = pattern.cache.key ? pattern.cache.key : (0, _serializeJavascript.default)({
++          const cacheKey = pattern.cache.key ? pattern.cache.key : _serializeJavascript({
+@@ -72,3 +72,3 @@ function postProcessPattern(globalRef, pattern, file) {
+-            hash: _crypto.default.createHash('md4').update(content).digest('hex')
++            hash: _crypto.createHash('md4').update(content).digest('hex')
+           });
+-          return _cacache.default.get(globalRef.cacheDir, cacheKey).then(result => {
++          return _cacache.get(globalRef.cacheDir, cacheKey).then(result => {
+@@ -80 +80 @@ function postProcessPattern(globalRef, pattern, file) {
+-            return _cacache.default.put(globalRef.cacheDir, cacheKey, content).then(() => content);
++            return _cacache.put(globalRef.cacheDir, cacheKey, content).then(() => content);
+@@ -93 +93 @@ function postProcessPattern(globalRef, pattern, file) {
+-        if (!_path.default.extname(file.relativeFrom)) {
++        if (!_path.extname(file.relativeFrom)) {
+@@ -97 +97 @@ function postProcessPattern(globalRef, pattern, file) {
+-        file.webpackTo = _loaderUtils.default.interpolateName({
++        file.webpackTo = _loaderUtils.interpolateName({
+@@ -105 +105 @@ function postProcessPattern(globalRef, pattern, file) {
+-        file.webpackTo = _path.default.normalize(file.webpackTo);
++        file.webpackTo = _path.normalize(file.webpackTo);
+@@ -120,4 +120,4 @@ function postProcessPattern(globalRef, pattern, file) {
+-      const hash = _loaderUtils.default.getHashDigest(content);
++      const hash = _loaderUtils.getHashDigest(content);
+ 
+-      const targetPath = (0, _normalizePath.default)(file.webpackTo);
+-      const targetAbsolutePath = (0, _normalizePath.default)(file.absoluteFrom);
++      const targetPath = _normalizePath(file.webpackTo);
++      const targetAbsolutePath = _normalizePath(file.absoluteFrom);
+--- a/node_modules/copy-webpack-plugin/dist/preProcessPattern.js
++++ b/node_modules/copy-webpack-plugin/dist/preProcessPattern.js
+@@ -8,11 +8,11 @@ exports.default = preProcessPattern;
+-var _path = _interopRequireDefault(require("path"));
++var _path = require("path");
+ 
+-var _isGlob = _interopRequireDefault(require("is-glob"));
++var _isGlob = require("is-glob");
+ 
+-var _globParent = _interopRequireDefault(require("glob-parent"));
++var _globParent = require("glob-parent");
+ 
+-var _normalize = _interopRequireDefault(require("./utils/normalize"));
++var _normalize = require("./utils/normalize").default;
+ 
+-var _isTemplateLike = _interopRequireDefault(require("./utils/isTemplateLike"));
++var _isTemplateLike = require("./utils/isTemplateLike").default;
+ 
+-var _isObject = _interopRequireDefault(require("./utils/isObject"));
++var _isObject = require("./utils/isObject").default;
+@@ -40,12 +40,12 @@ function preProcessPattern(globalRef, pattern) {
+-  if (!_path.default.isAbsolute(pattern.context)) {
+-    pattern.context = _path.default.join(context, pattern.context);
++  if (!_path.isAbsolute(pattern.context)) {
++    pattern.context = _path.join(context, pattern.context);
+   }
+ 
+-  const isFromGlobPatten = (0, _isObject.default)(pattern.from) && pattern.from.glob || pattern.globOptions; // Todo remove this in next major
++  const isFromGlobPatten = _isObject(pattern.from) && pattern.from.glob || pattern.globOptions; // Todo remove this in next major
+ 
+-  const isToDirectory = _path.default.extname(pattern.to) === '' || pattern.to.slice(-1) === _path.default.sep; // Normalize paths
++  const isToDirectory = _path.extname(pattern.to) === '' || pattern.to.slice(-1) === _path.sep; // Normalize paths
+ 
+ 
+-  pattern.from = isFromGlobPatten ? pattern.from : _path.default.normalize(pattern.from);
+-  pattern.context = _path.default.normalize(pattern.context);
+-  pattern.to = _path.default.normalize(pattern.to);
++  pattern.from = isFromGlobPatten ? pattern.from : _path.normalize(pattern.from);
++  pattern.context = _path.normalize(pattern.context);
++  pattern.to = _path.normalize(pattern.to);
+@@ -60 +60 @@ function preProcessPattern(globalRef, pattern) {
+-    case (0, _isTemplateLike.default)(pattern.to):
++    case _isTemplateLike(pattern.to):
+@@ -78,2 +78,2 @@ function preProcessPattern(globalRef, pattern) {
+-    pattern.absoluteFrom = _path.default.resolve(pattern.context, pattern.globOptions ? pattern.from : pattern.from.glob);
+-    pattern.glob = (0, _normalize.default)(pattern.context, pattern.globOptions ? pattern.from : pattern.from.glob);
++    pattern.absoluteFrom = _path.resolve(pattern.context, pattern.globOptions ? pattern.from : pattern.from.glob);
++    pattern.glob = _normalize(pattern.context, pattern.globOptions ? pattern.from : pattern.from.glob);
+@@ -84,4 +84,4 @@ function preProcessPattern(globalRef, pattern) {
+-  if (_path.default.isAbsolute(pattern.from)) {
++  if (_path.isAbsolute(pattern.from)) {
+     pattern.absoluteFrom = pattern.from;
+   } else {
+-    pattern.absoluteFrom = _path.default.resolve(pattern.context, pattern.from);
++    pattern.absoluteFrom = _path.resolve(pattern.context, pattern.from);
+@@ -94,4 +94,4 @@ function preProcessPattern(globalRef, pattern) {
+-    if ((0, _isGlob.default)(pattern.from) || pattern.from.includes('*')) {
++    if (_isGlob(pattern.from) || pattern.from.includes('*')) {
+       logger.debug(`determined '${pattern.absoluteFrom}' is a glob`);
+       pattern.fromType = 'glob';
+-      pattern.glob = (0, _normalize.default)(pattern.context, pattern.from); // We need to add context directory as dependencies to avoid problems when new files added in directories
++      pattern.glob = _normalize(pattern.context, pattern.from); // We need to add context directory as dependencies to avoid problems when new files added in directories
+@@ -101 +101 @@ function preProcessPattern(globalRef, pattern) {
+-      contextDependencies.add(_path.default.normalize((0, _globParent.default)(pattern.absoluteFrom)));
++      contextDependencies.add(_path.normalize(_globParent(pattern.absoluteFrom)));
+@@ -117 +117 @@ function preProcessPattern(globalRef, pattern) {
+-  return (0, _promisify.stat)(inputFileSystem, pattern.absoluteFrom).catch(() => noStatsHandler()).then(stats => {
++  return _promisify.stat(inputFileSystem, pattern.absoluteFrom).catch(() => noStatsHandler()).then(stats => {
+@@ -128,2 +128,2 @@ function preProcessPattern(globalRef, pattern) {
+-      pattern.glob = (0, _normalize.default)(pattern.absoluteFrom, '**/*');
+-      pattern.absoluteFrom = _path.default.join(pattern.absoluteFrom, '**/*');
++      pattern.glob = _normalize(pattern.absoluteFrom, '**/*');
++      pattern.absoluteFrom = _path.join(pattern.absoluteFrom, '**/*');
+@@ -138,2 +138,2 @@ function preProcessPattern(globalRef, pattern) {
+-      pattern.context = _path.default.dirname(pattern.absoluteFrom);
+-      pattern.glob = (0, _normalize.default)(pattern.absoluteFrom);
++      pattern.context = _path.dirname(pattern.absoluteFrom);
++      pattern.glob = _normalize(pattern.absoluteFrom);
+--- a/node_modules/copy-webpack-plugin/dist/processPattern.js
++++ b/node_modules/copy-webpack-plugin/dist/processPattern.js
+@@ -8,9 +8,9 @@ exports.default = processPattern;
+-var _path = _interopRequireDefault(require("path"));
++var _path = require("path");
+ 
+-var _globby = _interopRequireDefault(require("globby"));
++var _globby = require("globby");
+ 
+-var _pLimit = _interopRequireDefault(require("p-limit"));
++var _pLimit = require("p-limit");
+ 
+-var _minimatch = _interopRequireDefault(require("minimatch"));
++var _minimatch = require("minimatch");
+ 
+-var _isObject = _interopRequireDefault(require("./utils/isObject"));
++var _isObject = require("./utils/isObject").default;
+@@ -38,11 +38,11 @@ function processPattern(globalRef, pattern) {
+-  const limit = (0, _pLimit.default)(concurrency || 100);
++  const limit = _pLimit(concurrency || 100);
+   logger.info(`begin globbing '${pattern.glob}' with a context of '${pattern.context}'`);
+-  return (0, _globby.default)(pattern.glob, globOptions).then(paths => Promise.all(paths.map(from => limit(() => {
++  return _globby(pattern.glob, globOptions).then(paths => Promise.all(paths.map(from => limit(() => {
+     const file = {
+       force: pattern.force,
+-      absoluteFrom: _path.default.resolve(pattern.context, from)
++      absoluteFrom: _path.resolve(pattern.context, from)
+     };
+-    file.relativeFrom = _path.default.relative(pattern.context, file.absoluteFrom);
++    file.relativeFrom = _path.relative(pattern.context, file.absoluteFrom);
+ 
+     if (pattern.flatten) {
+-      file.relativeFrom = _path.default.basename(file.relativeFrom);
++      file.relativeFrom = _path.basename(file.relativeFrom);
+@@ -65 +65 @@ function processPattern(globalRef, pattern) {
+-      } else if ((0, _isObject.default)(ignoreGlob)) {
++      } else if (_isObject(ignoreGlob)) {
+@@ -77 +77 @@ function processPattern(globalRef, pattern) {
+-      if ((0, _minimatch.default)(file.relativeFrom, glob, globParams)) {
++      if (_minimatch(file.relativeFrom, glob, globParams)) {
+@@ -87 +87 @@ function processPattern(globalRef, pattern) {
+-      file.webpackTo = _path.default.join(pattern.to, file.relativeFrom);
++      file.webpackTo = _path.join(pattern.to, file.relativeFrom);
+@@ -95 +95 @@ function processPattern(globalRef, pattern) {
+-    if (_path.default.isAbsolute(file.webpackTo)) {
++    if (_path.isAbsolute(file.webpackTo)) {
+@@ -102 +102 @@ function processPattern(globalRef, pattern) {
+-      file.webpackTo = _path.default.relative(output, file.webpackTo);
++      file.webpackTo = _path.relative(output, file.webpackTo);
+--- a/node_modules/copy-webpack-plugin/dist/utils/normalize.js
++++ b/node_modules/copy-webpack-plugin/dist/utils/normalize.js
+@@ -8,3 +8,3 @@ exports.default = normalize;
+-var _path = _interopRequireDefault(require("path"));
++var _path = require("path");
+ 
+-var _normalizePath = _interopRequireDefault(require("normalize-path"));
++var _normalizePath = require("normalize-path");
+@@ -15 +15 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
+-  if (from && _path.default.isAbsolute(from)) {
++  if (from && _path.isAbsolute(from)) {
+@@ -21 +21 @@ function escape(context, from) {
+-  const absoluteContext = _path.default.resolve(context) // Need refactor
++  const absoluteContext = _path.resolve(context) // Need refactor
+@@ -38 +38 @@ function escape(context, from) {
+-  return (0, _normalizePath.default)(escape(context, from));
++  return _normalizePath(escape(context, from));
+--- a/node_modules/enhanced-resolve/lib/node.js
++++ b/node_modules/enhanced-resolve/lib/node.js
+@@ -199,0 +199 @@ module.exports.ResolverFactory = ResolverFactory;
++module.exports.AliasPlugin = require("./AliasPlugin");
+--- a/node_modules/esrecurse/esrecurse.js
++++ b/node_modules/esrecurse/esrecurse.js
+@@ -24 +24,0 @@
+-(function () {
+@@ -116 +115,0 @@
+-}());
+--- a/node_modules/estraverse/estraverse.js
++++ b/node_modules/estraverse/estraverse.js
+@@ -28 +28,0 @@
+-(function clone(exports) {
+@@ -778,4 +777 @@
+-    exports.cloneEnvironment = function () { return clone({}); };
+
+-    return exports;
+-}(exports));
+--- a/node_modules/glob/glob.js
++++ b/node_modules/glob/glob.js
+@@ -46 +46 @@ var Minimatch = minimatch.Minimatch
+-var inherits = require('inherits')
++var inherits = require('util').inherits
+@@ -56 +56,0 @@ var inflight = require('inflight')
+-var util = require('util')
+--- a/node_modules/i18n-webpack-plugin/dist/index.js
++++ b/node_modules/i18n-webpack-plugin/dist/index.js
+@@ -15 +15,0 @@ var _ConstDependency = require('webpack/lib/dependencies/ConstDependency');
+-var _ConstDependency2 = _interopRequireDefault(_ConstDependency);
+@@ -19 +18,0 @@ var _NullFactory = require('webpack/lib/NullFactory');
+-var _NullFactory2 = _interopRequireDefault(_NullFactory);
+@@ -23 +21,0 @@ var _MissingLocalizationError = require('./MissingLocalizationError');
+-var _MissingLocalizationError2 = _interopRequireDefault(_MissingLocalizationError);
+@@ -27 +24,0 @@ var _MakeLocalizeFunction = require('./MakeLocalizeFunction');
+-var _MakeLocalizeFunction2 = _interopRequireDefault(_MakeLocalizeFunction);
+@@ -55 +51 @@ var I18nPlugin = function () {
+-    this.localization = localization ? typeof localization === 'function' ? localization : (0, _MakeLocalizeFunction2.default)(localization, !!this.options.nested) : null;
++    this.localization = localization ? typeof localization === 'function' ? localization : (0, _MakeLocalizeFunction.default)(localization, !!this.options.nested) : null;
+@@ -72,2 +68,2 @@ var I18nPlugin = function () {
+-        compilation.dependencyFactories.set(_ConstDependency2.default, new _NullFactory2.default());
+-        compilation.dependencyTemplates.set(_ConstDependency2.default, new _ConstDependency2.default.Template());
++        compilation.dependencyFactories.set(_ConstDependency, new _NullFactory());
++        compilation.dependencyTemplates.set(_ConstDependency, new _ConstDependency.Template());
+@@ -105 +101 @@ var I18nPlugin = function () {
+-                error = new _MissingLocalizationError2.default(this.state.module, param, defaultValue);
++                error = new _MissingLocalizationError.default(this.state.module, param, defaultValue);
+@@ -119 +115 @@ var I18nPlugin = function () {
+-            var dep = new _ConstDependency2.default(JSON.stringify(result), expr.range);
++            var dep = new _ConstDependency(JSON.stringify(result), expr.range);
+@@ -132 +128,2 @@ var I18nPlugin = function () {
+-exports.default = I18nPlugin;
+\ No newline at end of file
++module.exports = I18nPlugin;
++module.exports.default = I18nPlugin;
+\ No newline at end of file
+--- a/node_modules/iferr/index.js
++++ b/node_modules/iferr/index.js
+@@ -1,2 +1 @@
+ // Generated by CoffeeScript 1.7.1
+-(function() {
+@@ -48,2 +47 @@
+ 
+-}).call(this);
+--- a/node_modules/imurmurhash/imurmurhash.js
++++ b/node_modules/imurmurhash/imurmurhash.js
+@@ -12,2 +12 @@
+-(function(){
+     var cache;
+@@ -133,6 +132 @@
+-    if (typeof(module) != 'undefined') {
+         module.exports = MurmurHash3;
+-    } else {
+-        this.MurmurHash3 = MurmurHash3;
+-    }
+-}());
+--- a/node_modules/is-windows/index.js
++++ b/node_modules/is-windows/index.js
+@@ -9 +9 @@
+-  if (exports && typeof exports === 'object' && typeof module !== 'undefined') {
++  if (typeof exports === 'object' && typeof module !== 'undefined') {
+--- a/node_modules/loader-utils/lib/parseQuery.js
++++ b/node_modules/loader-utils/lib/parseQuery.js
+@@ -3 +3 @@
+-const JSON5 = require('json5');
++const JSON5 = { parse: require('json5/lib/parse') };
+--- a/node_modules/make-dir/index.js
++++ b/node_modules/make-dir/index.js
+@@ -5 +5,0 @@ const pify = require('pify');
+-const semver = require('semver');
+@@ -12 +11 @@ const defaults = {
+-const useNativeRecursiveOption = semver.satisfies(process.version, '>=10.12.0');
++const useNativeRecursiveOption = /^\s*v?(10\.(1[2-9]|[2-9]\d|[1-9]\d\d+)|1[1-9]|[2-9]\d|[1-9]\d\d+)\./.test(process.version); // >=10.12.0
+--- a/node_modules/mkdirp/index.js
++++ b/node_modules/mkdirp/index.js
+@@ -35,2 +35,3 @@ function mkdirP (p, opts, f, made) {
+-                if (path.dirname(p) === p) return cb(er);
+-                mkdirP(path.dirname(p), opts, function (er, made) {
++                var d = path.dirname(p);
++                if (d === p) return cb(er);
++                mkdirP(d, opts, function (er, made) {
+@@ -80 +81,3 @@ mkdirP.sync = function sync (p, opts, made) {
+-                made = sync(path.dirname(p), opts, made);
++                var d = path.dirname(p);
++                if (d === p) throw err0;
++                made = sync(d, opts, made);
+--- a/node_modules/neo-async/async.js
++++ b/node_modules/neo-async/async.js
+@@ -1,11 +1,0 @@
+-(function(global, factory) {
+-  /*jshint -W030 */
+-  'use strict';
+-  typeof exports === 'object' && typeof module !== 'undefined'
+-    ? factory(exports)
+-    : typeof define === 'function' && define.amd
+-    ? define(['exports'], factory)
+-    : global.async
+-    ? factory((global.neo_async = global.neo_async || {}))
+-    : factory((global.async = global.async || {}));
+-})(this, function(exports) {
+@@ -9183,2 +9172 @@
+   }
+-});
+--- a/node_modules/prr/prr.js
++++ b/node_modules/prr/prr.js
+@@ -8,6 +8,0 @@
+-(function (name, context, definition) {
+-  if (typeof module != 'undefined' && module.exports)
+-    module.exports = definition()
+-  else
+-    context[name] = definition()
+-})('prr', this, function() {
+@@ -44 +38 @@
+-    , prr = function (obj, key, value, options) {
++  module.exports = function (obj, key, value, options) {
+@@ -62,2 +56,0 @@
+-  return prr
+-})
+\ No newline at end of file
+--- a/node_modules/source-map-url/source-map-url.js
++++ b/node_modules/source-map-url/source-map-url.js
+@@ -5,3 +5 @@ void (function(root, factory) {
+-  if (typeof define === "function" && define.amd) {
+-    define(factory)
+-  } else if (typeof exports === "object") {
++  if (typeof exports === "object") {
+--- a/node_modules/terser-es/lib/sourcemap.js
++++ b/node_modules/terser-es/lib/sourcemap.js
+@@ -46 +46 @@
+-import MOZ_SourceMap from "source-map";
++import MOZ_SourceMap from "../source-map";
+--- a/node_modules/terser-webpack-plugin/dist/TaskRunner.js
++++ b/node_modules/terser-webpack-plugin/dist/TaskRunner.js
+@@ -8,13 +8,13 @@ exports.default = void 0;
+-var _os = _interopRequireDefault(require("os"));
++var _os = require("os");
+ 
+-var _cacache = _interopRequireDefault(require("cacache"));
++var _cacache = require("cacache");
+ 
+-var _findCacheDir = _interopRequireDefault(require("find-cache-dir"));
++var _findCacheDir = require("find-cache-dir");
+ 
+-var _workerFarm = _interopRequireDefault(require("worker-farm"));
++var _workerFarm = require("worker-farm");
+ 
+-var _serializeJavascript = _interopRequireDefault(require("serialize-javascript"));
++var _serializeJavascript = require("serialize-javascript");
+ 
+-var _isWsl = _interopRequireDefault(require("is-wsl"));
++var _isWsl = require("is-wsl");
+ 
+-var _minify = _interopRequireDefault(require("./minify"));
++var _minify = require("./minify").default;
+@@ -32,6 +32,6 @@ class TaskRunner {
+-    this.cacheDir = cache === true ? (0, _findCacheDir.default)({
++    this.cacheDir = cache === true ? _findCacheDir({
+       name: 'terser-webpack-plugin'
+-    }) || _os.default.tmpdir() : cache; // In some cases cpus() returns undefined
++    }) || _os.tmpdir() : cache; // In some cases cpus() returns undefined
+     // https://github.com/nodejs/node/issues/19022
+ 
+-    const cpus = _os.default.cpus() || {
++    const cpus = _os.cpus() || {
+@@ -42 +42 @@ class TaskRunner {
+-    this.maxConcurrentWorkers = _isWsl.default ? 1 : parallel === true ? cpus.length - 1 : Math.min(Number(parallel) || 0, cpus.length - 1);
++    this.maxConcurrentWorkers = _isWsl ? 1 : parallel === true ? cpus.length - 1 : Math.min(Number(parallel) || 0, cpus.length - 1);
+@@ -59 +59 @@ class TaskRunner {
+-      this.workers = (0, _workerFarm.default)(workerOptions, worker);
++      this.workers = _workerFarm(workerOptions, worker);
+@@ -63 +63 @@ class TaskRunner {
+-          this.workers((0, _serializeJavascript.default)(options), cb);
++          this.workers(_serializeJavascript(options), cb);
+@@ -72 +72 @@ class TaskRunner {
+-          cb(null, (0, _minify.default)(options));
++          cb(null, _minify(options));
+@@ -101 +101 @@ class TaskRunner {
+-            _cacache.default.put(this.cacheDir, (0, _serializeJavascript.default)(task.cacheKeys), JSON.stringify(data)).then(done, done);
++            _cacache.put(this.cacheDir, _serializeJavascript(task.cacheKeys), JSON.stringify(data)).then(done, done);
+@@ -109 +109 @@ class TaskRunner {
+-        _cacache.default.get(this.cacheDir, (0, _serializeJavascript.default)(task.cacheKeys)).then(({
++        _cacache.get(this.cacheDir, _serializeJavascript(task.cacheKeys)).then(({
+@@ -120 +120 @@ class TaskRunner {
+-      _workerFarm.default.end(this.workers);
++      _workerFarm.end(this.workers);
+--- a/node_modules/terser-webpack-plugin/dist/index.js
++++ b/node_modules/terser-webpack-plugin/dist/index.js
+@@ -6,5 +6,4 @@ Object.defineProperty(exports, "__esModule", {
+-exports.default = void 0;
+ 
+-var _crypto = _interopRequireDefault(require("crypto"));
++var _crypto = require("crypto");
+ 
+-var _path = _interopRequireDefault(require("path"));
++var _path = require("path");
+@@ -16,13 +15,13 @@ var _webpackSources = require("webpack-sources");
+-var _RequestShortener = _interopRequireDefault(require("webpack/lib/RequestShortener"));
++var RequestShortener = require("webpack/lib/RequestShortener");
+ 
+-var _ModuleFilenameHelpers = _interopRequireDefault(require("webpack/lib/ModuleFilenameHelpers"));
++var matchObject = require("webpack/lib/ModuleFilenameHelpers").matchObject;
+ 
+-var _schemaUtils = _interopRequireDefault(require("schema-utils"));
++var validateOptions = require("schema-utils");
+ 
+-var _serializeJavascript = _interopRequireDefault(require("serialize-javascript"));
++var _serializeJavascript = require("serialize-javascript");
+ 
+-var _package = _interopRequireDefault(require("terser/package.json"));
++var terserVersion = require("terser/package.json").version;
+ 
+-var _options = _interopRequireDefault(require("./options.json"));
++var _options = require("./options.json");
+ 
+-var _TaskRunner = _interopRequireDefault(require("./TaskRunner"));
++var TaskRunner = require("./TaskRunner").default;
+@@ -42 +41 @@ class TerserPlugin {
+-    (0, _schemaUtils.default)(_options.default, options, 'Terser Plugin');
++    validateOptions(_options, options, 'Terser Plugin');
+@@ -69 +68 @@ class TerserPlugin {
+-      terserOptions: _objectSpread({
++      terserOptions: Object.assign({
+@@ -151 +150 @@ class TerserPlugin {
+-      const taskRunner = new _TaskRunner.default({
++      const taskRunner = new TaskRunner({
+@@ -160 +159 @@ class TerserPlugin {
+-      Array.from(chunks).filter(chunk => chunkFilter && chunkFilter(chunk)).reduce((acc, chunk) => acc.concat(chunk.files || []), []).concat(compilation.additionalChunkAssets || []).filter(_ModuleFilenameHelpers.default.matchObject.bind(null, this.options)).forEach(file => {
++      Array.from(chunks).filter(chunk => chunkFilter && chunkFilter(chunk)).reduce((acc, chunk) => acc.concat(chunk.files || []), []).concat(compilation.additionalChunkAssets || []).filter(matchObject.bind(null, this.options)).forEach(file => {
+@@ -212 +211 @@ class TerserPlugin {
+-              terser: _package.default.version,
++              terser: terserVersion,
+@@ -217 +216 @@ class TerserPlugin {
+-              hash: _crypto.default.createHash('md4').update(input).digest('hex')
++              hash: _crypto.createHash('md4').update(input).digest('hex')
+@@ -224 +223 @@ class TerserPlugin {
+-          compilation.errors.push(TerserPlugin.buildError(error, file, TerserPlugin.buildSourceMap(inputSourceMap), new _RequestShortener.default(compiler.context)));
++          compilation.errors.push(TerserPlugin.buildError(error, file, TerserPlugin.buildSourceMap(inputSourceMap), new RequestShortener(compiler.context)));
+@@ -258 +257 @@ class TerserPlugin {
+-            compilation.errors.push(TerserPlugin.buildError(error, file, sourceMap, new _RequestShortener.default(compiler.context)));
++            compilation.errors.push(TerserPlugin.buildError(error, file, sourceMap, new RequestShortener(compiler.context)));
+@@ -280 +279 @@ class TerserPlugin {
+-                let banner = this.options.extractComments.banner || `For license information please see ${_path.default.posix.basename(commentsFile)}`;
++                let banner = this.options.extractComments.banner || `For license information please see ${_path.posix.basename(commentsFile)}`;
+@@ -312 +311 @@ class TerserPlugin {
+-              const builtWarning = TerserPlugin.buildWarning(warning, file, sourceMap, new _RequestShortener.default(compiler.context), this.options.warningsFilter);
++              const builtWarning = TerserPlugin.buildWarning(warning, file, sourceMap, new RequestShortener(compiler.context), this.options.warningsFilter);
+@@ -340,2 +339,2 @@ class TerserPlugin {
+-          const data = (0, _serializeJavascript.default)({
+-            terser: _package.default.version,
++          const data = _serializeJavascript({
++            terser: terserVersion,
+@@ -355,2 +354,2 @@ class TerserPlugin {
+-var _default = TerserPlugin;
+-exports.default = _default;
+\ No newline at end of file
++module.exports = TerserPlugin;
++module.exports.default = TerserPlugin;
+\ No newline at end of file
+--- a/node_modules/terser-webpack-plugin/dist/minify.js
++++ b/node_modules/terser-webpack-plugin/dist/minify.js
+@@ -37,5 +37,5 @@ const buildTerserOptions = ({
+-  parse: _objectSpread({}, parse),
+-  compress: typeof compress === 'boolean' ? compress : _objectSpread({}, compress),
++  parse: Object.assign({}, parse),
++  compress: typeof compress === 'boolean' ? compress : Object.assign({}, compress),
+   // eslint-disable-next-line no-nested-ternary
+-  mangle: mangle == null ? true : typeof mangle === 'boolean' ? mangle : _objectSpread({}, mangle),
+-  output: _objectSpread({
++  mangle: mangle == null ? true : typeof mangle === 'boolean' ? mangle : Object.assign({}, mangle),
++  output: Object.assign({
+@@ -173 +173 @@ const minify = options => {
+-  } = (0, _terser.minify)({
++  } = _terser.minify({
+@@ -186 +186 @@ var _default = minify;
+-exports.default = _default;
+\ No newline at end of file
++exports.default = minify;
+\ No newline at end of file
+--- a/node_modules/terser-webpack-plugin/dist/worker.js
++++ b/node_modules/terser-webpack-plugin/dist/worker.js
+@@ -3 +3 @@
+-var _minify = _interopRequireDefault(require("./minify"));
++var _minify = require("./minify").default;
+@@ -13 +13 @@ module.exports = (options, callback) => {
+-    callback(null, (0, _minify.default)(options));
++    callback(null, _minify(options));
+--- a/node_modules/terser/bin/terser
++++ b/node_modules/terser/bin/terser
+@@ -1 +0,0 @@
+-#!/usr/bin/env node
+--- a/node_modules/uri-js/dist/es5/uri.all.js
++++ b/node_modules/uri-js/dist/es5/uri.all.js
+@@ -2,5 +2 @@
+-(function (global, factory) {
+-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+-	typeof define === 'function' && define.amd ? define(['exports'], factory) :
+-	(factory((global.URI = global.URI || {})));
+-}(this, (function (exports) { 'use strict';
++'use strict';
+@@ -9,3 +5 @@ function merge() {
+-    for (var _len = arguments.length, sets = Array(_len), _key = 0; _key < _len; _key++) {
+-        sets[_key] = arguments[_key];
+-    }
++    var sets = Array.prototype.slice.call(arguments);
+@@ -152,37 +146,0 @@ var IRI_PROTOCOL = buildExps(true);
+-var slicedToArray = function () {
+-  function sliceIterator(arr, i) {
+-    var _arr = [];
+-    var _n = true;
+-    var _d = false;
+-    var _e = undefined;
+-
+-    try {
+-      for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+-        _arr.push(_s.value);
+-
+-        if (i && _arr.length === i) break;
+-      }
+-    } catch (err) {
+-      _d = true;
+-      _e = err;
+-    } finally {
+-      try {
+-        if (!_n && _i["return"]) _i["return"]();
+-      } finally {
+-        if (_d) throw _e;
+-      }
+-    }
+-
+-    return _arr;
+-  }
+-
+-  return function (arr, i) {
+-    if (Array.isArray(arr)) {
+-      return arr;
+-    } else if (Symbol.iterator in Object(arr)) {
+-      return sliceIterator(arr, i);
+-    } else {
+-      throw new TypeError("Invalid attempt to destructure non-iterable instance");
+-    }
+-  };
+-}();
+@@ -202,9 +159,0 @@ var slicedToArray = function () {
+-var toConsumableArray = function (arr) {
+-  if (Array.isArray(arr)) {
+-    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+-
+-    return arr2;
+-  } else {
+-    return Array.from(arr);
+-  }
+-};
+@@ -345 +293 @@ var ucs2encode = function ucs2encode(array) {
+-	return String.fromCodePoint.apply(String, toConsumableArray(array));
++	return String.fromCodePoint.apply(String, Array.from(array));
+@@ -513,7 +461 @@ var encode = function encode(input) {
+-	var _iteratorNormalCompletion = true;
+-	var _didIteratorError = false;
+-	var _iteratorError = undefined;
+-
+-	try {
+-		for (var _iterator = input[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+-			var _currentValue2 = _step.value;
++	for (var _currentValue2 of input) {
+@@ -525,14 +467,0 @@ var encode = function encode(input) {
+-	} catch (err) {
+-		_didIteratorError = true;
+-		_iteratorError = err;
+-	} finally {
+-		try {
+-			if (!_iteratorNormalCompletion && _iterator.return) {
+-				_iterator.return();
+-			}
+-		} finally {
+-			if (_didIteratorError) {
+-				throw _iteratorError;
+-			}
+-		}
+-	}
+@@ -557,7 +485 @@ var encode = function encode(input) {
+-		var _iteratorNormalCompletion2 = true;
+-		var _didIteratorError2 = false;
+-		var _iteratorError2 = undefined;
+-
+-		try {
+-			for (var _iterator2 = input[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+-				var currentValue = _step2.value;
++		for (var currentValue of input) {
+@@ -572,14 +494,0 @@ var encode = function encode(input) {
+-		} catch (err) {
+-			_didIteratorError2 = true;
+-			_iteratorError2 = err;
+-		} finally {
+-			try {
+-				if (!_iteratorNormalCompletion2 && _iterator2.return) {
+-					_iterator2.return();
+-				}
+-			} finally {
+-				if (_didIteratorError2) {
+-					throw _iteratorError2;
+-				}
+-			}
+-		}
+@@ -595,7 +503 @@ var encode = function encode(input) {
+-		var _iteratorNormalCompletion3 = true;
+-		var _didIteratorError3 = false;
+-		var _iteratorError3 = undefined;
+-
+-		try {
+-			for (var _iterator3 = input[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+-				var _currentValue = _step3.value;
++		for (var _currentValue of input) {
+@@ -626,14 +528,0 @@ var encode = function encode(input) {
+-		} catch (err) {
+-			_didIteratorError3 = true;
+-			_iteratorError3 = err;
+-		} finally {
+-			try {
+-				if (!_iteratorNormalCompletion3 && _iterator3.return) {
+-					_iterator3.return();
+-				}
+-			} finally {
+-				if (_didIteratorError3) {
+-					throw _iteratorError3;
+-				}
+-			}
+-		}
+@@ -802 +690 @@ function _normalizeIPv4(host, protocol) {
+-    var _matches = slicedToArray(matches, 2),
++    var _matches = matches,
+@@ -814 +702 @@ function _normalizeIPv6(host, protocol) {
+-    var _matches2 = slicedToArray(matches, 3),
++    var _matches2 = matches,
+@@ -820 +708 @@ function _normalizeIPv6(host, protocol) {
+-            _address$toLowerCase$2 = slicedToArray(_address$toLowerCase$, 2),
++            _address$toLowerCase$2 = _address$toLowerCase$,
+@@ -1222 +1110 @@ var handler$2 = {
+-                _wsComponents$resourc2 = slicedToArray(_wsComponents$resourc, 2),
++                _wsComponents$resourc2 = _wsComponents$resourc,
+@@ -1442,2 +1330 @@ Object.defineProperty(exports, '__esModule', { value: true });
+-})));
+ //# sourceMappingURL=uri.all.js.map
+--- a/node_modules/watchpack/lib/DirectoryWatcher.js
++++ b/node_modules/watchpack/lib/DirectoryWatcher.js
+@@ -9 +9 @@ var async = require("neo-async");
+-var chokidar = require("./chokidar");
++var chokidar = require("chokidar");
+--- a/node_modules/webpack/lib/SetVarMainTemplatePlugin.js
++++ b/node_modules/webpack/lib/SetVarMainTemplatePlugin.js
+@@ -37 +37 @@ class SetVarMainTemplatePlugin {
+-					`(function(e, a) { for(var i in a) e[i] = a[i]; }(${varExpression}, `,
++					`(function(e, a) { for(var i in a) e[i] = a[i]; if(a.__esModule) Object.defineProperty(e, "__esModule", {value: true}); }(${varExpression}, `,
+--- a/node_modules/webpack/lib/webpack.js
++++ b/node_modules/webpack/lib/webpack.js
+@@ -140 +140,5 @@ exportPlugins(exports, {
++	TerserPlugin: () => require("terser-webpack-plugin"),
++	I18nPlugin: () => require("i18n-webpack-plugin"),
++	CopyPlugin: () => require("copy-webpack-plugin"),
++	ReplaceCodePlugin: () => require("../../../scripts/ReplaceCodePlugin"),
+ 	WatchIgnorePlugin: () => require("./WatchIgnorePlugin")
+--- a/node_modules/bn.js/lib/bn.js
++++ b/node_modules/bn.js/lib/bn.js
+@@ -1 +1,0 @@
+-(function (module, exports) {
+@@ -3446 +3445,0 @@
+-})(typeof module === 'undefined' || module, this);
+--- a/node_modules/domain-browser/source/index.js
++++ b/node_modules/domain-browser/source/index.js
+@@ -5 +5,0 @@
+-module.exports = (function () {
+@@ -69,2 +68 @@ module.exports = (function () {
+-	return domain
+-}).call(this)
++module.exports = domain
+--- a/node_modules/punycode/punycode.js
++++ b/node_modules/punycode/punycode.js
+@@ -2 +2 @@
+-;(function(root) {
++var root = this;
+@@ -530 +530,0 @@
+-}(this));

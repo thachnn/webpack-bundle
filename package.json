@@ -12,18 +12,23 @@
   "repository": "thachnn/webpack-bundle",
   "license": "MIT",
   "engines": {
-    "node": ">=6"
+    "node": ">=6.9"
   },
   "scripts": {
+    "postinstall": "git apply --reject --unidiff-zero scripts/webpack-deps.patch",
+    "rollup": "node node_modules/rollup/dist/bin/rollup -c --configName",
+    "test": "grep -r --include=*.js -E \"[\\[,] ,|__webpack_require__\\.[a-z]|^ +\"\"use strict\"\"\" dist",
     "build": "node scripts/build-webpack.js",
-    "clean": "node node_modules/rimraf/bin.js dist node_modules/.cache"
+    "clean": "node node_modules/rimraf/bin.js dist/ node_modules/.cache"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^5.0.5",
     "i18n-webpack-plugin": "^1.0.0",
     "rimraf": "^2.6.3",
+    "rollup": "^2.0.6",
     "schema-utils": "^1.0.0",
     "string-replace-loader": "^2.2.0",
+    "terser-es": "https://github.com/terser/terser/archive/v4.8.1.tar.gz",
     "terser-webpack-plugin": "^1.4.3",
     "webpack": "^4.43.0",
     "webpack-sources": "^1.4.1"
@@ -36,6 +41,7 @@
     "**/snapdragon/source-map": "^0.6.0",
     "**/unset-value/has-value": "^1.0.0",
     "**/watchpack-chokidar2/chokidar": "^3.4.1",
+    "string-replace-loader/schema-utils": "^1.0.0",
     "webpack/memory-fs": "^0.5.0"
   },
   "overrides": {
@@ -55,6 +61,9 @@
     },
     "watchpack-chokidar2": {
       "chokidar": "^3.4.1"
+    },
+    "string-replace-loader": {
+      "schema-utils": "^1.0.0"
     },
     "webpack": {
       "memory-fs": "^0.5.0"
