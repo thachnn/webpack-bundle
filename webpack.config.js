@@ -4,12 +4,13 @@ const path = require('path');
 const fs = require('fs');
 const { TerserPlugin, CopyPlugin, BannerPlugin, ReplaceCodePlugin } = require('webpack');
 
-/** @typedef {import("webpack").Configuration} Configuration */
-
-/** @typedef {{ from: String, to?: String | Function, context?: String, transform?: Function, transformAll?: Function }} ObjectPattern */
+/**
+ * @typedef {import('webpack').Configuration} Configuration
+ * @typedef {{from: string, to?: (string|Function), context?: string, transform?: Function, transformAll?: Function}} ObjectPattern
+ */
 
 /**
- * @param {String} name
+ * @param {string} name
  * @param {Configuration} config
  * @returns {Configuration}
  */
@@ -35,23 +36,24 @@ const webpackConfig = (name, config, clean = name.charAt(0) !== '/') => ({
   },
 });
 
-const newTerserPlugin = (opt) =>
+const newTerserPlugin = (opt, terserOpt) =>
   new TerserPlugin({
     // cache: true,
     parallel: true,
     extractComments: { condition: 'some', banner: false },
-    ...(opt || {}),
+    ...(opt = opt || {}),
     terserOptions: {
       mangle: false,
-      format: { beautify: true, indent_level: 2, comments: false, ...((opt || {}).terserOptions || {}) },
-      compress: { passes: 1 },
+      ...(terserOpt = opt.terserOptions || {}),
+      format: { beautify: true, indent_level: 2, comments: false, ...(terserOpt.format || {}) },
+      compress: { passes: 1, ...(terserOpt.compress || {}) },
     },
   });
 
-/** @param {Array<ObjectPattern | string>} patterns */
+/** @param {Array<(ObjectPattern|string)>} patterns */
 const newCopyPlugin = (patterns) => new CopyPlugin({ patterns });
 
-/** @param {Array<{ data: Buffer, absoluteFilename: String }>} assets */
+/** @param {Array<{data: Buffer, absoluteFilename: string}>} assets */
 const combineDTS = (assets) => {
   const baseDir = path.join(__dirname, 'node_modules');
   const getModuleName = (file) =>
@@ -86,31 +88,65 @@ const resolveDepPath = (rel, alt = '', base = 'node_modules') =>
   fs.existsSync((rel = path.resolve(__dirname, base, rel))) ? rel : alt && path.resolve(__dirname, base, alt);
 
 module.exports = [
-  /*
-  webpackConfig('import-local', {
-    entry: { index: './node_modules/import-local/index' },
+  webpackConfig('extension', {
+    entry: {
+      'out/editorConfigMain': './node_modules/editorconfig-vscode/src/editorConfigMain',
+    },
     output: { libraryTarget: 'commonjs2' },
-    target: 'node8',
-    externals: { originalRequire: 'commonjs2 ./originalRequire' },
+    externals: { vscode: 'commonjs vscode' },
     module: {
       rules: [
+        // transpile TypeScript
         {
-          test: /node_modules.import-local.index\.js$/i,
+          test: /\.ts$/i,
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: true,
+            presets: [
+              ['@babel/preset-env', { targets: { node: '10.4' }, modules: false }],
+              ['@babel/preset-typescript', { optimizeConstEnums: true }],
+            ],
+          },
+        },
+        // optimize output
+        {
+          test: /node_modules[\\/](sigmund|yallist)\b.*\.js$/i,
           loader: 'webpack/lib/replace-loader',
-          options: { search: /\brequire(\(\w+)/g, replace: 'require("originalRequire")$1' },
+          options: { search: /^/, replace: "'use strict';\n" },
         },
       ],
     },
+    resolve: {
+      extensions: ['.ts', '...'],
+      alias: {
+        editorconfig$: path.resolve(__dirname, 'node_modules/editorconfig/src/index.ts'),
+      },
+    },
     plugins: [
       newCopyPlugin([
-        { from: '{license*,readme*,*.d.ts}', context: 'node_modules/import-local' },
+        { from: '{editorconfig.*,*.{md,txt,png},syntaxes/*}', context: 'node_modules/editorconfig-vscode' },
+        { from: 'node_modules/editorconfig-vscode/src/DefaultTemplate.*', to: 'out/[name][ext]' },
         {
-          from: 'node_modules/import-local/package.json',
-          transform: (content) => String(content).replace(/,\s*"(d(evD)?ependencies|scripts|xo)": *\{[^{}]*\}/g, ''),
+          from: 'node_modules/editorconfig-vscode/package.json',
+          transform: (s) => String(s).replace(/,\s*"types":.*([\s\S]*),\s*"dependencies":[\s\S]*/, ',$1\n}\n'),
         },
+        { from: 'scripts/{extension.*,*.xml}', to: '../[name][ext]' },
       ]),
-      new ReplaceCodePlugin({ search: ' require("./originalRequire")', replace: ' require' }),
+      new ReplaceCodePlugin([
+        { search: /^\/\*{6}\/ (\(\(\) => \{|\}\)\(\))/gm, replace: '', test: /Main\.js$/ },
+        { search: /_namespaceObject\b|_unused_webpack/g, replace: '', test: /Main\.js$/ },
+      ]),
     ],
+    optimization: {
+      // minimize: false,
+      minimizer: [
+        {
+          terserOptions: {
+            format: { beautify: false, keep_numbers: true, ascii_only: true, quote_style: 3 },
+            compress: { keep_infinity: true, inline: false, sequences: false, booleans: false },
+          },
+        },
+      ],
+    },
   }),
-  */
 ];
