@@ -17,17 +17,23 @@
   "scripts": {
     "build": "node scripts/build-webpack.js",
     "clean": "node node_modules/rimraf/bin.js dist/ node_modules/.cache",
+    "postinstall": "git apply --unidiff-zero --reject --ignore-whitespace scripts/webpack-deps.patch",
     "terser": "node node_modules/webpack/bin/terser.js",
     "webpack": "node node_modules/webpack-cli/bin/cli.js --progress"
+  },
+  "dependencies": {
+    "editorconfig-vscode": "editorconfig/editorconfig-vscode#6f85eb3c4bde0dac219b5c02220f309740b13009"
   },
   "devDependencies": {
     "@babel/core": "thachnn/webpack-bundle#_babel/core-7.17.10",
     "@babel/preset-env": "thachnn/webpack-bundle#_babel/preset-env-7.17.10",
+    "@babel/preset-typescript": "thachnn/webpack-bundle#_babel/preset-typescript-7.16.7",
     "babel-loader": "thachnn/webpack-bundle#babel-loader-8.2.5",
     "rimraf": "^2.2.8",
     "webpack": "thachnn/webpack-bundle#v5.74.0",
     "webpack-cli": "thachnn/webpack-bundle#cli-4.10.0"
   },
-  "resolutions": {},
-  "overrides": {}
+  "resolutions": {
+    "editorconfig": "editorconfig/editorconfig-core-js#5e69278dca67825ddfb0c1d915955054c47fce59"
+  }
 }

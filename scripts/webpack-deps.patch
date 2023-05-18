@@ -1,0 +1,298 @@
+--- a/node_modules/editorconfig-vscode/src/DocumentWatcher.ts
++++ b/node_modules/editorconfig-vscode/src/DocumentWatcher.ts
+@@ -1 +1 @@
+-import * as path from 'path'
++const path = require('path')
+@@ -84,2 +84 @@ export default class DocumentWatcher {
+-				const activeDoc = activeEditor?.document
+-				if (activeDoc && activeDoc === e.document && activeEditor) {
++				if (activeEditor && activeEditor.document === e.document) {
+@@ -105 +104 @@ export default class DocumentWatcher {
+-	public onEmptyConfig = (relativePath: string) => {
++	public onEmptyConfig(relativePath: string) {
+@@ -109 +108 @@ export default class DocumentWatcher {
+-	public onBeforeResolve = (relativePath: string) => {
++	public onBeforeResolve(relativePath: string) {
+@@ -113 +112 @@ export default class DocumentWatcher {
+-	public onNoActiveTextEditor = () => {
++	public onNoActiveTextEditor() {
+@@ -117 +116 @@ export default class DocumentWatcher {
+-	public onSuccess = (newOptions: TextEditorOptions) => {
++	public onSuccess(newOptions: TextEditorOptions) {
+--- a/node_modules/editorconfig-vscode/src/EditorConfigCompletionProvider.ts
++++ b/node_modules/editorconfig-vscode/src/EditorConfigCompletionProvider.ts
+@@ -27,5 +27,3 @@ class EditorConfigCompletionProvider implements CompletionItemProvider {
+-			[
+-				'Special property that should be specified at the top of the file',
+-				'outside of any sections. Set to true to stop .editorconfig files',
++			'Special property that should be specified at the top of the file ' +
++			'outside of any sections. Set to true to stop .editorconfig files ' +
+ 				'search on current file.',
+-			].join(' '),
+@@ -36,4 +34,2 @@ class EditorConfigCompletionProvider implements CompletionItemProvider {
+-			[
+-				'Set to latin1, utf-8, utf-8-bom, utf-16be or utf-16le to control',
++			'Set to latin1, utf-8, utf-8-bom, utf-16be or utf-16le to control ' +
+ 				'the character set. Use of utf-8-bom is discouraged.',
+-			].join(' '),
+@@ -54,6 +50,4 @@ class EditorConfigCompletionProvider implements CompletionItemProvider {
+-			[
+-				'A whole number defining the number of columns used for each',
+-				'indentation level and the width of soft tabs (when supported).',
+-				'When set to tab, the value of tab_width (if specified) will be',
++			'A whole number defining the number of columns used for each ' +
++			'indentation level and the width of soft tabs (when supported). ' +
++			'When set to tab, the value of tab_width (if specified) will be ' +
+ 				'used.',
+-			].join(' '),
+@@ -64,4 +58,2 @@ class EditorConfigCompletionProvider implements CompletionItemProvider {
+-			[
+-				'Set to true to ensure file ends with a newline when saving and',
++			'Set to true to ensure file ends with a newline when saving and ' +
+ 				"false to ensure it doesn't.",
+-			].join(' '),
+@@ -72,5 +64,3 @@ class EditorConfigCompletionProvider implements CompletionItemProvider {
+-			[
+-				'A whole number defining the number of columns used to represent a',
+-				'tab character. This defaults to the value of indent_size and',
++			'A whole number defining the number of columns used to represent a ' +
++			'tab character. This defaults to the value of indent_size and ' +
+ 				"doesn't usually need to be specified.",
+-			].join(' '),
+@@ -81,4 +71,2 @@ class EditorConfigCompletionProvider implements CompletionItemProvider {
+-			[
+-				'Set to true to remove any whitespace characters preceding newline',
++			'Set to true to remove any whitespace characters preceding newline ' +
+ 				"characters and false to ensure it doesn't.",
+-			].join(' '),
+--- a/node_modules/editorconfig-vscode/src/api.ts
++++ b/node_modules/editorconfig-vscode/src/api.ts
+@@ -110,2 +110,2 @@ export async function resolveCoreConfig(
+-	if (relativePath) {
+-		onBeforeResolve?.(relativePath)
++	if (relativePath && onBeforeResolve) {
++		onBeforeResolve(relativePath)
+@@ -163,2 +163,2 @@ export function fromEditorConfig(
+-				? config.tab_width ?? config.indent_size
+-				: config.indent_size ?? config.tab_width,
++				? (config.tab_width != null ? config.tab_width : config.indent_size)
++				: (config.indent_size != null ? config.indent_size : config.tab_width),
+--- a/node_modules/editorconfig-vscode/src/commands/generateEditorConfig.ts
++++ b/node_modules/editorconfig-vscode/src/commands/generateEditorConfig.ts
+@@ -1,4 +1,4 @@
+-import { readFile as _readFile } from 'fs'
+-import { EOL } from 'os'
+-import { resolve } from 'path'
+-import { promisify } from 'util'
++const { readFile: _readFile } = require('fs')
++const { EOL } = require('os')
++const { join } = require('path')
++const { promisify } = require('util')
+@@ -49,4 +49,3 @@ export async function generateEditorConfig(uri: Uri) {
+-			const defaultTemplatePath = resolve(
++			const defaultTemplatePath = join(
+ 				__dirname,
+-				'..',
+ 				'DefaultTemplate.editorconfig',
+--- a/node_modules/editorconfig-vscode/src/transformations/InsertFinalNewline.ts
++++ b/node_modules/editorconfig-vscode/src/transformations/InsertFinalNewline.ts
+@@ -29 +29 @@ export class InsertFinalNewline extends PreSaveTransformation {
+-		const eol = (editorconfigProperties.end_of_line ?? 'lf').toUpperCase()
++		const eol = (editorconfigProperties.end_of_line || 'lf').toUpperCase()
+--- a/node_modules/editorconfig-vscode/src/transformations/TrimTrailingWhitespace.ts
++++ b/node_modules/editorconfig-vscode/src/transformations/TrimTrailingWhitespace.ts
+@@ -28,4 +28,3 @@ export class TrimTrailingWhitespace extends PreSaveTransformation {
+-				const message = [
+-					'The trimTrailingWhitespace workspace or user setting',
+-					'is overriding the EditorConfig setting for this file.',
+-				].join(' ')
++				const message =
++					'The trimTrailingWhitespace workspace or user setting ' +
++					'is overriding the EditorConfig setting for this file.'
+--- a/node_modules/editorconfig/src/index.ts
++++ b/node_modules/editorconfig/src/index.ts
+@@ -1,5 +1,4 @@
+-import * as fs from 'fs'
+-import * as path from 'path'
+-import * as semver from 'semver'
++const fs = require('fs')
++const path = require('path')
+ 
+-import minimatch from './lib/fnmatch'
++const minimatch = require('./lib/fnmatch')
+@@ -10 +9 @@ export { parseString }
+-import pkg from '../package.json'
++const pkgVersion = require('../package.json').version
+@@ -69 +68 @@ function processMatches(matches: KnownProps, version: string) {
+-    && semver.gte(version, '0.10.0')
++    && /^\s*v?(0\.(1[1-9]|[2-9]\d)|[1-9])\d*\./.test(version) // >= 0.10.0
+@@ -99 +98 @@ function processOptions(options: ParseOptions = {}, filepath: string) {
+-    version: options.version || pkg.version,
++    version: options.version || pkgVersion,
+--- a/node_modules/editorconfig/src/lib/fnmatch.js
++++ b/node_modules/editorconfig/src/lib/fnmatch.js
+@@ -1,2 +1,3 @@
+ // Based on minimatch.js by isaacs <https://npmjs.org/package/minimatch>
++"use strict"
+ 
+@@ -5,2 +6 @@
+-  if (module) module.exports = minimatch
+-  else exports.minimatch = minimatch
++  module.exports = minimatch
+@@ -37,4 +37 @@
+-    return s.split("").reduce(function (set, c) {
+-      set[c] = true
+-      return set
+-    }, {})
++    return s.split("").reduce((set, c) => ((set[c] = true), set), {})
+@@ -60,3 +57 @@
+-    return function (p, i, list) {
+-      return minimatch(p, pattern, options)
+-    }
++    return (p, i, list) => minimatch(p, pattern, options)
+@@ -69,6 +64,2 @@
+-    Object.keys(b).forEach(function (k) {
+-      t[k] = b[k]
+-    })
+-    Object.keys(a).forEach(function (k) {
+-      t[k] = a[k]
+-    })
++    Object.keys(b).forEach((k) => (t[k] = b[k]))
++    Object.keys(a).forEach((k) => (t[k] = a[k]))
+@@ -83,7 +74,3 @@
+-    var m = function minimatch (p, pattern, options) {
+-      return orig.minimatch(p, pattern, ext(def, options))
+-    }
++    var m = (p, pattern, options) => orig.minimatch(p, pattern, ext(def, options))
+ 
+-    m.Minimatch = function Minimatch (pattern, options) {
+-      return new orig.Minimatch(pattern, ext(def, options))
+-    }
++    m.Minimatch = (pattern, options) => new orig.Minimatch(pattern, ext(def, options))
+@@ -186,3 +173 @@
+-    set = this.globParts = set.map(function (s) {
+-        return s.split(slashSplit)
+-      })
++    set = this.globParts = set.map((s) => s.split(slashSplit))
+@@ -200,3 +185 @@
+-    set = set.filter(function (s) {
+-      return -1 === s.indexOf(false)
+-    })
++    set = set.filter((s) => s.indexOf(false) < 0)
+@@ -299,3 +282 @@
+-      return tail.map(function (t) {
+-        return prefix + t
+-      })
++      return tail.map((t) => prefix + t)
+@@ -409,3 +390 @@
+-    set = set.map(function (p) {
+-      return braceExpand(p, options)
+-    })
++    set = set.map((p) => braceExpand(p, options))
+@@ -417,3 +396 @@
+-    set = set.reduce(function (l, r) {
+-      return l.concat(r)
+-    })
++    set = set.reduce((l, r) => l.concat(r))
+@@ -422,3 +399 @@
+-      set = set.map(function (s) {
+-        return "{" + s + "}"
+-      })
++      set = set.map((s) => "{" + s + "}")
+@@ -677,5 +652 @@
+-      tail = tail.replace(/((?:\\{2})*)(\\?)\|/g, function (_, $1, $2) {
+-        if (!$2) {
+-          // the | isn't already escaped, so escape it.
+-          $2 = "\\"
+-        }
++      tail = tail.replace(/((?:\\{2})*)(\\?)\|/g, (_, $1, $2) =>
+@@ -689,2 +660,2 @@
+-        return $1 + $1 + $2 + "|"
+-      })
++        $1 + $1 + ($2 || "\\") + "|"
++      )
+@@ -772,5 +743,3 @@
+-      return pattern.map(function (p) {
+-        return (p === GLOBSTAR) ? twoStar
+-            : (typeof p === "string") ? regExpEscape(p)
+-              : p._src
+-      }).join("\\\/")
++      return pattern.map(
++        (p) => (p === GLOBSTAR) ? twoStar : (typeof p === "string") ? regExpEscape(p) : p._src
++      ).join("\\\/")
+@@ -795,3 +764 @@
+-    list = list.filter(function (f) {
+-      return mm.match(f)
+-    })
++    list = list.filter((f) => mm.match(f))
+@@ -861,3 +828,2 @@
+       { "this": this
+-        , file: file
+-        , pattern: pattern })
++        , file, pattern })
+--- a/node_modules/editorconfig/src/lib/ini.ts
++++ b/node_modules/editorconfig/src/lib/ini.ts
+@@ -3,2 +3,2 @@
+-import * as fs from 'fs'
+-import { URL } from 'url'
++const fs = require('fs')
++const { URL } = require('url')
+--- a/node_modules/lru-cache/index.js
++++ b/node_modules/lru-cache/index.js
+@@ -6,2 +6 @@ module.exports = LRUCache
+ // or a fakey-fake PseudoMap in older versions.
+-var Map = require('pseudomap')
+@@ -17,7 +16,3 @@ if (hasSymbol) {
+-  makeSymbol = function (key) {
+-    return Symbol(key)
+-  }
++  makeSymbol = (key) => Symbol(key)
+ } else {
+-  makeSymbol = function (key) {
+-    return '_' + key
+-  }
++  makeSymbol = (key) => '_' + key
+@@ -181,3 +176 @@ LRUCache.prototype.keys = function () {
+-  return this[LRU_LIST].toArray().map(function (k) {
+-    return k.key
+-  }, this)
++  return this[LRU_LIST].toArray().map((k) => k.key, this)
+@@ -187,3 +180 @@ LRUCache.prototype.values = function () {
+-  return this[LRU_LIST].toArray().map(function (k) {
+-    return k.value
+-  }, this)
++  return this[LRU_LIST].toArray().map((k) => k.value, this)
+@@ -215,3 +206 @@ LRUCache.prototype.dump = function () {
+-  }, this).toArray().filter(function (h) {
+-    return h
+-  })
++  }, this).toArray().filter((h) => h)
+@@ -399,3 +388 @@ LRUCache.prototype.prune = function () {
+-  this[CACHE].forEach(function (value, key) {
+-    get(self, key, false)
+-  })
++  this[CACHE].forEach((value, key) => get(self, key, false))
+--- a/node_modules/sigmund/sigmund.js
++++ b/node_modules/sigmund/sigmund.js
+@@ -1 +1,2 @@
++'use strict';
+ module.exports = sigmund
+@@ -6,2 +7 @@ function sigmund (subject, maxSessions) {
+-    var RE = RegExp;
+ 
+@@ -17 +17 @@ function sigmund (subject, maxSessions) {
+-            (subject instanceof RE)) {
++            (subject instanceof RegExp)) {
+@@ -22 +22 @@ function sigmund (subject, maxSessions) {
+-        if (notes.indexOf(subject) !== -1 || session === maxSessions) return;
++        if (notes.indexOf(subject) >= 0 || session === maxSessions) return;
+--- a/node_modules/yallist/yallist.js
++++ b/node_modules/yallist/yallist.js
+@@ -1 +1,2 @@
++'use strict'
+ module.exports = Yallist
+@@ -17,3 +18 @@ function Yallist (list) {
+-    list.forEach(function (item) {
+-      self.push(item)
+-    })
++    list.forEach((item) => self.push(item))

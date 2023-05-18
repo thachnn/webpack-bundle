@@ -10,19 +10,71 @@
   version "7.17.10"
   resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/refs/heads/_babel/preset-env-7.17.10"
 
+"@babel/preset-typescript@thachnn/webpack-bundle#_babel/preset-typescript-7.16.7":
+  version "7.16.7"
+  resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/refs/heads/_babel/preset-typescript-7.16.7"
+
 babel-loader@thachnn/webpack-bundle#babel-loader-8.2.5:
   version "8.2.5"
   resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/refs/heads/babel-loader-8.2.5"
+
+commander@^2.19.0:
+  version "2.20.3"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
+  integrity sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==
+
+editorconfig-vscode@editorconfig/editorconfig-vscode#6f85eb3c4bde0dac219b5c02220f309740b13009:
+  version "0.16.4"
+  resolved "https://codeload.github.com/editorconfig/editorconfig-vscode/tar.gz/6f85eb3c4bde0dac219b5c02220f309740b13009"
+  dependencies:
+    editorconfig "^0.15"
+
+editorconfig@^0.15, editorconfig@editorconfig/editorconfig-core-js#5e69278dca67825ddfb0c1d915955054c47fce59:
+  version "0.15.3"
+  resolved "https://codeload.github.com/editorconfig/editorconfig-core-js/tar.gz/5e69278dca67825ddfb0c1d915955054c47fce59"
+  dependencies:
+    commander "^2.19.0"
+    lru-cache "^4.1.5"
+    semver "^5.6.0"
+    sigmund "^1.0.1"
+
+lru-cache@^4.1.5:
+  version "4.1.5"
+  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-4.1.5.tgz#8bbe50ea85bed59bc9e33dcab8235ee9bcf443cd"
+  integrity sha512-sWZlbEP2OsHNkXrMl5GYk/jKk70MBng6UU4YI/qGDYbgf6YbP4EvmqISbXCoJiRKs+1bSpFHVgQxvJ17F2li5g==
+  dependencies:
+    pseudomap "^1.0.2"
+    yallist "^2.1.2"
+
+pseudomap@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/pseudomap/-/pseudomap-1.0.2.tgz#f052a28da70e618917ef0a8ac34c1ae5a68286b3"
+  integrity sha512-b/YwNhb8lk1Zz2+bXXpS/LK9OisiZZ1SNsSLxN1x2OXVEhW2Ckr/7mWE5vrC1ZTiJlD9g19jWszTmJsB+oEpFQ==
 
 rimraf@^2.2.8:
   version "2.2.8"
   resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.2.8.tgz#e439be2aaee327321952730f99a8929e4fc50582"
   integrity sha512-R5KMKHnPAQaZMqLOsyuyUmcIjSeDm+73eoqQpaXA7AZ22BL+6C+1mcUscgOsNd8WVlJuvlgAPsegcx7pjlV0Dg==
 
+semver@^5.6.0:
+  version "5.7.1"
+  resolved "https://registry.yarnpkg.com/semver/-/semver-5.7.1.tgz#a954f931aeba508d307bbf069eff0c01c96116f7"
+  integrity sha512-sauaDf/PZdVgrLTNYHRtpXa1iRiKcaebiKQ1BJdpQlWH2lCvexQdX55snPFyK7QzpudqbCI0qXFfOasHdyNDGQ==
+
+sigmund@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/sigmund/-/sigmund-1.0.1.tgz#3ff21f198cad2175f9f3b781853fd94d0d19b590"
+  integrity sha512-fCvEXfh6NWpm+YSuY2bpXb/VIihqWA6hLsgboC+0nl71Q7N7o2eaCW8mJa/NLvQhs6jpd3VZV4UiUQlV6+lc8g==
+
 webpack-cli@thachnn/webpack-bundle#cli-4.10.0:
   version "4.10.0"
   resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/refs/heads/cli-4.10.0"
 
 webpack@thachnn/webpack-bundle#v5.74.0:
-  version "5.74.0-0"
+  version "5.74.0-2"
   resolved "https://codeload.github.com/thachnn/webpack-bundle/tar.gz/refs/heads/v5.74.0"
+
+yallist@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/yallist/-/yallist-2.1.2.tgz#1c11f9218f076089a47dd512f93c6699a6a81d52"
+  integrity sha512-ncTzHV7NvsQZkYe1DW7cbDLm0YpzHmZF5r/iyP3ZnQtMiJ+pjzisCiMNI+Sj+xQF5pXhSHxSB3uDbsBTzY/c2A==
