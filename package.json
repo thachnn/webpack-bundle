@@ -1,39 +1,96 @@
 {
-  "name": "webpack-bundle",
-  "version": "1.0.0",
-  "description": "Bundle NPM packages using webpack",
-  "keywords": [
-    "npm",
-    "package",
-    "bundle",
-    "webpack",
-    "module"
-  ],
-  "repository": "thachnn/webpack-bundle",
-  "license": "MIT",
+  "name": "EditorConfig",
+  "displayName": "EditorConfig for VS Code",
+  "description": "EditorConfig Support for Visual Studio Code",
+  "publisher": "EditorConfig",
+  "version": "0.16.4",
+  "icon": "EditorConfig_icon.png",
   "engines": {
-    "node": ">=10"
+    "vscode": "^1.51.1"
   },
-  "scripts": {
-    "build": "node scripts/build-webpack.js",
-    "clean": "node node_modules/rimraf/bin.js dist/ node_modules/.cache",
-    "postinstall": "git apply --unidiff-zero --reject --ignore-whitespace scripts/webpack-deps.patch",
-    "terser": "node node_modules/webpack/bin/terser.js",
-    "webpack": "node node_modules/webpack-cli/bin/cli.js --progress"
+  "author": "EditorConfig Team",
+  "license": "MIT",
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "editor",
+    "config",
+    "multi-root ready"
+  ],
+  "homepage": "https://github.com/editorconfig/editorconfig-vscode/blob/master/README.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/editorconfig/editorconfig-vscode.git"
   },
-  "dependencies": {
-    "editorconfig-vscode": "editorconfig/editorconfig-vscode#6f85eb3c4bde0dac219b5c02220f309740b13009"
+  "bugs": {
+    "url": "https://github.com/editorconfig/editorconfig-vscode/issues"
   },
-  "devDependencies": {
-    "@babel/core": "thachnn/webpack-bundle#_babel/core-7.17.10",
-    "@babel/preset-env": "thachnn/webpack-bundle#_babel/preset-env-7.17.10",
-    "@babel/preset-typescript": "thachnn/webpack-bundle#_babel/preset-typescript-7.16.7",
-    "babel-loader": "thachnn/webpack-bundle#babel-loader-8.2.5",
-    "rimraf": "^2.2.8",
-    "webpack": "thachnn/webpack-bundle#v5.74.0",
-    "webpack-cli": "thachnn/webpack-bundle#cli-4.10.0"
+  "galleryBanner": {
+    "color": "#37699A",
+    "theme": "dark"
   },
-  "resolutions": {
-    "editorconfig": "editorconfig/editorconfig-core-js#5e69278dca67825ddfb0c1d915955054c47fce59"
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./out/editorConfigMain.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "EditorConfig.generate",
+        "title": "Generate .editorconfig"
+      }
+    ],
+    "configuration": {
+      "title": "EditorConfig",
+      "properties": {
+        "editorconfig.generateAuto": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically generates an .editorconfig file according to your current editor settings."
+        },
+        "editorconfig.template": {
+          "type": "string",
+          "default": "default",
+          "description": "If generateAuto is false, this template path will be used for each newly-generated .editorconfig file."
+        }
+      }
+    },
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "EditorConfig.generate",
+          "when": "explorerResourceIsFolder"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "EditorConfig.generate",
+          "when": "explorerResourceIsFolder",
+          "group": "EditorConfig@1"
+        }
+      ]
+    },
+    "languages": [
+      {
+        "id": "editorconfig",
+        "extensions": [
+          ".editorconfig"
+        ],
+        "aliases": [
+          "EditorConfig",
+          "editorconfig"
+        ],
+        "filenames": [],
+        "configuration": "./editorconfig.language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "editorconfig",
+        "scopeName": "source.editorconfig",
+        "path": "./syntaxes/editorconfig.tmLanguage.json"
+      }
+    ]
   }
 }
