@@ -7530,6 +7530,7 @@
         keep_fargs: !0,
         keep_fnames: !1,
         keep_infinity: !1,
+        lhs_constants: !false_by_default,
         loops: !false_by_default,
         module: !1,
         negate_iife: !false_by_default,
@@ -8964,7 +8965,7 @@
         self.left = self.right, self.right = tmp;
       }
     }
-    if (commutativeOperators.has(self.operator) && self.right.is_constant() && !self.left.is_constant() && (self.left instanceof AST_Binary && PRECEDENCE[self.left.operator] >= PRECEDENCE[self.operator] || reverse()), 
+    if (compressor.option("lhs_constants") && commutativeOperators.has(self.operator) && self.right.is_constant() && !self.left.is_constant() && (self.left instanceof AST_Binary && PRECEDENCE[self.left.operator] >= PRECEDENCE[self.operator] || reverse()), 
     self = self.lift_sequences(compressor), compressor.option("comparisons")) switch (self.operator) {
      case "===":
      case "!==":
@@ -8973,10 +8974,14 @@
 
      case "==":
      case "!=":
-      if (!is_strict_comparison && is_undefined(self.left, compressor)) self.left = make_node(AST_Null, self.left); else if (compressor.option("typeofs") && self.left instanceof AST_String && "undefined" == self.left.value && self.right instanceof AST_UnaryPrefix && "typeof" == self.right.operator) {
+      if (!is_strict_comparison && is_undefined(self.left, compressor)) self.left = make_node(AST_Null, self.left); else if (!is_strict_comparison && is_undefined(self.right, compressor)) self.right = make_node(AST_Null, self.right); else if (compressor.option("typeofs") && self.left instanceof AST_String && "undefined" == self.left.value && self.right instanceof AST_UnaryPrefix && "typeof" == self.right.operator) {
         var expr = self.right.expression;
         (expr instanceof AST_SymbolRef ? !expr.is_declared(compressor) : expr instanceof AST_PropAccess && compressor.option("ie8")) || (self.right = expr, 
         self.left = make_node(AST_Undefined, self.left).optimize(compressor), 2 == self.operator.length && (self.operator += "="));
+      } else if (compressor.option("typeofs") && self.right instanceof AST_String && "undefined" == self.right.value && self.left instanceof AST_UnaryPrefix && "typeof" == self.left.operator) {
+        var expr = self.left.expression;
+        (expr instanceof AST_SymbolRef ? !expr.is_declared(compressor) : expr instanceof AST_PropAccess && compressor.option("ie8")) || (self.left = expr, 
+        self.right = make_node(AST_Undefined, self.right).optimize(compressor), 2 == self.operator.length && (self.operator += "="));
       } else if (self.left instanceof AST_SymbolRef && self.right instanceof AST_SymbolRef && self.left.definition() === self.right.definition() && ((node = self.left.fixed_value()) instanceof AST_Array || node instanceof AST_Lambda || node instanceof AST_Object || node instanceof AST_Class)) return make_node("=" == self.operator[0] ? AST_True : AST_False, self);
       break;
 
