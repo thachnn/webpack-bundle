@@ -20,20 +20,6 @@
  */
 
 /*!
- * Determine if an object is a Buffer
- *
- * @author   Feross Aboukhadijeh <https://feross.org>
- * @license  MIT
- */
-
-/*!
- * is-plain-object <https://github.com/jonschlinkert/is-plain-object>
- *
- * Copyright (c) 2014-2017, Jon Schlinkert.
- * Released under the MIT License.
- */
-
-/*!
  * is-number <https://github.com/jonschlinkert/is-number>
  *
  * Copyright (c) 2014-2015, Jon Schlinkert.
@@ -62,6 +48,13 @@
  */
 
 /*!
+ * Determine if an object is a Buffer
+ *
+ * @author   Feross Aboukhadijeh <https://feross.org>
+ * @license  MIT
+ */
+
+/*!
  * repeat-string <https://github.com/jonschlinkert/repeat-string>
  *
  * Copyright (c) 2014-2015, Jon Schlinkert.
@@ -86,6 +79,13 @@
  * set-value <https://github.com/jonschlinkert/set-value>
  *
  * Copyright (c) 2014-2015, 2017, Jon Schlinkert.
+ * Released under the MIT License.
+ */
+
+/*!
+ * is-plain-object <https://github.com/jonschlinkert/is-plain-object>
+ *
+ * Copyright (c) 2014-2017, Jon Schlinkert.
  * Released under the MIT License.
  */
 
@@ -146,20 +146,6 @@
  */
 
 /*!
- * is-extendable <https://github.com/jonschlinkert/is-extendable>
- *
- * Copyright (c) 2015-2017, Jon Schlinkert.
- * Released under the MIT License.
- */
-
-/*!
- * assign-symbols <https://github.com/jonschlinkert/assign-symbols>
- *
- * Copyright (c) 2015, Jon Schlinkert.
- * Licensed under the MIT License.
- */
-
-/*!
  * arr-flatten <https://github.com/jonschlinkert/arr-flatten>
  *
  * Copyright (c) 2014-2017, Jon Schlinkert.
@@ -212,6 +198,13 @@
  * has-values <https://github.com/jonschlinkert/has-values>
  *
  * Copyright (c) 2014-2015, 2017, Jon Schlinkert.
+ * Released under the MIT License.
+ */
+
+/*!
+ * is-extendable <https://github.com/jonschlinkert/is-extendable>
+ *
+ * Copyright (c) 2015-2017, Jon Schlinkert.
  * Released under the MIT License.
  */
 

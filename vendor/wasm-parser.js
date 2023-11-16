@@ -1,5 +1,9 @@
+"use strict";
 !function(e, a) {
   for (var i in a) e[i] = a[i];
+  a.__esModule && Object.defineProperty(e, "__esModule", {
+    value: !0
+  });
 }(exports, function(modules) {
   var installedModules = {};
   function __webpack_require__(moduleId) {
@@ -12,8 +16,7 @@
     return modules[moduleId].call(module.exports, module, module.exports, __webpack_require__), 
     module.l = !0, module.exports;
   }
-  return __webpack_require__.m = modules, __webpack_require__.c = installedModules, 
-  __webpack_require__.d = function(exports, name, getter) {
+  return __webpack_require__.d = function(exports, name, getter) {
     __webpack_require__.o(exports, name) || Object.defineProperty(exports, name, {
       enumerable: !0,
       get: getter
@@ -24,32 +27,81 @@
     }), Object.defineProperty(exports, "__esModule", {
       value: !0
     });
-  }, __webpack_require__.t = function(value, mode) {
-    if (1 & mode && (value = __webpack_require__(value)), 8 & mode) return value;
-    if (4 & mode && "object" == typeof value && value && value.__esModule) return value;
-    var ns = Object.create(null);
-    if (__webpack_require__.r(ns), Object.defineProperty(ns, "default", {
-      enumerable: !0,
-      value: value
-    }), 2 & mode && "string" != typeof value) for (var key in value) __webpack_require__.d(ns, key, function(key) {
-      return value[key];
-    }.bind(null, key));
-    return ns;
-  }, __webpack_require__.n = function(module) {
-    var getter = module && module.__esModule ? function() {
-      return module.default;
-    } : function() {
-      return module;
-    };
-    return __webpack_require__.d(getter, "a", getter), getter;
   }, __webpack_require__.o = function(object, property) {
     return Object.prototype.hasOwnProperty.call(object, property);
-  }, __webpack_require__.p = "", __webpack_require__(__webpack_require__.s = 2);
+  }, __webpack_require__(1);
 }([ function(module, exports) {
   module.exports = require("./wasm-ast");
-}, function(module, exports) {
-  module.exports = Long;
-  var wasm = null;
+}, function(module, __webpack_exports__, __webpack_require__) {
+  function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) throw new TypeError("Cannot call a class as a function");
+  }
+  function _possibleConstructorReturn(self, call) {
+    if (call && ("object" == typeof call || "function" == typeof call)) return call;
+    if (!self) throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    return self;
+  }
+  function _inherits(subClass, superClass) {
+    if ("function" != typeof superClass && null !== superClass) throw new TypeError("Super expression must either be null or a function");
+    subClass.prototype = Object.create(superClass && superClass.prototype, {
+      constructor: {
+        value: subClass,
+        enumerable: !1,
+        writable: !0,
+        configurable: !0
+      }
+    }), superClass && (Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass);
+  }
+  __webpack_require__.r(__webpack_exports__), __webpack_require__.d(__webpack_exports__, "decode", (function() {
+    return esm_decode;
+  }));
+  var CompileError = function(_Error2) {
+    function CompileError() {
+      return _classCallCheck(this, CompileError), _possibleConstructorReturn(this, (CompileError.__proto__ || Object.getPrototypeOf(CompileError)).apply(this, arguments));
+    }
+    return _inherits(CompileError, Error), CompileError;
+  }();
+  function read(buffer, offset, isLE, mLen, nBytes) {
+    var e, m, eLen = 8 * nBytes - mLen - 1, eMax = (1 << eLen) - 1, eBias = eMax >> 1, nBits = -7, i = isLE ? nBytes - 1 : 0, d = isLE ? -1 : 1, s = buffer[offset + i];
+    for (i += d, e = s & (1 << -nBits) - 1, s >>= -nBits, nBits += eLen; nBits > 0; e = 256 * e + buffer[offset + i], 
+    i += d, nBits -= 8) ;
+    for (m = e & (1 << -nBits) - 1, e >>= -nBits, nBits += mLen; nBits > 0; m = 256 * m + buffer[offset + i], 
+    i += d, nBits -= 8) ;
+    if (0 === e) e = 1 - eBias; else {
+      if (e === eMax) return m ? NaN : 1 / 0 * (s ? -1 : 1);
+      m += Math.pow(2, mLen), e -= eBias;
+    }
+    return (s ? -1 : 1) * m * Math.pow(2, e - mLen);
+  }
+  function _toArray(arr) {
+    return Array.isArray(arr) ? arr : Array.from(arr);
+  }
+  function con(b) {
+    if (128 == (192 & b)) return 63 & b;
+    throw new Error("invalid UTF-8 encoding");
+  }
+  function decoder_code(min, n) {
+    if (n < min || 55296 <= n && n < 57344 || n >= 65536) throw new Error("invalid UTF-8 encoding");
+    return n;
+  }
+  function decode(bytes) {
+    return function _decode(bytes) {
+      if (0 === bytes.length) return [];
+      var _bytes = _toArray(bytes), b1 = _bytes[0], bs = _bytes.slice(1);
+      if (b1 < 128) return [ decoder_code(0, b1) ].concat(_decode(bs));
+      if (b1 < 192) throw new Error("invalid UTF-8 encoding");
+      var _bytes2 = _toArray(bytes), _b = _bytes2[0], b2 = _bytes2[1], _bs = _bytes2.slice(2);
+      if (_b < 224) return [ decoder_code(128, ((31 & _b) << 6) + con(b2)) ].concat(_decode(_bs));
+      var _bytes3 = _toArray(bytes), _b2 = _bytes3[0], _b3 = _bytes3[1], b3 = _bytes3[2], _bs2 = _bytes3.slice(3);
+      if (_b2 < 240) return [ decoder_code(2048, ((15 & _b2) << 12) + (con(_b3) << 6) + con(b3)) ].concat(_decode(_bs2));
+      var _bytes4 = _toArray(bytes), _b4 = _bytes4[0], _b5 = _bytes4[1], _b6 = _bytes4[2], b4 = _bytes4[3], _bs3 = _bytes4.slice(4);
+      if (_b4 < 248) return [ decoder_code(65536, (((7 & _b4) << 18) + con(_b5) << 12) + (con(_b6) << 6) + con(b4)) ].concat(_decode(_bs3));
+      throw new Error("invalid UTF-8 encoding");
+    }(bytes).map((function(x) {
+      return String.fromCharCode(x);
+    })).join("");
+  }
+  var external_wasm_ast_ = __webpack_require__(0), wasm = null;
   try {
     wasm = new WebAssembly.Instance(new WebAssembly.Module(new Uint8Array([ 0, 97, 115, 109, 1, 0, 0, 0, 1, 13, 2, 96, 0, 1, 127, 96, 4, 127, 127, 127, 127, 1, 127, 3, 7, 6, 0, 1, 1, 1, 1, 1, 6, 6, 1, 127, 1, 65, 0, 11, 7, 50, 6, 3, 109, 117, 108, 0, 1, 5, 100, 105, 118, 95, 115, 0, 2, 5, 100, 105, 118, 95, 117, 0, 3, 5, 114, 101, 109, 95, 115, 0, 4, 5, 114, 101, 109, 95, 117, 0, 5, 8, 103, 101, 116, 95, 104, 105, 103, 104, 0, 0, 10, 191, 1, 6, 4, 0, 35, 0, 11, 36, 1, 1, 126, 32, 0, 173, 32, 1, 173, 66, 32, 134, 132, 32, 2, 173, 32, 3, 173, 66, 32, 134, 132, 126, 34, 4, 66, 32, 135, 167, 36, 0, 32, 4, 167, 11, 36, 1, 1, 126, 32, 0, 173, 32, 1, 173, 66, 32, 134, 132, 32, 2, 173, 32, 3, 173, 66, 32, 134, 132, 127, 34, 4, 66, 32, 135, 167, 36, 0, 32, 4, 167, 11, 36, 1, 1, 126, 32, 0, 173, 32, 1, 173, 66, 32, 134, 132, 32, 2, 173, 32, 3, 173, 66, 32, 134, 132, 128, 34, 4, 66, 32, 135, 167, 36, 0, 32, 4, 167, 11, 36, 1, 1, 126, 32, 0, 173, 32, 1, 173, 66, 32, 134, 132, 32, 2, 173, 32, 3, 173, 66, 32, 134, 132, 129, 34, 4, 66, 32, 135, 167, 36, 0, 32, 4, 167, 11, 36, 1, 1, 126, 32, 0, 173, 32, 1, 173, 66, 32, 134, 132, 32, 2, 173, 32, 3, 173, 66, 32, 134, 132, 130, 34, 4, 66, 32, 135, 167, 36, 0, 32, 4, 167, 11 ])), {}).exports;
   } catch (e) {}
@@ -123,6 +175,33 @@
   var MIN_VALUE = fromBits(0, -2147483648, !1);
   Long.MIN_VALUE = MIN_VALUE;
   var LongPrototype = Long.prototype;
+  function extract(buffer, bitIndex, bitLength, defaultBit) {
+    if (bitLength < 0 || bitLength > 32) throw new Error("Bad value for bitLength.");
+    if (void 0 === defaultBit) defaultBit = 0; else if (0 !== defaultBit && 1 !== defaultBit) throw new Error("Bad value for defaultBit.");
+    var defaultByte = 255 * defaultBit, result = 0, lastBit = bitIndex + bitLength, startByte = Math.floor(bitIndex / 8), startBit = bitIndex % 8, endByte = Math.floor(lastBit / 8), endBit = lastBit % 8;
+    for (0 !== endBit && (result = get(endByte) & (1 << endBit) - 1); endByte > startByte; ) result = result << 8 | get(--endByte);
+    return result >>>= startBit;
+    function get(index) {
+      var result = buffer[index];
+      return void 0 === result ? defaultByte : result;
+    }
+  }
+  function inject(buffer, bitIndex, bitLength, value) {
+    if (bitLength < 0 || bitLength > 32) throw new Error("Bad value for bitLength.");
+    var lastByte = Math.floor((bitIndex + bitLength - 1) / 8);
+    if (bitIndex < 0 || lastByte >= buffer.length) throw new Error("Index out of range.");
+    for (var atByte = Math.floor(bitIndex / 8), atBit = bitIndex % 8; bitLength > 0; ) 1 & value ? buffer[atByte] |= 1 << atBit : buffer[atByte] &= ~(1 << atBit), 
+    value >>= 1, bitLength--, 0 === (atBit = (atBit + 1) % 8) && atByte++;
+  }
+  function getSign(buffer) {
+    return buffer[buffer.length - 1] >>> 7;
+  }
+  function highOrder(bit, buffer) {
+    for (var length = buffer.length, fullyWrongByte = 255 * (1 ^ bit); length > 0 && buffer[length - 1] === fullyWrongByte; ) length--;
+    if (0 === length) return -1;
+    for (var byteToCheck = buffer[length - 1], result = 8 * length - 1, i = 7; i > 0 && (byteToCheck >> i & 1) !== bit; i--) result--;
+    return result;
+  }
   LongPrototype.toInt = function() {
     return this.unsigned ? this.low >>> 0 : this.low;
   }, LongPrototype.toNumber = function() {
@@ -277,118 +356,6 @@
   }, Long.fromBytesBE = function(bytes, unsigned) {
     return new Long(bytes[4] << 24 | bytes[5] << 16 | bytes[6] << 8 | bytes[7], bytes[0] << 24 | bytes[1] << 16 | bytes[2] << 8 | bytes[3], unsigned);
   };
-}, function(module, __webpack_exports__, __webpack_require__) {
-  "use strict";
-  function _typeof(obj) {
-    return (_typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj) {
-      return typeof obj;
-    } : function(obj) {
-      return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    })(obj);
-  }
-  function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) throw new TypeError("Cannot call a class as a function");
-  }
-  function _possibleConstructorReturn(self, call) {
-    if (call && ("object" === _typeof(call) || "function" == typeof call)) return call;
-    if (!self) throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-    return self;
-  }
-  function _inherits(subClass, superClass) {
-    if ("function" != typeof superClass && null !== superClass) throw new TypeError("Super expression must either be null or a function");
-    subClass.prototype = Object.create(superClass && superClass.prototype, {
-      constructor: {
-        value: subClass,
-        enumerable: !1,
-        writable: !0,
-        configurable: !0
-      }
-    }), superClass && (Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass);
-  }
-  __webpack_require__.r(__webpack_exports__), __webpack_require__.d(__webpack_exports__, "decode", (function() {
-    return esm_decode;
-  }));
-  var CompileError = function(_Error2) {
-    function CompileError() {
-      return _classCallCheck(this, CompileError), _possibleConstructorReturn(this, (CompileError.__proto__ || Object.getPrototypeOf(CompileError)).apply(this, arguments));
-    }
-    return _inherits(CompileError, Error), CompileError;
-  }();
-  function read(buffer, offset, isLE, mLen, nBytes) {
-    var e, m, eLen = 8 * nBytes - mLen - 1, eMax = (1 << eLen) - 1, eBias = eMax >> 1, nBits = -7, i = isLE ? nBytes - 1 : 0, d = isLE ? -1 : 1, s = buffer[offset + i];
-    for (i += d, e = s & (1 << -nBits) - 1, s >>= -nBits, nBits += eLen; nBits > 0; e = 256 * e + buffer[offset + i], 
-    i += d, nBits -= 8) ;
-    for (m = e & (1 << -nBits) - 1, e >>= -nBits, nBits += mLen; nBits > 0; m = 256 * m + buffer[offset + i], 
-    i += d, nBits -= 8) ;
-    if (0 === e) e = 1 - eBias; else {
-      if (e === eMax) return m ? NaN : 1 / 0 * (s ? -1 : 1);
-      m += Math.pow(2, mLen), e -= eBias;
-    }
-    return (s ? -1 : 1) * m * Math.pow(2, e - mLen);
-  }
-  function _toConsumableArray(arr) {
-    if (Array.isArray(arr)) {
-      for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
-      return arr2;
-    }
-    return Array.from(arr);
-  }
-  function _toArray(arr) {
-    return Array.isArray(arr) ? arr : Array.from(arr);
-  }
-  function con(b) {
-    if (128 == (192 & b)) return 63 & b;
-    throw new Error("invalid UTF-8 encoding");
-  }
-  function decoder_code(min, n) {
-    if (n < min || 55296 <= n && n < 57344 || n >= 65536) throw new Error("invalid UTF-8 encoding");
-    return n;
-  }
-  function decode(bytes) {
-    return function _decode(bytes) {
-      if (0 === bytes.length) return [];
-      var _bytes = _toArray(bytes), b1 = _bytes[0], bs = _bytes.slice(1);
-      if (b1 < 128) return [ decoder_code(0, b1) ].concat(_toConsumableArray(_decode(bs)));
-      if (b1 < 192) throw new Error("invalid UTF-8 encoding");
-      var _bytes2 = _toArray(bytes), _b = _bytes2[0], b2 = _bytes2[1], _bs = _bytes2.slice(2);
-      if (_b < 224) return [ decoder_code(128, ((31 & _b) << 6) + con(b2)) ].concat(_toConsumableArray(_decode(_bs)));
-      var _bytes3 = _toArray(bytes), _b2 = _bytes3[0], _b3 = _bytes3[1], b3 = _bytes3[2], _bs2 = _bytes3.slice(3);
-      if (_b2 < 240) return [ decoder_code(2048, ((15 & _b2) << 12) + (con(_b3) << 6) + con(b3)) ].concat(_toConsumableArray(_decode(_bs2)));
-      var _bytes4 = _toArray(bytes), _b4 = _bytes4[0], _b5 = _bytes4[1], _b6 = _bytes4[2], b4 = _bytes4[3], _bs3 = _bytes4.slice(4);
-      if (_b4 < 248) return [ decoder_code(65536, (((7 & _b4) << 18) + con(_b5) << 12) + (con(_b6) << 6) + con(b4)) ].concat(_toConsumableArray(_decode(_bs3)));
-      throw new Error("invalid UTF-8 encoding");
-    }(bytes).map((function(x) {
-      return String.fromCharCode(x);
-    })).join("");
-  }
-  var external_wasm_ast_ = __webpack_require__(0), src_long = __webpack_require__(1), long_default = __webpack_require__.n(src_long);
-  function extract(buffer, bitIndex, bitLength, defaultBit) {
-    if (bitLength < 0 || bitLength > 32) throw new Error("Bad value for bitLength.");
-    if (void 0 === defaultBit) defaultBit = 0; else if (0 !== defaultBit && 1 !== defaultBit) throw new Error("Bad value for defaultBit.");
-    var defaultByte = 255 * defaultBit, result = 0, lastBit = bitIndex + bitLength, startByte = Math.floor(bitIndex / 8), startBit = bitIndex % 8, endByte = Math.floor(lastBit / 8), endBit = lastBit % 8;
-    for (0 !== endBit && (result = get(endByte) & (1 << endBit) - 1); endByte > startByte; ) result = result << 8 | get(--endByte);
-    return result >>>= startBit;
-    function get(index) {
-      var result = buffer[index];
-      return void 0 === result ? defaultByte : result;
-    }
-  }
-  function inject(buffer, bitIndex, bitLength, value) {
-    if (bitLength < 0 || bitLength > 32) throw new Error("Bad value for bitLength.");
-    var lastByte = Math.floor((bitIndex + bitLength - 1) / 8);
-    if (bitIndex < 0 || lastByte >= buffer.length) throw new Error("Index out of range.");
-    for (var atByte = Math.floor(bitIndex / 8), atBit = bitIndex % 8; bitLength > 0; ) 1 & value ? buffer[atByte] |= 1 << atBit : buffer[atByte] &= ~(1 << atBit), 
-    value >>= 1, bitLength--, 0 === (atBit = (atBit + 1) % 8) && atByte++;
-  }
-  function getSign(buffer) {
-    return buffer[buffer.length - 1] >>> 7;
-  }
-  function highOrder(bit, buffer) {
-    for (var length = buffer.length, fullyWrongByte = 255 * (1 ^ bit); length > 0 && buffer[length - 1] === fullyWrongByte; ) length--;
-    if (0 === length) return -1;
-    for (var byteToCheck = buffer[length - 1], result = 8 * length - 1, i = 7; i > 0 && (byteToCheck >> i & 1) !== bit; i--) result--;
-    return result;
-  }
   var bufPool = [];
   function isLossyToAdd(accum, num) {
     if (0 === num) return !1;
@@ -481,7 +448,7 @@
       };
     },
     decodeInt64: function(encodedBuffer, index) {
-      var result = decodeIntBuffer(encodedBuffer, index), value = long_default.a.fromBytesLE(result.value, !1);
+      var result = decodeIntBuffer(encodedBuffer, index), value = Long.fromBytesLE(result.value, !1);
       return free(result.value), {
         value: value,
         nextIndex: result.nextIndex,
@@ -508,7 +475,7 @@
       };
     },
     decodeUInt64: function(encodedBuffer, index) {
-      var result = decodeUIntBuffer(encodedBuffer, index), value = long_default.a.fromBytesLE(result.value, !0);
+      var result = decodeUIntBuffer(encodedBuffer, index), value = Long.fromBytesLE(result.value, !0);
       return free(result.value), {
         value: value,
         nextIndex: result.nextIndex,
@@ -825,13 +792,6 @@
       return "string" == typeof obj.object ? "".concat(obj.object, ".").concat(obj.name) : obj.name;
     }))
   };
-  function decoder_toConsumableArray(arr) {
-    if (Array.isArray(arr)) {
-      for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
-      return arr2;
-    }
-    return Array.from(arr);
-  }
   function toHex(n) {
     return "0x" + Number(n).toString(16);
   }
@@ -1556,18 +1516,18 @@
         if ("name" === sectionName.value) {
           var initialOffset = offset;
           try {
-            _metadata12.push.apply(_metadata12, decoder_toConsumableArray(function(remainingBytes) {
+            _metadata12.push.apply(_metadata12, function(remainingBytes) {
               for (var bytes, nameMetadata = [], initialOffset = offset; offset - initialOffset < remainingBytes; ) {
                 var sectionTypeByte = (bytes = void 0, bytes = readBytes(1), esm_decodeUInt32(Buffer.from(bytes)));
                 eatBytes(sectionTypeByte.nextIndex);
                 var subSectionSizeInBytesu32 = readVaruint32();
                 switch (eatBytes(subSectionSizeInBytesu32.nextIndex), sectionTypeByte.value) {
                  case 1:
-                  nameMetadata.push.apply(nameMetadata, decoder_toConsumableArray(parseNameSectionFunctions()));
+                  nameMetadata.push.apply(nameMetadata, parseNameSectionFunctions());
                   break;
 
                  case 2:
-                  nameMetadata.push.apply(nameMetadata, decoder_toConsumableArray(parseNameSectionLocals()));
+                  nameMetadata.push.apply(nameMetadata, parseNameSectionLocals());
                   break;
 
                  default:
@@ -1575,7 +1535,7 @@
                 }
               }
               return nameMetadata;
-            }(_remainingBytes2)));
+            }(_remainingBytes2));
           } catch (e) {
             console.warn('Failed to decode custom "name" section @'.concat(offset, "; ignoring (").concat(e.message, ").")), 
             eatBytes(offset - (initialOffset + _remainingBytes2));
@@ -1636,7 +1596,7 @@
       producers: []
     }; offset < buf.length; ) {
       var _parseSection = parseSection(sectionIndex), _nodes12 = _parseSection.nodes, _metadata13 = _parseSection.metadata, nextSectionIndex = _parseSection.nextSectionIndex;
-      moduleFields.push.apply(moduleFields, decoder_toConsumableArray(_nodes12)), (Array.isArray(_metadata13) ? _metadata13 : [ _metadata13 ]).forEach((function(metadataItem) {
+      moduleFields.push.apply(moduleFields, _nodes12), (Array.isArray(_metadata13) ? _metadata13 : [ _metadata13 ]).forEach((function(metadataItem) {
         "FunctionNameMetadata" === metadataItem.type ? moduleMetadata.functionNames.push(metadataItem) : "LocalNameMetadata" === metadataItem.type ? moduleMetadata.localNames.push(metadataItem) : "ProducersSectionMetadata" === metadataItem.type ? moduleMetadata.producers.push(metadataItem) : moduleMetadata.sections.push(metadataItem);
       })), nextSectionIndex && (sectionIndex = nextSectionIndex);
     }

@@ -1,3 +1,4 @@
+"use strict";
 module.exports = function(modules) {
   var installedModules = {};
   function __webpack_require__(moduleId) {
@@ -10,39 +11,7 @@ module.exports = function(modules) {
     return modules[moduleId].call(module.exports, module, module.exports, __webpack_require__), 
     module.l = !0, module.exports;
   }
-  return __webpack_require__.m = modules, __webpack_require__.c = installedModules, 
-  __webpack_require__.d = function(exports, name, getter) {
-    __webpack_require__.o(exports, name) || Object.defineProperty(exports, name, {
-      enumerable: !0,
-      get: getter
-    });
-  }, __webpack_require__.r = function(exports) {
-    "undefined" != typeof Symbol && Symbol.toStringTag && Object.defineProperty(exports, Symbol.toStringTag, {
-      value: "Module"
-    }), Object.defineProperty(exports, "__esModule", {
-      value: !0
-    });
-  }, __webpack_require__.t = function(value, mode) {
-    if (1 & mode && (value = __webpack_require__(value)), 8 & mode) return value;
-    if (4 & mode && "object" == typeof value && value && value.__esModule) return value;
-    var ns = Object.create(null);
-    if (__webpack_require__.r(ns), Object.defineProperty(ns, "default", {
-      enumerable: !0,
-      value: value
-    }), 2 & mode && "string" != typeof value) for (var key in value) __webpack_require__.d(ns, key, function(key) {
-      return value[key];
-    }.bind(null, key));
-    return ns;
-  }, __webpack_require__.n = function(module) {
-    var getter = module && module.__esModule ? function() {
-      return module.default;
-    } : function() {
-      return module;
-    };
-    return __webpack_require__.d(getter, "a", getter), getter;
-  }, __webpack_require__.o = function(object, property) {
-    return Object.prototype.hasOwnProperty.call(object, property);
-  }, __webpack_require__.p = "", __webpack_require__(__webpack_require__.s = 1);
+  return __webpack_require__(1);
 }([ function(module, exports, __webpack_require__) {
   var all = module.exports.all = [ {
     errno: -2,
@@ -287,9 +256,8 @@ module.exports = function(modules) {
   } ];
   module.exports.errno = {}, module.exports.code = {}, all.forEach((function(error) {
     module.exports.errno[error.errno] = error, module.exports.code[error.code] = error;
-  })), module.exports.custom = __webpack_require__(7)(module.exports), module.exports.create = module.exports.custom.createError;
+  })), module.exports.custom = __webpack_require__(6)(module.exports), module.exports.create = module.exports.custom.createError;
 }, function(module, exports, __webpack_require__) {
-  "use strict";
   const Farm = __webpack_require__(2);
   let farms = [];
   module.exports = function(options, path, methods) {
@@ -304,7 +272,6 @@ module.exports = function(modules) {
     process.nextTick(callback.bind(null, new Error("Worker farm not found!")));
   };
 }, function(module, exports, __webpack_require__) {
-  "use strict";
   const DEFAULT_OPTIONS = {
     workerOptions: {},
     maxCallsPerWorker: 1 / 0,
@@ -464,8 +431,7 @@ module.exports = function(modules) {
 }, function(module, exports) {
   module.exports = require("os");
 }, function(module, exports, __webpack_require__) {
-  "use strict";
-  const childProcess = __webpack_require__(5), childModule = __webpack_require__(6).resolve(__dirname, "./worker-child.js");
+  const childProcess = __webpack_require__(5), childModule = require.resolve("./worker-child");
   module.exports = function(forkModule, workerOptions) {
     let filteredArgs = process.execArgv.filter((function(v) {
       return !/^--(debug|inspect)/.test(v);
@@ -484,10 +450,8 @@ module.exports = function(modules) {
   };
 }, function(module, exports) {
   module.exports = require("child_process");
-}, function(module, exports) {
-  module.exports = require("path");
 }, function(module, exports, __webpack_require__) {
-  var prr = __webpack_require__(8);
+  var prr = __webpack_require__(7);
   function init(type, message, cause) {
     message && "string" != typeof message && (message = message.message || message.name), 
     prr(this, {
@@ -518,31 +482,28 @@ module.exports = function(modules) {
       createError: ce
     };
   };
-}, function(module, exports, __webpack_require__) {
-  var context, definition;
-  context = this, definition = function() {
-    var setProperty = "function" == typeof Object.defineProperty ? function(obj, key, options) {
-      return Object.defineProperty(obj, key, options), obj;
-    } : function(obj, key, options) {
-      return obj[key] = options.value, obj;
-    };
-    return function(obj, key, value, options) {
-      var k;
-      if (options = function(value, options) {
-        var oo = "object" == typeof options, os = !oo && "string" == typeof options, op = function(p) {
-          return oo ? !!options[p] : !!os && options.indexOf(p[0]) > -1;
-        };
-        return {
-          enumerable: op("enumerable"),
-          configurable: op("configurable"),
-          writable: op("writable"),
-          value: value
-        };
-      }(value, options), "object" == typeof key) {
-        for (k in key) Object.hasOwnProperty.call(key, k) && (options.value = key[k], setProperty(obj, k, options));
-        return obj;
-      }
-      return setProperty(obj, key, options);
-    };
-  }, module.exports ? module.exports = definition() : context.prr = definition();
+}, function(module, exports) {
+  var setProperty = "function" == typeof Object.defineProperty ? function(obj, key, options) {
+    return Object.defineProperty(obj, key, options), obj;
+  } : function(obj, key, options) {
+    return obj[key] = options.value, obj;
+  };
+  module.exports = function(obj, key, value, options) {
+    var k;
+    if (options = function(value, options) {
+      var oo = "object" == typeof options, os = !oo && "string" == typeof options, op = function(p) {
+        return oo ? !!options[p] : !!os && options.indexOf(p[0]) > -1;
+      };
+      return {
+        enumerable: op("enumerable"),
+        configurable: op("configurable"),
+        writable: op("writable"),
+        value: value
+      };
+    }(value, options), "object" == typeof key) {
+      for (k in key) Object.hasOwnProperty.call(key, k) && (options.value = key[k], setProperty(obj, k, options));
+      return obj;
+    }
+    return setProperty(obj, key, options);
+  };
 } ]);

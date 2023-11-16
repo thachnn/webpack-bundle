@@ -1,3 +1,4 @@
+"use strict";
 module.exports = function(modules) {
   var installedModules = {};
   function __webpack_require__(moduleId) {
@@ -10,39 +11,7 @@ module.exports = function(modules) {
     return modules[moduleId].call(module.exports, module, module.exports, __webpack_require__), 
     module.l = !0, module.exports;
   }
-  return __webpack_require__.m = modules, __webpack_require__.c = installedModules, 
-  __webpack_require__.d = function(exports, name, getter) {
-    __webpack_require__.o(exports, name) || Object.defineProperty(exports, name, {
-      enumerable: !0,
-      get: getter
-    });
-  }, __webpack_require__.r = function(exports) {
-    "undefined" != typeof Symbol && Symbol.toStringTag && Object.defineProperty(exports, Symbol.toStringTag, {
-      value: "Module"
-    }), Object.defineProperty(exports, "__esModule", {
-      value: !0
-    });
-  }, __webpack_require__.t = function(value, mode) {
-    if (1 & mode && (value = __webpack_require__(value)), 8 & mode) return value;
-    if (4 & mode && "object" == typeof value && value && value.__esModule) return value;
-    var ns = Object.create(null);
-    if (__webpack_require__.r(ns), Object.defineProperty(ns, "default", {
-      enumerable: !0,
-      value: value
-    }), 2 & mode && "string" != typeof value) for (var key in value) __webpack_require__.d(ns, key, function(key) {
-      return value[key];
-    }.bind(null, key));
-    return ns;
-  }, __webpack_require__.n = function(module) {
-    var getter = module && module.__esModule ? function() {
-      return module.default;
-    } : function() {
-      return module;
-    };
-    return __webpack_require__.d(getter, "a", getter), getter;
-  }, __webpack_require__.o = function(object, property) {
-    return Object.prototype.hasOwnProperty.call(object, property);
-  }, __webpack_require__.p = "", __webpack_require__(__webpack_require__.s = 12);
+  return __webpack_require__(12);
 }([ function(module, exports) {
   module.exports = require("path");
 }, function(module, exports) {
@@ -50,7 +19,6 @@ module.exports = function(modules) {
 }, function(module, exports) {
   module.exports = require("fs");
 }, function(module, exports, __webpack_require__) {
-  "use strict";
   const path = __webpack_require__(0), POSIX_CHARS = {
     DOT_LITERAL: "\\.",
     PLUS_LITERAL: "\\+",
@@ -184,7 +152,6 @@ module.exports = function(modules) {
     globChars: win32 => !0 === win32 ? WINDOWS_CHARS : POSIX_CHARS
   };
 }, function(module, exports, __webpack_require__) {
-  "use strict";
   const path = __webpack_require__(0), win32 = "win32" === process.platform, {REGEX_BACKSLASH: REGEX_BACKSLASH, REGEX_REMOVE_BACKSLASH: REGEX_REMOVE_BACKSLASH, REGEX_SPECIAL_CHARS: REGEX_SPECIAL_CHARS, REGEX_SPECIAL_CHARS_GLOBAL: REGEX_SPECIAL_CHARS_GLOBAL} = __webpack_require__(3);
   exports.isObject = val => null !== val && "object" == typeof val && !Array.isArray(val), 
   exports.hasRegexChars = str => REGEX_SPECIAL_CHARS.test(str), exports.isRegexChar = str => 1 === str.length && exports.hasRegexChars(str), 
@@ -206,7 +173,6 @@ module.exports = function(modules) {
     return !0 === state.negated && (output = `(?:^(?!${output}).*$)`), output;
   };
 }, function(module, exports, __webpack_require__) {
-  "use strict";
   const utils = __webpack_require__(6);
   module.exports = (ast, options = {}) => {
     let stringify = (node, parent = {}) => {
@@ -219,7 +185,6 @@ module.exports = function(modules) {
     return stringify(ast);
   };
 }, function(module, exports, __webpack_require__) {
-  "use strict";
   exports.isInteger = num => "number" == typeof num ? Number.isInteger(num) : "string" == typeof num && "" !== num.trim() && Number.isInteger(Number(num)), 
   exports.find = (node, type) => node.nodes.find(node => node.type === type), exports.exceedsLimit = (min, max, step = 1, limit) => !1 !== limit && (!(!exports.isInteger(min) || !exports.isInteger(max)) && (Number(max) - Number(min)) / Number(step) >= limit), 
   exports.escapeNode = (block, n = 0, type) => {
@@ -241,7 +206,6 @@ module.exports = function(modules) {
     return flat(args), result;
   };
 }, function(module, exports, __webpack_require__) {
-  "use strict";
   const {sep: sep} = __webpack_require__(0), {platform: platform} = process;
   exports.EV_ALL = "all", exports.EV_READY = "ready", exports.EV_ADD = "add", exports.EV_CHANGE = "change", 
   exports.EV_ADD_DIR = "addDir", exports.EV_UNLINK = "unlink", exports.EV_UNLINK_DIR = "unlinkDir", 
@@ -262,8 +226,97 @@ module.exports = function(modules) {
   exports.EMPTY_FN = () => {}, exports.IDENTITY_FN = val => val, exports.isWindows = "win32" === platform, 
   exports.isMacos = "darwin" === platform, exports.isLinux = "linux" === platform;
 }, function(module, exports, __webpack_require__) {
-  "use strict";
-  module.exports = __webpack_require__(16);
+  const path = __webpack_require__(0), scan = __webpack_require__(16), parse = __webpack_require__(17), utils = __webpack_require__(4), constants = __webpack_require__(3), picomatch = (glob, options, returnState = !1) => {
+    if (Array.isArray(glob)) {
+      const fns = glob.map(input => picomatch(input, options, returnState));
+      return str => {
+        for (const isMatch of fns) {
+          const state = isMatch(str);
+          if (state) return state;
+        }
+        return !1;
+      };
+    }
+    const isState = (val = glob) && "object" == typeof val && !Array.isArray(val) && glob.tokens && glob.input;
+    var val;
+    if ("" === glob || "string" != typeof glob && !isState) throw new TypeError("Expected pattern to be a non-empty string");
+    const opts = options || {}, posix = utils.isWindows(options), regex = isState ? picomatch.compileRe(glob, options) : picomatch.makeRe(glob, options, !1, !0), state = regex.state;
+    delete regex.state;
+    let isIgnored = () => !1;
+    if (opts.ignore) {
+      const ignoreOpts = {
+        ...options,
+        ignore: null,
+        onMatch: null,
+        onResult: null
+      };
+      isIgnored = picomatch(opts.ignore, ignoreOpts, returnState);
+    }
+    const matcher = (input, returnObject = !1) => {
+      const {isMatch: isMatch, match: match, output: output} = picomatch.test(input, regex, options, {
+        glob: glob,
+        posix: posix
+      }), result = {
+        glob: glob,
+        state: state,
+        regex: regex,
+        posix: posix,
+        input: input,
+        output: output,
+        match: match,
+        isMatch: isMatch
+      };
+      return "function" == typeof opts.onResult && opts.onResult(result), !1 === isMatch ? (result.isMatch = !1, 
+      !!returnObject && result) : isIgnored(input) ? ("function" == typeof opts.onIgnore && opts.onIgnore(result), 
+      result.isMatch = !1, !!returnObject && result) : ("function" == typeof opts.onMatch && opts.onMatch(result), 
+      !returnObject || result);
+    };
+    return returnState && (matcher.state = state), matcher;
+  };
+  picomatch.test = (input, regex, options, {glob: glob, posix: posix} = {}) => {
+    if ("string" != typeof input) throw new TypeError("Expected input to be a string");
+    if ("" === input) return {
+      isMatch: !1,
+      output: ""
+    };
+    const opts = options || {}, format = opts.format || (posix ? utils.toPosixSlashes : null);
+    let match = input === glob, output = match && format ? format(input) : input;
+    return !1 === match && (output = format ? format(input) : input, match = output === glob), 
+    !1 !== match && !0 !== opts.capture || (match = !0 === opts.matchBase || !0 === opts.basename ? picomatch.matchBase(input, regex, options, posix) : regex.exec(output)), 
+    {
+      isMatch: Boolean(match),
+      match: match,
+      output: output
+    };
+  }, picomatch.matchBase = (input, glob, options, posix = utils.isWindows(options)) => (glob instanceof RegExp ? glob : picomatch.makeRe(glob, options)).test(path.basename(input)), 
+  picomatch.isMatch = (str, patterns, options) => picomatch(patterns, options)(str), 
+  picomatch.parse = (pattern, options) => Array.isArray(pattern) ? pattern.map(p => picomatch.parse(p, options)) : parse(pattern, {
+    ...options,
+    fastpaths: !1
+  }), picomatch.scan = (input, options) => scan(input, options), picomatch.compileRe = (state, options, returnOutput = !1, returnState = !1) => {
+    if (!0 === returnOutput) return state.output;
+    const opts = options || {}, prepend = opts.contains ? "" : "^", append = opts.contains ? "" : "$";
+    let source = `${prepend}(?:${state.output})${append}`;
+    state && !0 === state.negated && (source = `^(?!${source}).*$`);
+    const regex = picomatch.toRegex(source, options);
+    return !0 === returnState && (regex.state = state), regex;
+  }, picomatch.makeRe = (input, options = {}, returnOutput = !1, returnState = !1) => {
+    if (!input || "string" != typeof input) throw new TypeError("Expected a non-empty string");
+    let parsed = {
+      negated: !1,
+      fastpaths: !0
+    };
+    return !1 === options.fastpaths || "." !== input[0] && "*" !== input[0] || (parsed.output = parse.fastpaths(input, options)), 
+    parsed.output || (parsed = parse(input, options)), picomatch.compileRe(parsed, options, returnOutput, returnState);
+  }, picomatch.toRegex = (source, options) => {
+    try {
+      const opts = options || {};
+      return new RegExp(source, opts.flags || (opts.nocase ? "i" : ""));
+    } catch (err) {
+      if (options && !0 === options.debug) throw err;
+      return /$^/;
+    }
+  }, picomatch.constants = constants, module.exports = picomatch;
 }, function(module, exports) {
   module.exports = function(path, stripTrailing) {
     if ("string" != typeof path) throw new TypeError("expected path to be a string");
@@ -280,7 +333,7 @@ module.exports = function(modules) {
     return !1 !== stripTrailing && "" === segs[segs.length - 1] && segs.pop(), prefix + segs.join("/");
   };
 }, function(module, exports, __webpack_require__) {
-  var isExtglob = __webpack_require__(21), chars = {
+  var isExtglob = __webpack_require__(20), chars = {
     "{": "}",
     "(": ")",
     "[": "]"
@@ -334,8 +387,7 @@ module.exports = function(modules) {
     return options && !1 === options.strict && (check = relaxedCheck), check(str);
   };
 }, function(module, exports, __webpack_require__) {
-  "use strict";
-  const util = __webpack_require__(1), toRegexRange = __webpack_require__(25), isObject = val => null !== val && "object" == typeof val && !Array.isArray(val), isValidValue = value => "number" == typeof value || "string" == typeof value && "" !== value, isNumber = num => Number.isInteger(+num), zeros = input => {
+  const util = __webpack_require__(1), toRegexRange = __webpack_require__(24), isObject = val => null !== val && "object" == typeof val && !Array.isArray(val), isValidValue = value => "number" == typeof value || "string" == typeof value && "" !== value, isNumber = num => Number.isInteger(+num), zeros = input => {
     let value = "" + input, index = -1;
     if ("-" === value[0] && (value = value.slice(1)), "0" === value) return !1;
     for (;"0" === value[++index]; ) ;
@@ -422,8 +474,7 @@ module.exports = function(modules) {
   };
   module.exports = fill;
 }, function(module, exports, __webpack_require__) {
-  "use strict";
-  const {EventEmitter: EventEmitter} = __webpack_require__(13), fs = __webpack_require__(2), sysPath = __webpack_require__(0), {promisify: promisify} = __webpack_require__(1), readdirp = __webpack_require__(14), anymatch = __webpack_require__(19).default, globParent = __webpack_require__(20), isGlob = __webpack_require__(10), braces = __webpack_require__(23), normalizePath = __webpack_require__(9), NodeFsHandler = __webpack_require__(30), FsEventsHandler = __webpack_require__(34), {EV_ALL: EV_ALL, EV_READY: EV_READY, EV_ADD: EV_ADD, EV_CHANGE: EV_CHANGE, EV_UNLINK: EV_UNLINK, EV_ADD_DIR: EV_ADD_DIR, EV_UNLINK_DIR: EV_UNLINK_DIR, EV_RAW: EV_RAW, EV_ERROR: EV_ERROR, STR_CLOSE: STR_CLOSE, STR_END: STR_END, BACK_SLASH_RE: BACK_SLASH_RE, DOUBLE_SLASH_RE: DOUBLE_SLASH_RE, SLASH_OR_BACK_SLASH_RE: SLASH_OR_BACK_SLASH_RE, DOT_RE: DOT_RE, REPLACER_RE: REPLACER_RE, SLASH: SLASH, SLASH_SLASH: SLASH_SLASH, BRACE_START: BRACE_START, BANG: BANG, ONE_DOT: ONE_DOT, TWO_DOTS: TWO_DOTS, GLOBSTAR: GLOBSTAR, SLASH_GLOBSTAR: SLASH_GLOBSTAR, ANYMATCH_OPTS: ANYMATCH_OPTS, STRING_TYPE: STRING_TYPE, FUNCTION_TYPE: FUNCTION_TYPE, EMPTY_STR: EMPTY_STR, EMPTY_FN: EMPTY_FN, isWindows: isWindows, isMacos: isMacos} = __webpack_require__(7), stat = promisify(fs.stat), readdir = promisify(fs.readdir), arrify = (value = []) => Array.isArray(value) ? value : [ value ], flatten = (list, result = []) => (list.forEach(item => {
+  const {EventEmitter: EventEmitter} = __webpack_require__(13), fs = __webpack_require__(2), sysPath = __webpack_require__(0), {promisify: promisify} = __webpack_require__(1), readdirp = __webpack_require__(14), anymatch = __webpack_require__(18).default, globParent = __webpack_require__(19), isGlob = __webpack_require__(10), braces = __webpack_require__(22), normalizePath = __webpack_require__(9), NodeFsHandler = __webpack_require__(29), FsEventsHandler = __webpack_require__(32), {EV_ALL: EV_ALL, EV_READY: EV_READY, EV_ADD: EV_ADD, EV_CHANGE: EV_CHANGE, EV_UNLINK: EV_UNLINK, EV_ADD_DIR: EV_ADD_DIR, EV_UNLINK_DIR: EV_UNLINK_DIR, EV_RAW: EV_RAW, EV_ERROR: EV_ERROR, STR_CLOSE: STR_CLOSE, STR_END: STR_END, BACK_SLASH_RE: BACK_SLASH_RE, DOUBLE_SLASH_RE: DOUBLE_SLASH_RE, SLASH_OR_BACK_SLASH_RE: SLASH_OR_BACK_SLASH_RE, DOT_RE: DOT_RE, REPLACER_RE: REPLACER_RE, SLASH: SLASH, SLASH_SLASH: SLASH_SLASH, BRACE_START: BRACE_START, BANG: BANG, ONE_DOT: ONE_DOT, TWO_DOTS: TWO_DOTS, GLOBSTAR: GLOBSTAR, SLASH_GLOBSTAR: SLASH_GLOBSTAR, ANYMATCH_OPTS: ANYMATCH_OPTS, STRING_TYPE: STRING_TYPE, FUNCTION_TYPE: FUNCTION_TYPE, EMPTY_STR: EMPTY_STR, EMPTY_FN: EMPTY_FN, isWindows: isWindows, isMacos: isMacos} = __webpack_require__(7), stat = promisify(fs.stat), readdir = promisify(fs.readdir), arrify = (value = []) => Array.isArray(value) ? value : [ value ], flatten = (list, result = []) => (list.forEach(item => {
     Array.isArray(item) ? flatten(item, result) : result.push(item);
   }), result), unifyPaths = paths_ => {
     const paths = flatten(arrify(paths_));
@@ -760,7 +811,6 @@ module.exports = function(modules) {
 }, function(module, exports) {
   module.exports = require("events");
 }, function(module, exports, __webpack_require__) {
-  "use strict";
   const fs = __webpack_require__(2), {Readable: Readable} = __webpack_require__(15), sysPath = __webpack_require__(0), {promisify: promisify} = __webpack_require__(1), picomatch = __webpack_require__(8), readdir = promisify(fs.readdir), stat = promisify(fs.stat), lstat = promisify(fs.lstat), realpath = promisify(fs.realpath), NORMAL_FLOW_ERRORS = new Set([ "ENOENT", "EPERM", "EACCES", "ELOOP" ]), FILE_TYPE = "files", DIR_TYPE = "directories", FILE_DIR_TYPE = "files_directories", EVERYTHING_TYPE = "all", ALL_TYPES = [ FILE_TYPE, DIR_TYPE, FILE_DIR_TYPE, EVERYTHING_TYPE ], normalizeFilter = filter => {
     if (void 0 !== filter) {
       if ("function" == typeof filter) return filter;
@@ -908,100 +958,6 @@ module.exports = function(modules) {
 }, function(module, exports) {
   module.exports = require("stream");
 }, function(module, exports, __webpack_require__) {
-  "use strict";
-  const path = __webpack_require__(0), scan = __webpack_require__(17), parse = __webpack_require__(18), utils = __webpack_require__(4), constants = __webpack_require__(3), picomatch = (glob, options, returnState = !1) => {
-    if (Array.isArray(glob)) {
-      const fns = glob.map(input => picomatch(input, options, returnState));
-      return str => {
-        for (const isMatch of fns) {
-          const state = isMatch(str);
-          if (state) return state;
-        }
-        return !1;
-      };
-    }
-    const isState = (val = glob) && "object" == typeof val && !Array.isArray(val) && glob.tokens && glob.input;
-    var val;
-    if ("" === glob || "string" != typeof glob && !isState) throw new TypeError("Expected pattern to be a non-empty string");
-    const opts = options || {}, posix = utils.isWindows(options), regex = isState ? picomatch.compileRe(glob, options) : picomatch.makeRe(glob, options, !1, !0), state = regex.state;
-    delete regex.state;
-    let isIgnored = () => !1;
-    if (opts.ignore) {
-      const ignoreOpts = {
-        ...options,
-        ignore: null,
-        onMatch: null,
-        onResult: null
-      };
-      isIgnored = picomatch(opts.ignore, ignoreOpts, returnState);
-    }
-    const matcher = (input, returnObject = !1) => {
-      const {isMatch: isMatch, match: match, output: output} = picomatch.test(input, regex, options, {
-        glob: glob,
-        posix: posix
-      }), result = {
-        glob: glob,
-        state: state,
-        regex: regex,
-        posix: posix,
-        input: input,
-        output: output,
-        match: match,
-        isMatch: isMatch
-      };
-      return "function" == typeof opts.onResult && opts.onResult(result), !1 === isMatch ? (result.isMatch = !1, 
-      !!returnObject && result) : isIgnored(input) ? ("function" == typeof opts.onIgnore && opts.onIgnore(result), 
-      result.isMatch = !1, !!returnObject && result) : ("function" == typeof opts.onMatch && opts.onMatch(result), 
-      !returnObject || result);
-    };
-    return returnState && (matcher.state = state), matcher;
-  };
-  picomatch.test = (input, regex, options, {glob: glob, posix: posix} = {}) => {
-    if ("string" != typeof input) throw new TypeError("Expected input to be a string");
-    if ("" === input) return {
-      isMatch: !1,
-      output: ""
-    };
-    const opts = options || {}, format = opts.format || (posix ? utils.toPosixSlashes : null);
-    let match = input === glob, output = match && format ? format(input) : input;
-    return !1 === match && (output = format ? format(input) : input, match = output === glob), 
-    !1 !== match && !0 !== opts.capture || (match = !0 === opts.matchBase || !0 === opts.basename ? picomatch.matchBase(input, regex, options, posix) : regex.exec(output)), 
-    {
-      isMatch: Boolean(match),
-      match: match,
-      output: output
-    };
-  }, picomatch.matchBase = (input, glob, options, posix = utils.isWindows(options)) => (glob instanceof RegExp ? glob : picomatch.makeRe(glob, options)).test(path.basename(input)), 
-  picomatch.isMatch = (str, patterns, options) => picomatch(patterns, options)(str), 
-  picomatch.parse = (pattern, options) => Array.isArray(pattern) ? pattern.map(p => picomatch.parse(p, options)) : parse(pattern, {
-    ...options,
-    fastpaths: !1
-  }), picomatch.scan = (input, options) => scan(input, options), picomatch.compileRe = (state, options, returnOutput = !1, returnState = !1) => {
-    if (!0 === returnOutput) return state.output;
-    const opts = options || {}, prepend = opts.contains ? "" : "^", append = opts.contains ? "" : "$";
-    let source = `${prepend}(?:${state.output})${append}`;
-    state && !0 === state.negated && (source = `^(?!${source}).*$`);
-    const regex = picomatch.toRegex(source, options);
-    return !0 === returnState && (regex.state = state), regex;
-  }, picomatch.makeRe = (input, options = {}, returnOutput = !1, returnState = !1) => {
-    if (!input || "string" != typeof input) throw new TypeError("Expected a non-empty string");
-    let parsed = {
-      negated: !1,
-      fastpaths: !0
-    };
-    return !1 === options.fastpaths || "." !== input[0] && "*" !== input[0] || (parsed.output = parse.fastpaths(input, options)), 
-    parsed.output || (parsed = parse(input, options)), picomatch.compileRe(parsed, options, returnOutput, returnState);
-  }, picomatch.toRegex = (source, options) => {
-    try {
-      const opts = options || {};
-      return new RegExp(source, opts.flags || (opts.nocase ? "i" : ""));
-    } catch (err) {
-      if (options && !0 === options.debug) throw err;
-      return /$^/;
-    }
-  }, picomatch.constants = constants, module.exports = picomatch;
-}, function(module, exports, __webpack_require__) {
-  "use strict";
   const utils = __webpack_require__(4), {CHAR_ASTERISK: CHAR_ASTERISK, CHAR_AT: CHAR_AT, CHAR_BACKWARD_SLASH: CHAR_BACKWARD_SLASH, CHAR_COMMA: CHAR_COMMA, CHAR_DOT: CHAR_DOT, CHAR_EXCLAMATION_MARK: CHAR_EXCLAMATION_MARK, CHAR_FORWARD_SLASH: CHAR_FORWARD_SLASH, CHAR_LEFT_CURLY_BRACE: CHAR_LEFT_CURLY_BRACE, CHAR_LEFT_PARENTHESES: CHAR_LEFT_PARENTHESES, CHAR_LEFT_SQUARE_BRACKET: CHAR_LEFT_SQUARE_BRACKET, CHAR_PLUS: CHAR_PLUS, CHAR_QUESTION_MARK: CHAR_QUESTION_MARK, CHAR_RIGHT_CURLY_BRACE: CHAR_RIGHT_CURLY_BRACE, CHAR_RIGHT_PARENTHESES: CHAR_RIGHT_PARENTHESES, CHAR_RIGHT_SQUARE_BRACKET: CHAR_RIGHT_SQUARE_BRACKET} = __webpack_require__(3), isPathSeparator = code => code === CHAR_FORWARD_SLASH || code === CHAR_BACKWARD_SLASH, depth = token => {
     !0 !== token.isPrefix && (token.depth = token.isGlobstar ? 1 / 0 : 1);
   };
@@ -1140,7 +1096,6 @@ module.exports = function(modules) {
     return state;
   };
 }, function(module, exports, __webpack_require__) {
-  "use strict";
   const constants = __webpack_require__(3), utils = __webpack_require__(4), {MAX_LENGTH: MAX_LENGTH, POSIX_REGEX_SOURCE: POSIX_REGEX_SOURCE, REGEX_NON_SPECIAL_CHARS: REGEX_NON_SPECIAL_CHARS, REGEX_SPECIAL_CHARS_BACKREF: REGEX_SPECIAL_CHARS_BACKREF, REPLACEMENTS: REPLACEMENTS} = constants, expandRange = (args, options) => {
     if ("function" == typeof options.expandRange) return options.expandRange(...args, options);
     args.sort();
@@ -1726,7 +1681,6 @@ module.exports = function(modules) {
     return source && !0 !== opts.strictSlashes && (source += SLASH_LITERAL + "?"), source;
   }, module.exports = parse;
 }, function(module, exports, __webpack_require__) {
-  "use strict";
   Object.defineProperty(exports, "__esModule", {
     value: !0
   });
@@ -1763,8 +1717,7 @@ module.exports = function(modules) {
   };
   anymatch.default = anymatch, module.exports = anymatch;
 }, function(module, exports, __webpack_require__) {
-  "use strict";
-  var isGlob = __webpack_require__(10), pathPosixDirname = __webpack_require__(0).posix.dirname, isWin32 = "win32" === __webpack_require__(22).platform(), backslash = /\\/g, enclosure = /[\{\[].*[\}\]]$/, globby = /(^|[^\\])([\{\[]|\([^\)]+$)/, escaped = /\\([\!\*\?\|\[\]\(\)\{\}])/g;
+  var isGlob = __webpack_require__(10), pathPosixDirname = __webpack_require__(0).posix.dirname, isWin32 = "win32" === __webpack_require__(21).platform(), backslash = /\\/g, enclosure = /[\{\[].*[\}\]]$/, globby = /(^|[^\\])([\{\[]|\([^\)]+$)/, escaped = /\\([\!\*\?\|\[\]\(\)\{\}])/g;
   module.exports = function(str, opts) {
     Object.assign({
       flipBackslashes: !0
@@ -1787,8 +1740,7 @@ module.exports = function(modules) {
 }, function(module, exports) {
   module.exports = require("os");
 }, function(module, exports, __webpack_require__) {
-  "use strict";
-  const stringify = __webpack_require__(5), compile = __webpack_require__(24), expand = __webpack_require__(27), parse = __webpack_require__(28), braces = (input, options = {}) => {
+  const stringify = __webpack_require__(5), compile = __webpack_require__(23), expand = __webpack_require__(26), parse = __webpack_require__(27), braces = (input, options = {}) => {
     let output = [];
     if (Array.isArray(input)) for (let pattern of input) {
       let result = braces.create(pattern, options);
@@ -1807,7 +1759,6 @@ module.exports = function(modules) {
   }, braces.create = (input, options = {}) => "" === input || input.length < 3 ? [ input ] : !0 !== options.expand ? braces.compile(input, options) : braces.expand(input, options), 
   module.exports = braces;
 }, function(module, exports, __webpack_require__) {
-  "use strict";
   const fill = __webpack_require__(11), utils = __webpack_require__(6);
   module.exports = (ast, options = {}) => {
     let walk = (node, parent = {}) => {
@@ -1832,8 +1783,7 @@ module.exports = function(modules) {
     return walk(ast);
   };
 }, function(module, exports, __webpack_require__) {
-  "use strict";
-  const isNumber = __webpack_require__(26), toRegexRange = (min, max, options) => {
+  const isNumber = __webpack_require__(25), toRegexRange = (min, max, options) => {
     if (!1 === isNumber(min)) throw new TypeError("toRegexRange: expected the first argument to be a number");
     if (void 0 === max || min === max) return String(min);
     if (!1 === isNumber(max)) throw new TypeError("toRegexRange: expected the second argument to be a number.");
@@ -1956,12 +1906,10 @@ module.exports = function(modules) {
   toRegexRange.cache = {}, toRegexRange.clearCache = () => toRegexRange.cache = {}, 
   module.exports = toRegexRange;
 }, function(module, exports, __webpack_require__) {
-  "use strict";
   module.exports = function(num) {
     return "number" == typeof num ? num - num == 0 : "string" == typeof num && "" !== num.trim() && (Number.isFinite ? Number.isFinite(+num) : isFinite(+num));
   };
 }, function(module, exports, __webpack_require__) {
-  "use strict";
   const fill = __webpack_require__(11), stringify = __webpack_require__(5), utils = __webpack_require__(6), append = (queue = "", stash = "", enclose = !1) => {
     let result = [];
     if (queue = [].concat(queue), !(stash = [].concat(stash)).length) return queue;
@@ -1997,8 +1945,7 @@ module.exports = function(modules) {
     return utils.flatten(walk(ast));
   };
 }, function(module, exports, __webpack_require__) {
-  "use strict";
-  const stringify = __webpack_require__(5), {MAX_LENGTH: MAX_LENGTH, CHAR_BACKSLASH: CHAR_BACKSLASH, CHAR_BACKTICK: CHAR_BACKTICK, CHAR_COMMA: CHAR_COMMA, CHAR_DOT: CHAR_DOT, CHAR_LEFT_PARENTHESES: CHAR_LEFT_PARENTHESES, CHAR_RIGHT_PARENTHESES: CHAR_RIGHT_PARENTHESES, CHAR_LEFT_CURLY_BRACE: CHAR_LEFT_CURLY_BRACE, CHAR_RIGHT_CURLY_BRACE: CHAR_RIGHT_CURLY_BRACE, CHAR_LEFT_SQUARE_BRACKET: CHAR_LEFT_SQUARE_BRACKET, CHAR_RIGHT_SQUARE_BRACKET: CHAR_RIGHT_SQUARE_BRACKET, CHAR_DOUBLE_QUOTE: CHAR_DOUBLE_QUOTE, CHAR_SINGLE_QUOTE: CHAR_SINGLE_QUOTE, CHAR_NO_BREAK_SPACE: CHAR_NO_BREAK_SPACE, CHAR_ZERO_WIDTH_NOBREAK_SPACE: CHAR_ZERO_WIDTH_NOBREAK_SPACE} = __webpack_require__(29);
+  const stringify = __webpack_require__(5), {MAX_LENGTH: MAX_LENGTH, CHAR_BACKSLASH: CHAR_BACKSLASH, CHAR_BACKTICK: CHAR_BACKTICK, CHAR_COMMA: CHAR_COMMA, CHAR_DOT: CHAR_DOT, CHAR_LEFT_PARENTHESES: CHAR_LEFT_PARENTHESES, CHAR_RIGHT_PARENTHESES: CHAR_RIGHT_PARENTHESES, CHAR_LEFT_CURLY_BRACE: CHAR_LEFT_CURLY_BRACE, CHAR_RIGHT_CURLY_BRACE: CHAR_RIGHT_CURLY_BRACE, CHAR_LEFT_SQUARE_BRACKET: CHAR_LEFT_SQUARE_BRACKET, CHAR_RIGHT_SQUARE_BRACKET: CHAR_RIGHT_SQUARE_BRACKET, CHAR_DOUBLE_QUOTE: CHAR_DOUBLE_QUOTE, CHAR_SINGLE_QUOTE: CHAR_SINGLE_QUOTE, CHAR_NO_BREAK_SPACE: CHAR_NO_BREAK_SPACE, CHAR_ZERO_WIDTH_NOBREAK_SPACE: CHAR_ZERO_WIDTH_NOBREAK_SPACE} = __webpack_require__(28);
   module.exports = (input, options = {}) => {
     if ("string" != typeof input) throw new TypeError("Expected a string");
     let opts = options || {}, max = "number" == typeof opts.maxLength ? Math.min(MAX_LENGTH, opts.maxLength) : MAX_LENGTH;
@@ -2150,7 +2097,6 @@ module.exports = function(modules) {
     }), ast;
   };
 }, function(module, exports, __webpack_require__) {
-  "use strict";
   module.exports = {
     MAX_LENGTH: 65536,
     CHAR_0: "0",
@@ -2199,8 +2145,7 @@ module.exports = function(modules) {
     CHAR_ZERO_WIDTH_NOBREAK_SPACE: "\ufeff"
   };
 }, function(module, exports, __webpack_require__) {
-  "use strict";
-  const fs = __webpack_require__(2), sysPath = __webpack_require__(0), {promisify: promisify} = __webpack_require__(1), isBinaryPath = __webpack_require__(31), {isWindows: isWindows, isLinux: isLinux, EMPTY_FN: EMPTY_FN, EMPTY_STR: EMPTY_STR, KEY_LISTENERS: KEY_LISTENERS, KEY_ERR: KEY_ERR, KEY_RAW: KEY_RAW, HANDLER_KEYS: HANDLER_KEYS, EV_CHANGE: EV_CHANGE, EV_ADD: EV_ADD, EV_ADD_DIR: EV_ADD_DIR, EV_ERROR: EV_ERROR, STR_DATA: STR_DATA, STR_END: STR_END, BRACE_START: BRACE_START, STAR: STAR} = __webpack_require__(7), open = promisify(fs.open), stat = promisify(fs.stat), lstat = promisify(fs.lstat), close = promisify(fs.close), fsrealpath = promisify(fs.realpath), statMethods = {
+  const fs = __webpack_require__(2), sysPath = __webpack_require__(0), {promisify: promisify} = __webpack_require__(1), isBinaryPath = __webpack_require__(30), {isWindows: isWindows, isLinux: isLinux, EMPTY_FN: EMPTY_FN, EMPTY_STR: EMPTY_STR, KEY_LISTENERS: KEY_LISTENERS, KEY_ERR: KEY_ERR, KEY_RAW: KEY_RAW, HANDLER_KEYS: HANDLER_KEYS, EV_CHANGE: EV_CHANGE, EV_ADD: EV_ADD, EV_ADD_DIR: EV_ADD_DIR, EV_ERROR: EV_ERROR, STR_DATA: STR_DATA, STR_END: STR_END, BRACE_START: BRACE_START, STAR: STAR} = __webpack_require__(7), open = promisify(fs.open), stat = promisify(fs.stat), lstat = promisify(fs.lstat), close = promisify(fs.close), fsrealpath = promisify(fs.realpath), statMethods = {
     lstat: lstat,
     stat: stat
   }, foreach = (val, fn) => {
@@ -2422,19 +2367,15 @@ module.exports = function(modules) {
     }
   };
 }, function(module, exports, __webpack_require__) {
-  "use strict";
-  const path = __webpack_require__(0), binaryExtensions = __webpack_require__(32), extensions = new Set(binaryExtensions);
+  const path = __webpack_require__(0), binaryExtensions = __webpack_require__(31), extensions = new Set(binaryExtensions);
   module.exports = filePath => extensions.has(path.extname(filePath).slice(1).toLowerCase());
-}, function(module, exports, __webpack_require__) {
-  module.exports = __webpack_require__(33);
 }, function(module) {
   module.exports = JSON.parse('["3dm","3ds","3g2","3gp","7z","a","aac","adp","ai","aif","aiff","alz","ape","apk","appimage","ar","arj","asf","au","avi","bak","baml","bh","bin","bk","bmp","btif","bz2","bzip2","cab","caf","cgm","class","cmx","cpio","cr2","cur","dat","dcm","deb","dex","djvu","dll","dmg","dng","doc","docm","docx","dot","dotm","dra","DS_Store","dsk","dts","dtshd","dvb","dwg","dxf","ecelp4800","ecelp7470","ecelp9600","egg","eol","eot","epub","exe","f4v","fbs","fh","fla","flac","flatpak","fli","flv","fpx","fst","fvt","g3","gh","gif","graffle","gz","gzip","h261","h263","h264","icns","ico","ief","img","ipa","iso","jar","jpeg","jpg","jpgv","jpm","jxr","key","ktx","lha","lib","lvp","lz","lzh","lzma","lzo","m3u","m4a","m4v","mar","mdi","mht","mid","midi","mj2","mka","mkv","mmr","mng","mobi","mov","movie","mp3","mp4","mp4a","mpeg","mpg","mpga","mxu","nef","npx","numbers","nupkg","o","odp","ods","odt","oga","ogg","ogv","otf","ott","pages","pbm","pcx","pdb","pdf","pea","pgm","pic","png","pnm","pot","potm","potx","ppa","ppam","ppm","pps","ppsm","ppsx","ppt","pptm","pptx","psd","pya","pyc","pyo","pyv","qt","rar","ras","raw","resources","rgb","rip","rlc","rmf","rmvb","rpm","rtf","rz","s3m","s7z","scpt","sgi","shar","snap","sil","sketch","slk","smv","snk","so","stl","suo","sub","swf","tar","tbz","tbz2","tga","tgz","thmx","tif","tiff","tlz","ttc","ttf","txz","udf","uvh","uvi","uvm","uvp","uvs","uvu","viv","vob","war","wav","wax","wbmp","wdp","weba","webm","webp","whl","wim","wm","wma","wmv","wmx","woff","woff2","wrm","wvx","xbm","xif","xla","xlam","xls","xlsb","xlsm","xlsx","xlt","xltm","xltx","xm","xmind","xpi","xpm","xwd","xz","z","zip","zipx"]');
 }, function(module, exports, __webpack_require__) {
-  "use strict";
   const fs = __webpack_require__(2), sysPath = __webpack_require__(0), {promisify: promisify} = __webpack_require__(1);
   let fsevents;
   try {
-    fsevents = __webpack_require__(35);
+    fsevents = __webpack_require__(33);
   } catch (error) {
     process.env.CHOKIDAR_PRINT_FSEVENTS_REQUIRE_ERROR && console.error(error);
   }

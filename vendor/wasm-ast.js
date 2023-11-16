@@ -1,5 +1,9 @@
+"use strict";
 !function(e, a) {
   for (var i in a) e[i] = a[i];
+  a.__esModule && Object.defineProperty(e, "__esModule", {
+    value: !0
+  });
 }(exports, function(modules) {
   var installedModules = {};
   function __webpack_require__(moduleId) {
@@ -12,11 +16,10 @@
     return modules[moduleId].call(module.exports, module, module.exports, __webpack_require__), 
     module.l = !0, module.exports;
   }
-  return __webpack_require__.m = modules, __webpack_require__.c = installedModules, 
-  __webpack_require__.d = function(exports, name, getter) {
-    __webpack_require__.o(exports, name) || Object.defineProperty(exports, name, {
+  return __webpack_require__.d = function(exports, definition) {
+    for (var key in definition) __webpack_require__.o(exports, key) || Object.defineProperty(exports, key, {
       enumerable: !0,
-      get: getter
+      get: definition[key]
     });
   }, __webpack_require__.r = function(exports) {
     "undefined" != typeof Symbol && Symbol.toStringTag && Object.defineProperty(exports, Symbol.toStringTag, {
@@ -24,30 +27,672 @@
     }), Object.defineProperty(exports, "__esModule", {
       value: !0
     });
-  }, __webpack_require__.t = function(value, mode) {
-    if (1 & mode && (value = __webpack_require__(value)), 8 & mode) return value;
-    if (4 & mode && "object" == typeof value && value && value.__esModule) return value;
-    var ns = Object.create(null);
-    if (__webpack_require__.r(ns), Object.defineProperty(ns, "default", {
-      enumerable: !0,
-      value: value
-    }), 2 & mode && "string" != typeof value) for (var key in value) __webpack_require__.d(ns, key, function(key) {
-      return value[key];
-    }.bind(null, key));
-    return ns;
-  }, __webpack_require__.n = function(module) {
-    var getter = module && module.__esModule ? function() {
-      return module.default;
-    } : function() {
-      return module;
-    };
-    return __webpack_require__.d(getter, "a", getter), getter;
   }, __webpack_require__.o = function(object, property) {
     return Object.prototype.hasOwnProperty.call(object, property);
-  }, __webpack_require__.p = "", __webpack_require__(__webpack_require__.s = 1);
-}([ function(module, exports) {
-  module.exports = Long;
-  var wasm = null;
+  }, __webpack_require__(0);
+}([ function(module, __webpack_exports__, __webpack_require__) {
+  function isTypeOf(t) {
+    return function(n) {
+      return n.type === t;
+    };
+  }
+  function assertTypeOf(t) {
+    return function(n) {
+      return function() {
+        if (n.type !== t) throw new Error("n.type === t error: unknown");
+      }();
+    };
+  }
+  function nodes_module(id, fields, metadata) {
+    if (null != id && "string" != typeof id) throw new Error('typeof id === "string" error: ' + ("Argument id must be of type string, given: " + typeof id || !1));
+    if ("object" != typeof fields || void 0 === fields.length) throw new Error('typeof fields === "object" && typeof fields.length !== "undefined" error: unknown');
+    var node = {
+      type: "Module",
+      id: id,
+      fields: fields
+    };
+    return void 0 !== metadata && (node.metadata = metadata), node;
+  }
+  function moduleMetadata(sections, functionNames, localNames, producers) {
+    if ("object" != typeof sections || void 0 === sections.length) throw new Error('typeof sections === "object" && typeof sections.length !== "undefined" error: unknown');
+    if (null != functionNames && ("object" != typeof functionNames || void 0 === functionNames.length)) throw new Error('typeof functionNames === "object" && typeof functionNames.length !== "undefined" error: unknown');
+    if (null != localNames && ("object" != typeof localNames || void 0 === localNames.length)) throw new Error('typeof localNames === "object" && typeof localNames.length !== "undefined" error: unknown');
+    if (null != producers && ("object" != typeof producers || void 0 === producers.length)) throw new Error('typeof producers === "object" && typeof producers.length !== "undefined" error: unknown');
+    var node = {
+      type: "ModuleMetadata",
+      sections: sections
+    };
+    return void 0 !== functionNames && functionNames.length > 0 && (node.functionNames = functionNames), 
+    void 0 !== localNames && localNames.length > 0 && (node.localNames = localNames), 
+    void 0 !== producers && producers.length > 0 && (node.producers = producers), node;
+  }
+  function moduleNameMetadata(value) {
+    if ("string" != typeof value) throw new Error('typeof value === "string" error: ' + ("Argument value must be of type string, given: " + typeof value || !1));
+    return {
+      type: "ModuleNameMetadata",
+      value: value
+    };
+  }
+  function functionNameMetadata(value, index) {
+    if ("string" != typeof value) throw new Error('typeof value === "string" error: ' + ("Argument value must be of type string, given: " + typeof value || !1));
+    if ("number" != typeof index) throw new Error('typeof index === "number" error: ' + ("Argument index must be of type number, given: " + typeof index || !1));
+    return {
+      type: "FunctionNameMetadata",
+      value: value,
+      index: index
+    };
+  }
+  function localNameMetadata(value, localIndex, functionIndex) {
+    if ("string" != typeof value) throw new Error('typeof value === "string" error: ' + ("Argument value must be of type string, given: " + typeof value || !1));
+    if ("number" != typeof localIndex) throw new Error('typeof localIndex === "number" error: ' + ("Argument localIndex must be of type number, given: " + typeof localIndex || !1));
+    if ("number" != typeof functionIndex) throw new Error('typeof functionIndex === "number" error: ' + ("Argument functionIndex must be of type number, given: " + typeof functionIndex || !1));
+    return {
+      type: "LocalNameMetadata",
+      value: value,
+      localIndex: localIndex,
+      functionIndex: functionIndex
+    };
+  }
+  function binaryModule(id, blob) {
+    if (null != id && "string" != typeof id) throw new Error('typeof id === "string" error: ' + ("Argument id must be of type string, given: " + typeof id || !1));
+    if ("object" != typeof blob || void 0 === blob.length) throw new Error('typeof blob === "object" && typeof blob.length !== "undefined" error: unknown');
+    return {
+      type: "BinaryModule",
+      id: id,
+      blob: blob
+    };
+  }
+  function quoteModule(id, string) {
+    if (null != id && "string" != typeof id) throw new Error('typeof id === "string" error: ' + ("Argument id must be of type string, given: " + typeof id || !1));
+    if ("object" != typeof string || void 0 === string.length) throw new Error('typeof string === "object" && typeof string.length !== "undefined" error: unknown');
+    return {
+      type: "QuoteModule",
+      id: id,
+      string: string
+    };
+  }
+  function sectionMetadata(section, startOffset, size, vectorOfSize) {
+    if ("number" != typeof startOffset) throw new Error('typeof startOffset === "number" error: ' + ("Argument startOffset must be of type number, given: " + typeof startOffset || !1));
+    return {
+      type: "SectionMetadata",
+      section: section,
+      startOffset: startOffset,
+      size: size,
+      vectorOfSize: vectorOfSize
+    };
+  }
+  function producersSectionMetadata(producers) {
+    if ("object" != typeof producers || void 0 === producers.length) throw new Error('typeof producers === "object" && typeof producers.length !== "undefined" error: unknown');
+    return {
+      type: "ProducersSectionMetadata",
+      producers: producers
+    };
+  }
+  function producerMetadata(language, processedBy, sdk) {
+    if ("object" != typeof language || void 0 === language.length) throw new Error('typeof language === "object" && typeof language.length !== "undefined" error: unknown');
+    if ("object" != typeof processedBy || void 0 === processedBy.length) throw new Error('typeof processedBy === "object" && typeof processedBy.length !== "undefined" error: unknown');
+    if ("object" != typeof sdk || void 0 === sdk.length) throw new Error('typeof sdk === "object" && typeof sdk.length !== "undefined" error: unknown');
+    return {
+      type: "ProducerMetadata",
+      language: language,
+      processedBy: processedBy,
+      sdk: sdk
+    };
+  }
+  function producerMetadataVersionedName(name, version) {
+    if ("string" != typeof name) throw new Error('typeof name === "string" error: ' + ("Argument name must be of type string, given: " + typeof name || !1));
+    if ("string" != typeof version) throw new Error('typeof version === "string" error: ' + ("Argument version must be of type string, given: " + typeof version || !1));
+    return {
+      type: "ProducerMetadataVersionedName",
+      name: name,
+      version: version
+    };
+  }
+  function loopInstruction(label, resulttype, instr) {
+    if ("object" != typeof instr || void 0 === instr.length) throw new Error('typeof instr === "object" && typeof instr.length !== "undefined" error: unknown');
+    return {
+      type: "LoopInstruction",
+      id: "loop",
+      label: label,
+      resulttype: resulttype,
+      instr: instr
+    };
+  }
+  function nodes_instr(id, object, args, namedArgs) {
+    if ("string" != typeof id) throw new Error('typeof id === "string" error: ' + ("Argument id must be of type string, given: " + typeof id || !1));
+    if ("object" != typeof args || void 0 === args.length) throw new Error('typeof args === "object" && typeof args.length !== "undefined" error: unknown');
+    var node = {
+      type: "Instr",
+      id: id,
+      args: args
+    };
+    return void 0 !== object && (node.object = object), void 0 !== namedArgs && 0 !== Object.keys(namedArgs).length && (node.namedArgs = namedArgs), 
+    node;
+  }
+  function ifInstruction(testLabel, test, result, consequent, alternate) {
+    if ("object" != typeof test || void 0 === test.length) throw new Error('typeof test === "object" && typeof test.length !== "undefined" error: unknown');
+    if ("object" != typeof consequent || void 0 === consequent.length) throw new Error('typeof consequent === "object" && typeof consequent.length !== "undefined" error: unknown');
+    if ("object" != typeof alternate || void 0 === alternate.length) throw new Error('typeof alternate === "object" && typeof alternate.length !== "undefined" error: unknown');
+    return {
+      type: "IfInstruction",
+      id: "if",
+      testLabel: testLabel,
+      test: test,
+      result: result,
+      consequent: consequent,
+      alternate: alternate
+    };
+  }
+  function stringLiteral(value) {
+    if ("string" != typeof value) throw new Error('typeof value === "string" error: ' + ("Argument value must be of type string, given: " + typeof value || !1));
+    return {
+      type: "StringLiteral",
+      value: value
+    };
+  }
+  function nodes_numberLiteral(value, raw) {
+    if ("number" != typeof value) throw new Error('typeof value === "number" error: ' + ("Argument value must be of type number, given: " + typeof value || !1));
+    if ("string" != typeof raw) throw new Error('typeof raw === "string" error: ' + ("Argument raw must be of type string, given: " + typeof raw || !1));
+    return {
+      type: "NumberLiteral",
+      value: value,
+      raw: raw
+    };
+  }
+  function longNumberLiteral(value, raw) {
+    if ("string" != typeof raw) throw new Error('typeof raw === "string" error: ' + ("Argument raw must be of type string, given: " + typeof raw || !1));
+    return {
+      type: "LongNumberLiteral",
+      value: value,
+      raw: raw
+    };
+  }
+  function floatLiteral(value, nan, inf, raw) {
+    if ("number" != typeof value) throw new Error('typeof value === "number" error: ' + ("Argument value must be of type number, given: " + typeof value || !1));
+    if (null != nan && "boolean" != typeof nan) throw new Error('typeof nan === "boolean" error: ' + ("Argument nan must be of type boolean, given: " + typeof nan || !1));
+    if (null != inf && "boolean" != typeof inf) throw new Error('typeof inf === "boolean" error: ' + ("Argument inf must be of type boolean, given: " + typeof inf || !1));
+    if ("string" != typeof raw) throw new Error('typeof raw === "string" error: ' + ("Argument raw must be of type string, given: " + typeof raw || !1));
+    var node = {
+      type: "FloatLiteral",
+      value: value,
+      raw: raw
+    };
+    return !0 === nan && (node.nan = !0), !0 === inf && (node.inf = !0), node;
+  }
+  function elem(table, offset, funcs) {
+    if ("object" != typeof offset || void 0 === offset.length) throw new Error('typeof offset === "object" && typeof offset.length !== "undefined" error: unknown');
+    if ("object" != typeof funcs || void 0 === funcs.length) throw new Error('typeof funcs === "object" && typeof funcs.length !== "undefined" error: unknown');
+    return {
+      type: "Elem",
+      table: table,
+      offset: offset,
+      funcs: funcs
+    };
+  }
+  function indexInFuncSection(index) {
+    return {
+      type: "IndexInFuncSection",
+      index: index
+    };
+  }
+  function valtypeLiteral(name) {
+    return {
+      type: "ValtypeLiteral",
+      name: name
+    };
+  }
+  function typeInstruction(id, functype) {
+    return {
+      type: "TypeInstruction",
+      id: id,
+      functype: functype
+    };
+  }
+  function nodes_start(index) {
+    return {
+      type: "Start",
+      index: index
+    };
+  }
+  function globalType(valtype, mutability) {
+    return {
+      type: "GlobalType",
+      valtype: valtype,
+      mutability: mutability
+    };
+  }
+  function leadingComment(value) {
+    if ("string" != typeof value) throw new Error('typeof value === "string" error: ' + ("Argument value must be of type string, given: " + typeof value || !1));
+    return {
+      type: "LeadingComment",
+      value: value
+    };
+  }
+  function blockComment(value) {
+    if ("string" != typeof value) throw new Error('typeof value === "string" error: ' + ("Argument value must be of type string, given: " + typeof value || !1));
+    return {
+      type: "BlockComment",
+      value: value
+    };
+  }
+  function data(memoryIndex, offset, init) {
+    return {
+      type: "Data",
+      memoryIndex: memoryIndex,
+      offset: offset,
+      init: init
+    };
+  }
+  function global(globalType, init, name) {
+    if ("object" != typeof init || void 0 === init.length) throw new Error('typeof init === "object" && typeof init.length !== "undefined" error: unknown');
+    return {
+      type: "Global",
+      globalType: globalType,
+      init: init,
+      name: name
+    };
+  }
+  function table(elementType, limits, name, elements) {
+    if ("Limit" !== limits.type) throw new Error('limits.type === "Limit" error: ' + ("Argument limits must be of type Limit, given: " + limits.type || !1));
+    if (null != elements && ("object" != typeof elements || void 0 === elements.length)) throw new Error('typeof elements === "object" && typeof elements.length !== "undefined" error: unknown');
+    var node = {
+      type: "Table",
+      elementType: elementType,
+      limits: limits,
+      name: name
+    };
+    return void 0 !== elements && elements.length > 0 && (node.elements = elements), 
+    node;
+  }
+  function memory(limits, id) {
+    return {
+      type: "Memory",
+      limits: limits,
+      id: id
+    };
+  }
+  function funcImportDescr(id, signature) {
+    return {
+      type: "FuncImportDescr",
+      id: id,
+      signature: signature
+    };
+  }
+  function moduleImport(module, name, descr) {
+    if ("string" != typeof module) throw new Error('typeof module === "string" error: ' + ("Argument module must be of type string, given: " + typeof module || !1));
+    if ("string" != typeof name) throw new Error('typeof name === "string" error: ' + ("Argument name must be of type string, given: " + typeof name || !1));
+    return {
+      type: "ModuleImport",
+      module: module,
+      name: name,
+      descr: descr
+    };
+  }
+  function nodes_moduleExportDescr(exportType, id) {
+    return {
+      type: "ModuleExportDescr",
+      exportType: exportType,
+      id: id
+    };
+  }
+  function moduleExport(name, descr) {
+    if ("string" != typeof name) throw new Error('typeof name === "string" error: ' + ("Argument name must be of type string, given: " + typeof name || !1));
+    return {
+      type: "ModuleExport",
+      name: name,
+      descr: descr
+    };
+  }
+  function nodes_limit(min, max) {
+    if ("number" != typeof min) throw new Error('typeof min === "number" error: ' + ("Argument min must be of type number, given: " + typeof min || !1));
+    if (null != max && "number" != typeof max) throw new Error('typeof max === "number" error: ' + ("Argument max must be of type number, given: " + typeof max || !1));
+    var node = {
+      type: "Limit",
+      min: min
+    };
+    return void 0 !== max && (node.max = max), node;
+  }
+  function nodes_signature(params, results) {
+    if ("object" != typeof params || void 0 === params.length) throw new Error('typeof params === "object" && typeof params.length !== "undefined" error: unknown');
+    if ("object" != typeof results || void 0 === results.length) throw new Error('typeof results === "object" && typeof results.length !== "undefined" error: unknown');
+    return {
+      type: "Signature",
+      params: params,
+      results: results
+    };
+  }
+  function program(body) {
+    if ("object" != typeof body || void 0 === body.length) throw new Error('typeof body === "object" && typeof body.length !== "undefined" error: unknown');
+    return {
+      type: "Program",
+      body: body
+    };
+  }
+  function identifier(value, raw) {
+    if ("string" != typeof value) throw new Error('typeof value === "string" error: ' + ("Argument value must be of type string, given: " + typeof value || !1));
+    if (null != raw && "string" != typeof raw) throw new Error('typeof raw === "string" error: ' + ("Argument raw must be of type string, given: " + typeof raw || !1));
+    var node = {
+      type: "Identifier",
+      value: value
+    };
+    return void 0 !== raw && (node.raw = raw), node;
+  }
+  function blockInstruction(label, instr, result) {
+    if ("object" != typeof instr || void 0 === instr.length) throw new Error('typeof instr === "object" && typeof instr.length !== "undefined" error: unknown');
+    return {
+      type: "BlockInstruction",
+      id: "block",
+      label: label,
+      instr: instr,
+      result: result
+    };
+  }
+  function callInstruction(index, instrArgs, numeric) {
+    if (null != instrArgs && ("object" != typeof instrArgs || void 0 === instrArgs.length)) throw new Error('typeof instrArgs === "object" && typeof instrArgs.length !== "undefined" error: unknown');
+    var node = {
+      type: "CallInstruction",
+      id: "call",
+      index: index
+    };
+    return void 0 !== instrArgs && instrArgs.length > 0 && (node.instrArgs = instrArgs), 
+    void 0 !== numeric && (node.numeric = numeric), node;
+  }
+  function callIndirectInstruction(signature, intrs) {
+    if (null != intrs && ("object" != typeof intrs || void 0 === intrs.length)) throw new Error('typeof intrs === "object" && typeof intrs.length !== "undefined" error: unknown');
+    var node = {
+      type: "CallIndirectInstruction",
+      id: "call_indirect",
+      signature: signature
+    };
+    return void 0 !== intrs && intrs.length > 0 && (node.intrs = intrs), node;
+  }
+  function nodes_byteArray(values) {
+    if ("object" != typeof values || void 0 === values.length) throw new Error('typeof values === "object" && typeof values.length !== "undefined" error: unknown');
+    return {
+      type: "ByteArray",
+      values: values
+    };
+  }
+  function func(name, signature, body, isExternal, metadata) {
+    if ("object" != typeof body || void 0 === body.length) throw new Error('typeof body === "object" && typeof body.length !== "undefined" error: unknown');
+    if (null != isExternal && "boolean" != typeof isExternal) throw new Error('typeof isExternal === "boolean" error: ' + ("Argument isExternal must be of type boolean, given: " + typeof isExternal || !1));
+    var node = {
+      type: "Func",
+      name: name,
+      signature: signature,
+      body: body
+    };
+    return !0 === isExternal && (node.isExternal = !0), void 0 !== metadata && (node.metadata = metadata), 
+    node;
+  }
+  function internalBrUnless(target) {
+    if ("number" != typeof target) throw new Error('typeof target === "number" error: ' + ("Argument target must be of type number, given: " + typeof target || !1));
+    return {
+      type: "InternalBrUnless",
+      target: target
+    };
+  }
+  function internalGoto(target) {
+    if ("number" != typeof target) throw new Error('typeof target === "number" error: ' + ("Argument target must be of type number, given: " + typeof target || !1));
+    return {
+      type: "InternalGoto",
+      target: target
+    };
+  }
+  function internalCallExtern(target) {
+    if ("number" != typeof target) throw new Error('typeof target === "number" error: ' + ("Argument target must be of type number, given: " + typeof target || !1));
+    return {
+      type: "InternalCallExtern",
+      target: target
+    };
+  }
+  function internalEndAndReturn() {
+    return {
+      type: "InternalEndAndReturn"
+    };
+  }
+  __webpack_require__.r(__webpack_exports__), __webpack_require__.d(__webpack_exports__, {
+    module: () => nodes_module,
+    moduleMetadata: () => moduleMetadata,
+    moduleNameMetadata: () => moduleNameMetadata,
+    functionNameMetadata: () => functionNameMetadata,
+    localNameMetadata: () => localNameMetadata,
+    binaryModule: () => binaryModule,
+    quoteModule: () => quoteModule,
+    sectionMetadata: () => sectionMetadata,
+    producersSectionMetadata: () => producersSectionMetadata,
+    producerMetadata: () => producerMetadata,
+    producerMetadataVersionedName: () => producerMetadataVersionedName,
+    loopInstruction: () => loopInstruction,
+    instr: () => nodes_instr,
+    ifInstruction: () => ifInstruction,
+    stringLiteral: () => stringLiteral,
+    numberLiteral: () => nodes_numberLiteral,
+    longNumberLiteral: () => longNumberLiteral,
+    floatLiteral: () => floatLiteral,
+    elem: () => elem,
+    indexInFuncSection: () => indexInFuncSection,
+    valtypeLiteral: () => valtypeLiteral,
+    typeInstruction: () => typeInstruction,
+    start: () => nodes_start,
+    globalType: () => globalType,
+    leadingComment: () => leadingComment,
+    blockComment: () => blockComment,
+    data: () => data,
+    global: () => global,
+    table: () => table,
+    memory: () => memory,
+    funcImportDescr: () => funcImportDescr,
+    moduleImport: () => moduleImport,
+    moduleExportDescr: () => nodes_moduleExportDescr,
+    moduleExport: () => moduleExport,
+    limit: () => nodes_limit,
+    signature: () => nodes_signature,
+    program: () => program,
+    identifier: () => identifier,
+    blockInstruction: () => blockInstruction,
+    callInstruction: () => callInstruction,
+    callIndirectInstruction: () => callIndirectInstruction,
+    byteArray: () => nodes_byteArray,
+    func: () => func,
+    internalBrUnless: () => internalBrUnless,
+    internalGoto: () => internalGoto,
+    internalCallExtern: () => internalCallExtern,
+    internalEndAndReturn: () => internalEndAndReturn,
+    isModule: () => isModule,
+    isModuleMetadata: () => isModuleMetadata,
+    isModuleNameMetadata: () => isModuleNameMetadata,
+    isFunctionNameMetadata: () => isFunctionNameMetadata,
+    isLocalNameMetadata: () => isLocalNameMetadata,
+    isBinaryModule: () => isBinaryModule,
+    isQuoteModule: () => isQuoteModule,
+    isSectionMetadata: () => isSectionMetadata,
+    isProducersSectionMetadata: () => isProducersSectionMetadata,
+    isProducerMetadata: () => isProducerMetadata,
+    isProducerMetadataVersionedName: () => isProducerMetadataVersionedName,
+    isLoopInstruction: () => isLoopInstruction,
+    isInstr: () => isInstr,
+    isIfInstruction: () => isIfInstruction,
+    isStringLiteral: () => isStringLiteral,
+    isNumberLiteral: () => isNumberLiteral,
+    isLongNumberLiteral: () => isLongNumberLiteral,
+    isFloatLiteral: () => isFloatLiteral,
+    isElem: () => isElem,
+    isIndexInFuncSection: () => isIndexInFuncSection,
+    isValtypeLiteral: () => isValtypeLiteral,
+    isTypeInstruction: () => isTypeInstruction,
+    isStart: () => isStart,
+    isGlobalType: () => isGlobalType,
+    isLeadingComment: () => isLeadingComment,
+    isBlockComment: () => isBlockComment,
+    isData: () => isData,
+    isGlobal: () => isGlobal,
+    isTable: () => isTable,
+    isMemory: () => isMemory,
+    isFuncImportDescr: () => isFuncImportDescr,
+    isModuleImport: () => isModuleImport,
+    isModuleExportDescr: () => isModuleExportDescr,
+    isModuleExport: () => isModuleExport,
+    isLimit: () => isLimit,
+    isSignature: () => isSignature,
+    isProgram: () => isProgram,
+    isIdentifier: () => isIdentifier,
+    isBlockInstruction: () => isBlockInstruction,
+    isCallInstruction: () => isCallInstruction,
+    isCallIndirectInstruction: () => isCallIndirectInstruction,
+    isByteArray: () => isByteArray,
+    isFunc: () => isFunc,
+    isInternalBrUnless: () => isInternalBrUnless,
+    isInternalGoto: () => isInternalGoto,
+    isInternalCallExtern: () => isInternalCallExtern,
+    isInternalEndAndReturn: () => isInternalEndAndReturn,
+    isNode: () => isNode,
+    isBlock: () => isBlock,
+    isInstruction: () => isInstruction,
+    isExpression: () => isExpression,
+    isNumericLiteral: () => isNumericLiteral,
+    isImportDescr: () => isImportDescr,
+    isIntrinsic: () => isIntrinsic,
+    assertModule: () => assertModule,
+    assertModuleMetadata: () => assertModuleMetadata,
+    assertModuleNameMetadata: () => assertModuleNameMetadata,
+    assertFunctionNameMetadata: () => assertFunctionNameMetadata,
+    assertLocalNameMetadata: () => assertLocalNameMetadata,
+    assertBinaryModule: () => assertBinaryModule,
+    assertQuoteModule: () => assertQuoteModule,
+    assertSectionMetadata: () => assertSectionMetadata,
+    assertProducersSectionMetadata: () => assertProducersSectionMetadata,
+    assertProducerMetadata: () => assertProducerMetadata,
+    assertProducerMetadataVersionedName: () => assertProducerMetadataVersionedName,
+    assertLoopInstruction: () => assertLoopInstruction,
+    assertInstr: () => assertInstr,
+    assertIfInstruction: () => assertIfInstruction,
+    assertStringLiteral: () => assertStringLiteral,
+    assertNumberLiteral: () => assertNumberLiteral,
+    assertLongNumberLiteral: () => assertLongNumberLiteral,
+    assertFloatLiteral: () => assertFloatLiteral,
+    assertElem: () => assertElem,
+    assertIndexInFuncSection: () => assertIndexInFuncSection,
+    assertValtypeLiteral: () => assertValtypeLiteral,
+    assertTypeInstruction: () => assertTypeInstruction,
+    assertStart: () => assertStart,
+    assertGlobalType: () => assertGlobalType,
+    assertLeadingComment: () => assertLeadingComment,
+    assertBlockComment: () => assertBlockComment,
+    assertData: () => assertData,
+    assertGlobal: () => assertGlobal,
+    assertTable: () => assertTable,
+    assertMemory: () => assertMemory,
+    assertFuncImportDescr: () => assertFuncImportDescr,
+    assertModuleImport: () => assertModuleImport,
+    assertModuleExportDescr: () => assertModuleExportDescr,
+    assertModuleExport: () => assertModuleExport,
+    assertLimit: () => assertLimit,
+    assertSignature: () => assertSignature,
+    assertProgram: () => assertProgram,
+    assertIdentifier: () => assertIdentifier,
+    assertBlockInstruction: () => assertBlockInstruction,
+    assertCallInstruction: () => assertCallInstruction,
+    assertCallIndirectInstruction: () => assertCallIndirectInstruction,
+    assertByteArray: () => assertByteArray,
+    assertFunc: () => assertFunc,
+    assertInternalBrUnless: () => assertInternalBrUnless,
+    assertInternalGoto: () => assertInternalGoto,
+    assertInternalCallExtern: () => assertInternalCallExtern,
+    assertInternalEndAndReturn: () => assertInternalEndAndReturn,
+    unionTypesMap: () => unionTypesMap,
+    nodeAndUnionTypes: () => nodeAndUnionTypes,
+    numberLiteralFromRaw: () => numberLiteralFromRaw,
+    withLoc: () => withLoc,
+    withRaw: () => withRaw,
+    funcParam: () => funcParam,
+    indexLiteral: () => indexLiteral,
+    memIndexLiteral: () => memIndexLiteral,
+    instruction: () => node_helpers_instruction,
+    objectInstruction: () => objectInstruction,
+    traverse: () => traverse,
+    signatures: () => signatures,
+    isAnonymous: () => isAnonymous,
+    getSectionMetadata: () => getSectionMetadata,
+    getSectionMetadatas: () => getSectionMetadatas,
+    sortSectionMetadata: () => sortSectionMetadata,
+    orderedInsertNode: () => orderedInsertNode,
+    assertHasLoc: () => assertHasLoc,
+    getEndOfSection: () => getEndOfSection,
+    shiftLoc: () => shiftLoc,
+    shiftSection: () => shiftSection,
+    signatureForOpcode: () => signatureForOpcode,
+    getUniqueNameGenerator: () => getUniqueNameGenerator,
+    getStartByteOffset: () => getStartByteOffset,
+    getEndByteOffset: () => getEndByteOffset,
+    getFunctionBeginingByteOffset: () => getFunctionBeginingByteOffset,
+    getEndBlockByteOffset: () => getEndBlockByteOffset,
+    getStartBlockByteOffset: () => getStartBlockByteOffset,
+    cloneNode: () => cloneNode
+  });
+  var isModule = isTypeOf("Module"), isModuleMetadata = isTypeOf("ModuleMetadata"), isModuleNameMetadata = isTypeOf("ModuleNameMetadata"), isFunctionNameMetadata = isTypeOf("FunctionNameMetadata"), isLocalNameMetadata = isTypeOf("LocalNameMetadata"), isBinaryModule = isTypeOf("BinaryModule"), isQuoteModule = isTypeOf("QuoteModule"), isSectionMetadata = isTypeOf("SectionMetadata"), isProducersSectionMetadata = isTypeOf("ProducersSectionMetadata"), isProducerMetadata = isTypeOf("ProducerMetadata"), isProducerMetadataVersionedName = isTypeOf("ProducerMetadataVersionedName"), isLoopInstruction = isTypeOf("LoopInstruction"), isInstr = isTypeOf("Instr"), isIfInstruction = isTypeOf("IfInstruction"), isStringLiteral = isTypeOf("StringLiteral"), isNumberLiteral = isTypeOf("NumberLiteral"), isLongNumberLiteral = isTypeOf("LongNumberLiteral"), isFloatLiteral = isTypeOf("FloatLiteral"), isElem = isTypeOf("Elem"), isIndexInFuncSection = isTypeOf("IndexInFuncSection"), isValtypeLiteral = isTypeOf("ValtypeLiteral"), isTypeInstruction = isTypeOf("TypeInstruction"), isStart = isTypeOf("Start"), isGlobalType = isTypeOf("GlobalType"), isLeadingComment = isTypeOf("LeadingComment"), isBlockComment = isTypeOf("BlockComment"), isData = isTypeOf("Data"), isGlobal = isTypeOf("Global"), isTable = isTypeOf("Table"), isMemory = isTypeOf("Memory"), isFuncImportDescr = isTypeOf("FuncImportDescr"), isModuleImport = isTypeOf("ModuleImport"), isModuleExportDescr = isTypeOf("ModuleExportDescr"), isModuleExport = isTypeOf("ModuleExport"), isLimit = isTypeOf("Limit"), isSignature = isTypeOf("Signature"), isProgram = isTypeOf("Program"), isIdentifier = isTypeOf("Identifier"), isBlockInstruction = isTypeOf("BlockInstruction"), isCallInstruction = isTypeOf("CallInstruction"), isCallIndirectInstruction = isTypeOf("CallIndirectInstruction"), isByteArray = isTypeOf("ByteArray"), isFunc = isTypeOf("Func"), isInternalBrUnless = isTypeOf("InternalBrUnless"), isInternalGoto = isTypeOf("InternalGoto"), isInternalCallExtern = isTypeOf("InternalCallExtern"), isInternalEndAndReturn = isTypeOf("InternalEndAndReturn"), isNode = function(node) {
+    return isModule(node) || isModuleMetadata(node) || isModuleNameMetadata(node) || isFunctionNameMetadata(node) || isLocalNameMetadata(node) || isBinaryModule(node) || isQuoteModule(node) || isSectionMetadata(node) || isProducersSectionMetadata(node) || isProducerMetadata(node) || isProducerMetadataVersionedName(node) || isLoopInstruction(node) || isInstr(node) || isIfInstruction(node) || isStringLiteral(node) || isNumberLiteral(node) || isLongNumberLiteral(node) || isFloatLiteral(node) || isElem(node) || isIndexInFuncSection(node) || isValtypeLiteral(node) || isTypeInstruction(node) || isStart(node) || isGlobalType(node) || isLeadingComment(node) || isBlockComment(node) || isData(node) || isGlobal(node) || isTable(node) || isMemory(node) || isFuncImportDescr(node) || isModuleImport(node) || isModuleExportDescr(node) || isModuleExport(node) || isLimit(node) || isSignature(node) || isProgram(node) || isIdentifier(node) || isBlockInstruction(node) || isCallInstruction(node) || isCallIndirectInstruction(node) || isByteArray(node) || isFunc(node) || isInternalBrUnless(node) || isInternalGoto(node) || isInternalCallExtern(node) || isInternalEndAndReturn(node);
+  }, isBlock = function(node) {
+    return isLoopInstruction(node) || isBlockInstruction(node) || isFunc(node);
+  }, isInstruction = function(node) {
+    return isLoopInstruction(node) || isInstr(node) || isIfInstruction(node) || isTypeInstruction(node) || isBlockInstruction(node) || isCallInstruction(node) || isCallIndirectInstruction(node);
+  }, isExpression = function(node) {
+    return isInstr(node) || isStringLiteral(node) || isNumberLiteral(node) || isLongNumberLiteral(node) || isFloatLiteral(node) || isValtypeLiteral(node) || isIdentifier(node);
+  }, isNumericLiteral = function(node) {
+    return isNumberLiteral(node) || isLongNumberLiteral(node) || isFloatLiteral(node);
+  }, isImportDescr = function(node) {
+    return isGlobalType(node) || isTable(node) || isMemory(node) || isFuncImportDescr(node);
+  }, isIntrinsic = function(node) {
+    return isInternalBrUnless(node) || isInternalGoto(node) || isInternalCallExtern(node) || isInternalEndAndReturn(node);
+  }, assertModule = assertTypeOf("Module"), assertModuleMetadata = assertTypeOf("ModuleMetadata"), assertModuleNameMetadata = assertTypeOf("ModuleNameMetadata"), assertFunctionNameMetadata = assertTypeOf("FunctionNameMetadata"), assertLocalNameMetadata = assertTypeOf("LocalNameMetadata"), assertBinaryModule = assertTypeOf("BinaryModule"), assertQuoteModule = assertTypeOf("QuoteModule"), assertSectionMetadata = assertTypeOf("SectionMetadata"), assertProducersSectionMetadata = assertTypeOf("ProducersSectionMetadata"), assertProducerMetadata = assertTypeOf("ProducerMetadata"), assertProducerMetadataVersionedName = assertTypeOf("ProducerMetadataVersionedName"), assertLoopInstruction = assertTypeOf("LoopInstruction"), assertInstr = assertTypeOf("Instr"), assertIfInstruction = assertTypeOf("IfInstruction"), assertStringLiteral = assertTypeOf("StringLiteral"), assertNumberLiteral = assertTypeOf("NumberLiteral"), assertLongNumberLiteral = assertTypeOf("LongNumberLiteral"), assertFloatLiteral = assertTypeOf("FloatLiteral"), assertElem = assertTypeOf("Elem"), assertIndexInFuncSection = assertTypeOf("IndexInFuncSection"), assertValtypeLiteral = assertTypeOf("ValtypeLiteral"), assertTypeInstruction = assertTypeOf("TypeInstruction"), assertStart = assertTypeOf("Start"), assertGlobalType = assertTypeOf("GlobalType"), assertLeadingComment = assertTypeOf("LeadingComment"), assertBlockComment = assertTypeOf("BlockComment"), assertData = assertTypeOf("Data"), assertGlobal = assertTypeOf("Global"), assertTable = assertTypeOf("Table"), assertMemory = assertTypeOf("Memory"), assertFuncImportDescr = assertTypeOf("FuncImportDescr"), assertModuleImport = assertTypeOf("ModuleImport"), assertModuleExportDescr = assertTypeOf("ModuleExportDescr"), assertModuleExport = assertTypeOf("ModuleExport"), assertLimit = assertTypeOf("Limit"), assertSignature = assertTypeOf("Signature"), assertProgram = assertTypeOf("Program"), assertIdentifier = assertTypeOf("Identifier"), assertBlockInstruction = assertTypeOf("BlockInstruction"), assertCallInstruction = assertTypeOf("CallInstruction"), assertCallIndirectInstruction = assertTypeOf("CallIndirectInstruction"), assertByteArray = assertTypeOf("ByteArray"), assertFunc = assertTypeOf("Func"), assertInternalBrUnless = assertTypeOf("InternalBrUnless"), assertInternalGoto = assertTypeOf("InternalGoto"), assertInternalCallExtern = assertTypeOf("InternalCallExtern"), assertInternalEndAndReturn = assertTypeOf("InternalEndAndReturn"), unionTypesMap = {
+    Module: [ "Node" ],
+    ModuleMetadata: [ "Node" ],
+    ModuleNameMetadata: [ "Node" ],
+    FunctionNameMetadata: [ "Node" ],
+    LocalNameMetadata: [ "Node" ],
+    BinaryModule: [ "Node" ],
+    QuoteModule: [ "Node" ],
+    SectionMetadata: [ "Node" ],
+    ProducersSectionMetadata: [ "Node" ],
+    ProducerMetadata: [ "Node" ],
+    ProducerMetadataVersionedName: [ "Node" ],
+    LoopInstruction: [ "Node", "Block", "Instruction" ],
+    Instr: [ "Node", "Expression", "Instruction" ],
+    IfInstruction: [ "Node", "Instruction" ],
+    StringLiteral: [ "Node", "Expression" ],
+    NumberLiteral: [ "Node", "NumericLiteral", "Expression" ],
+    LongNumberLiteral: [ "Node", "NumericLiteral", "Expression" ],
+    FloatLiteral: [ "Node", "NumericLiteral", "Expression" ],
+    Elem: [ "Node" ],
+    IndexInFuncSection: [ "Node" ],
+    ValtypeLiteral: [ "Node", "Expression" ],
+    TypeInstruction: [ "Node", "Instruction" ],
+    Start: [ "Node" ],
+    GlobalType: [ "Node", "ImportDescr" ],
+    LeadingComment: [ "Node" ],
+    BlockComment: [ "Node" ],
+    Data: [ "Node" ],
+    Global: [ "Node" ],
+    Table: [ "Node", "ImportDescr" ],
+    Memory: [ "Node", "ImportDescr" ],
+    FuncImportDescr: [ "Node", "ImportDescr" ],
+    ModuleImport: [ "Node" ],
+    ModuleExportDescr: [ "Node" ],
+    ModuleExport: [ "Node" ],
+    Limit: [ "Node" ],
+    Signature: [ "Node" ],
+    Program: [ "Node" ],
+    Identifier: [ "Node", "Expression" ],
+    BlockInstruction: [ "Node", "Block", "Instruction" ],
+    CallInstruction: [ "Node", "Instruction" ],
+    CallIndirectInstruction: [ "Node", "Instruction" ],
+    ByteArray: [ "Node" ],
+    Func: [ "Node", "Block" ],
+    InternalBrUnless: [ "Node", "Intrinsic" ],
+    InternalGoto: [ "Node", "Intrinsic" ],
+    InternalCallExtern: [ "Node", "Intrinsic" ],
+    InternalEndAndReturn: [ "Node", "Intrinsic" ]
+  }, nodeAndUnionTypes = [ "Module", "ModuleMetadata", "ModuleNameMetadata", "FunctionNameMetadata", "LocalNameMetadata", "BinaryModule", "QuoteModule", "SectionMetadata", "ProducersSectionMetadata", "ProducerMetadata", "ProducerMetadataVersionedName", "LoopInstruction", "Instr", "IfInstruction", "StringLiteral", "NumberLiteral", "LongNumberLiteral", "FloatLiteral", "Elem", "IndexInFuncSection", "ValtypeLiteral", "TypeInstruction", "Start", "GlobalType", "LeadingComment", "BlockComment", "Data", "Global", "Table", "Memory", "FuncImportDescr", "ModuleImport", "ModuleExportDescr", "ModuleExport", "Limit", "Signature", "Program", "Identifier", "BlockInstruction", "CallInstruction", "CallIndirectInstruction", "ByteArray", "Func", "InternalBrUnless", "InternalGoto", "InternalCallExtern", "InternalEndAndReturn", "Node", "Block", "Instruction", "Expression", "NumericLiteral", "ImportDescr", "Intrinsic" ], wasm = null;
   try {
     wasm = new WebAssembly.Instance(new WebAssembly.Module(new Uint8Array([ 0, 97, 115, 109, 1, 0, 0, 0, 1, 13, 2, 96, 0, 1, 127, 96, 4, 127, 127, 127, 127, 1, 127, 3, 7, 6, 0, 1, 1, 1, 1, 1, 6, 6, 1, 127, 1, 65, 0, 11, 7, 50, 6, 3, 109, 117, 108, 0, 1, 5, 100, 105, 118, 95, 115, 0, 2, 5, 100, 105, 118, 95, 117, 0, 3, 5, 114, 101, 109, 95, 115, 0, 4, 5, 114, 101, 109, 95, 117, 0, 5, 8, 103, 101, 116, 95, 104, 105, 103, 104, 0, 0, 10, 191, 1, 6, 4, 0, 35, 0, 11, 36, 1, 1, 126, 32, 0, 173, 32, 1, 173, 66, 32, 134, 132, 32, 2, 173, 32, 3, 173, 66, 32, 134, 132, 126, 34, 4, 66, 32, 135, 167, 36, 0, 32, 4, 167, 11, 36, 1, 1, 126, 32, 0, 173, 32, 1, 173, 66, 32, 134, 132, 32, 2, 173, 32, 3, 173, 66, 32, 134, 132, 127, 34, 4, 66, 32, 135, 167, 36, 0, 32, 4, 167, 11, 36, 1, 1, 126, 32, 0, 173, 32, 1, 173, 66, 32, 134, 132, 32, 2, 173, 32, 3, 173, 66, 32, 134, 132, 128, 34, 4, 66, 32, 135, 167, 36, 0, 32, 4, 167, 11, 36, 1, 1, 126, 32, 0, 173, 32, 1, 173, 66, 32, 134, 132, 32, 2, 173, 32, 3, 173, 66, 32, 134, 132, 129, 34, 4, 66, 32, 135, 167, 36, 0, 32, 4, 167, 11, 36, 1, 1, 126, 32, 0, 173, 32, 1, 173, 66, 32, 134, 132, 32, 2, 173, 32, 3, 173, 66, 32, 134, 132, 130, 34, 4, 66, 32, 135, 167, 36, 0, 32, 4, 167, 11 ])), {}).exports;
   } catch (e) {}
@@ -275,853 +920,6 @@
   }, Long.fromBytesBE = function(bytes, unsigned) {
     return new Long(bytes[4] << 24 | bytes[5] << 16 | bytes[6] << 8 | bytes[7], bytes[0] << 24 | bytes[1] << 16 | bytes[2] << 8 | bytes[3], unsigned);
   };
-}, function(module, __webpack_exports__, __webpack_require__) {
-  "use strict";
-  function _typeof(obj) {
-    return (_typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj) {
-      return typeof obj;
-    } : function(obj) {
-      return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    })(obj);
-  }
-  function isTypeOf(t) {
-    return function(n) {
-      return n.type === t;
-    };
-  }
-  function assertTypeOf(t) {
-    return function(n) {
-      return function() {
-        if (n.type !== t) throw new Error("n.type === t error: unknown");
-      }();
-    };
-  }
-  function nodes_module(id, fields, metadata) {
-    if (null != id && "string" != typeof id) throw new Error('typeof id === "string" error: ' + ("Argument id must be of type string, given: " + _typeof(id) || !1));
-    if ("object" !== _typeof(fields) || void 0 === fields.length) throw new Error('typeof fields === "object" && typeof fields.length !== "undefined" error: unknown');
-    var node = {
-      type: "Module",
-      id: id,
-      fields: fields
-    };
-    return void 0 !== metadata && (node.metadata = metadata), node;
-  }
-  function moduleMetadata(sections, functionNames, localNames, producers) {
-    if ("object" !== _typeof(sections) || void 0 === sections.length) throw new Error('typeof sections === "object" && typeof sections.length !== "undefined" error: unknown');
-    if (null != functionNames && ("object" !== _typeof(functionNames) || void 0 === functionNames.length)) throw new Error('typeof functionNames === "object" && typeof functionNames.length !== "undefined" error: unknown');
-    if (null != localNames && ("object" !== _typeof(localNames) || void 0 === localNames.length)) throw new Error('typeof localNames === "object" && typeof localNames.length !== "undefined" error: unknown');
-    if (null != producers && ("object" !== _typeof(producers) || void 0 === producers.length)) throw new Error('typeof producers === "object" && typeof producers.length !== "undefined" error: unknown');
-    var node = {
-      type: "ModuleMetadata",
-      sections: sections
-    };
-    return void 0 !== functionNames && functionNames.length > 0 && (node.functionNames = functionNames), 
-    void 0 !== localNames && localNames.length > 0 && (node.localNames = localNames), 
-    void 0 !== producers && producers.length > 0 && (node.producers = producers), node;
-  }
-  function moduleNameMetadata(value) {
-    if ("string" != typeof value) throw new Error('typeof value === "string" error: ' + ("Argument value must be of type string, given: " + _typeof(value) || !1));
-    return {
-      type: "ModuleNameMetadata",
-      value: value
-    };
-  }
-  function functionNameMetadata(value, index) {
-    if ("string" != typeof value) throw new Error('typeof value === "string" error: ' + ("Argument value must be of type string, given: " + _typeof(value) || !1));
-    if ("number" != typeof index) throw new Error('typeof index === "number" error: ' + ("Argument index must be of type number, given: " + _typeof(index) || !1));
-    return {
-      type: "FunctionNameMetadata",
-      value: value,
-      index: index
-    };
-  }
-  function localNameMetadata(value, localIndex, functionIndex) {
-    if ("string" != typeof value) throw new Error('typeof value === "string" error: ' + ("Argument value must be of type string, given: " + _typeof(value) || !1));
-    if ("number" != typeof localIndex) throw new Error('typeof localIndex === "number" error: ' + ("Argument localIndex must be of type number, given: " + _typeof(localIndex) || !1));
-    if ("number" != typeof functionIndex) throw new Error('typeof functionIndex === "number" error: ' + ("Argument functionIndex must be of type number, given: " + _typeof(functionIndex) || !1));
-    return {
-      type: "LocalNameMetadata",
-      value: value,
-      localIndex: localIndex,
-      functionIndex: functionIndex
-    };
-  }
-  function binaryModule(id, blob) {
-    if (null != id && "string" != typeof id) throw new Error('typeof id === "string" error: ' + ("Argument id must be of type string, given: " + _typeof(id) || !1));
-    if ("object" !== _typeof(blob) || void 0 === blob.length) throw new Error('typeof blob === "object" && typeof blob.length !== "undefined" error: unknown');
-    return {
-      type: "BinaryModule",
-      id: id,
-      blob: blob
-    };
-  }
-  function quoteModule(id, string) {
-    if (null != id && "string" != typeof id) throw new Error('typeof id === "string" error: ' + ("Argument id must be of type string, given: " + _typeof(id) || !1));
-    if ("object" !== _typeof(string) || void 0 === string.length) throw new Error('typeof string === "object" && typeof string.length !== "undefined" error: unknown');
-    return {
-      type: "QuoteModule",
-      id: id,
-      string: string
-    };
-  }
-  function sectionMetadata(section, startOffset, size, vectorOfSize) {
-    if ("number" != typeof startOffset) throw new Error('typeof startOffset === "number" error: ' + ("Argument startOffset must be of type number, given: " + _typeof(startOffset) || !1));
-    return {
-      type: "SectionMetadata",
-      section: section,
-      startOffset: startOffset,
-      size: size,
-      vectorOfSize: vectorOfSize
-    };
-  }
-  function producersSectionMetadata(producers) {
-    if ("object" !== _typeof(producers) || void 0 === producers.length) throw new Error('typeof producers === "object" && typeof producers.length !== "undefined" error: unknown');
-    return {
-      type: "ProducersSectionMetadata",
-      producers: producers
-    };
-  }
-  function producerMetadata(language, processedBy, sdk) {
-    if ("object" !== _typeof(language) || void 0 === language.length) throw new Error('typeof language === "object" && typeof language.length !== "undefined" error: unknown');
-    if ("object" !== _typeof(processedBy) || void 0 === processedBy.length) throw new Error('typeof processedBy === "object" && typeof processedBy.length !== "undefined" error: unknown');
-    if ("object" !== _typeof(sdk) || void 0 === sdk.length) throw new Error('typeof sdk === "object" && typeof sdk.length !== "undefined" error: unknown');
-    return {
-      type: "ProducerMetadata",
-      language: language,
-      processedBy: processedBy,
-      sdk: sdk
-    };
-  }
-  function producerMetadataVersionedName(name, version) {
-    if ("string" != typeof name) throw new Error('typeof name === "string" error: ' + ("Argument name must be of type string, given: " + _typeof(name) || !1));
-    if ("string" != typeof version) throw new Error('typeof version === "string" error: ' + ("Argument version must be of type string, given: " + _typeof(version) || !1));
-    return {
-      type: "ProducerMetadataVersionedName",
-      name: name,
-      version: version
-    };
-  }
-  function loopInstruction(label, resulttype, instr) {
-    if ("object" !== _typeof(instr) || void 0 === instr.length) throw new Error('typeof instr === "object" && typeof instr.length !== "undefined" error: unknown');
-    return {
-      type: "LoopInstruction",
-      id: "loop",
-      label: label,
-      resulttype: resulttype,
-      instr: instr
-    };
-  }
-  function nodes_instr(id, object, args, namedArgs) {
-    if ("string" != typeof id) throw new Error('typeof id === "string" error: ' + ("Argument id must be of type string, given: " + _typeof(id) || !1));
-    if ("object" !== _typeof(args) || void 0 === args.length) throw new Error('typeof args === "object" && typeof args.length !== "undefined" error: unknown');
-    var node = {
-      type: "Instr",
-      id: id,
-      args: args
-    };
-    return void 0 !== object && (node.object = object), void 0 !== namedArgs && 0 !== Object.keys(namedArgs).length && (node.namedArgs = namedArgs), 
-    node;
-  }
-  function ifInstruction(testLabel, test, result, consequent, alternate) {
-    if ("object" !== _typeof(test) || void 0 === test.length) throw new Error('typeof test === "object" && typeof test.length !== "undefined" error: unknown');
-    if ("object" !== _typeof(consequent) || void 0 === consequent.length) throw new Error('typeof consequent === "object" && typeof consequent.length !== "undefined" error: unknown');
-    if ("object" !== _typeof(alternate) || void 0 === alternate.length) throw new Error('typeof alternate === "object" && typeof alternate.length !== "undefined" error: unknown');
-    return {
-      type: "IfInstruction",
-      id: "if",
-      testLabel: testLabel,
-      test: test,
-      result: result,
-      consequent: consequent,
-      alternate: alternate
-    };
-  }
-  function stringLiteral(value) {
-    if ("string" != typeof value) throw new Error('typeof value === "string" error: ' + ("Argument value must be of type string, given: " + _typeof(value) || !1));
-    return {
-      type: "StringLiteral",
-      value: value
-    };
-  }
-  function nodes_numberLiteral(value, raw) {
-    if ("number" != typeof value) throw new Error('typeof value === "number" error: ' + ("Argument value must be of type number, given: " + _typeof(value) || !1));
-    if ("string" != typeof raw) throw new Error('typeof raw === "string" error: ' + ("Argument raw must be of type string, given: " + _typeof(raw) || !1));
-    return {
-      type: "NumberLiteral",
-      value: value,
-      raw: raw
-    };
-  }
-  function longNumberLiteral(value, raw) {
-    if ("string" != typeof raw) throw new Error('typeof raw === "string" error: ' + ("Argument raw must be of type string, given: " + _typeof(raw) || !1));
-    return {
-      type: "LongNumberLiteral",
-      value: value,
-      raw: raw
-    };
-  }
-  function floatLiteral(value, nan, inf, raw) {
-    if ("number" != typeof value) throw new Error('typeof value === "number" error: ' + ("Argument value must be of type number, given: " + _typeof(value) || !1));
-    if (null != nan && "boolean" != typeof nan) throw new Error('typeof nan === "boolean" error: ' + ("Argument nan must be of type boolean, given: " + _typeof(nan) || !1));
-    if (null != inf && "boolean" != typeof inf) throw new Error('typeof inf === "boolean" error: ' + ("Argument inf must be of type boolean, given: " + _typeof(inf) || !1));
-    if ("string" != typeof raw) throw new Error('typeof raw === "string" error: ' + ("Argument raw must be of type string, given: " + _typeof(raw) || !1));
-    var node = {
-      type: "FloatLiteral",
-      value: value,
-      raw: raw
-    };
-    return !0 === nan && (node.nan = !0), !0 === inf && (node.inf = !0), node;
-  }
-  function elem(table, offset, funcs) {
-    if ("object" !== _typeof(offset) || void 0 === offset.length) throw new Error('typeof offset === "object" && typeof offset.length !== "undefined" error: unknown');
-    if ("object" !== _typeof(funcs) || void 0 === funcs.length) throw new Error('typeof funcs === "object" && typeof funcs.length !== "undefined" error: unknown');
-    return {
-      type: "Elem",
-      table: table,
-      offset: offset,
-      funcs: funcs
-    };
-  }
-  function indexInFuncSection(index) {
-    return {
-      type: "IndexInFuncSection",
-      index: index
-    };
-  }
-  function valtypeLiteral(name) {
-    return {
-      type: "ValtypeLiteral",
-      name: name
-    };
-  }
-  function typeInstruction(id, functype) {
-    return {
-      type: "TypeInstruction",
-      id: id,
-      functype: functype
-    };
-  }
-  function nodes_start(index) {
-    return {
-      type: "Start",
-      index: index
-    };
-  }
-  function globalType(valtype, mutability) {
-    return {
-      type: "GlobalType",
-      valtype: valtype,
-      mutability: mutability
-    };
-  }
-  function leadingComment(value) {
-    if ("string" != typeof value) throw new Error('typeof value === "string" error: ' + ("Argument value must be of type string, given: " + _typeof(value) || !1));
-    return {
-      type: "LeadingComment",
-      value: value
-    };
-  }
-  function blockComment(value) {
-    if ("string" != typeof value) throw new Error('typeof value === "string" error: ' + ("Argument value must be of type string, given: " + _typeof(value) || !1));
-    return {
-      type: "BlockComment",
-      value: value
-    };
-  }
-  function data(memoryIndex, offset, init) {
-    return {
-      type: "Data",
-      memoryIndex: memoryIndex,
-      offset: offset,
-      init: init
-    };
-  }
-  function global(globalType, init, name) {
-    if ("object" !== _typeof(init) || void 0 === init.length) throw new Error('typeof init === "object" && typeof init.length !== "undefined" error: unknown');
-    return {
-      type: "Global",
-      globalType: globalType,
-      init: init,
-      name: name
-    };
-  }
-  function table(elementType, limits, name, elements) {
-    if ("Limit" !== limits.type) throw new Error('limits.type === "Limit" error: ' + ("Argument limits must be of type Limit, given: " + limits.type || !1));
-    if (null != elements && ("object" !== _typeof(elements) || void 0 === elements.length)) throw new Error('typeof elements === "object" && typeof elements.length !== "undefined" error: unknown');
-    var node = {
-      type: "Table",
-      elementType: elementType,
-      limits: limits,
-      name: name
-    };
-    return void 0 !== elements && elements.length > 0 && (node.elements = elements), 
-    node;
-  }
-  function memory(limits, id) {
-    return {
-      type: "Memory",
-      limits: limits,
-      id: id
-    };
-  }
-  function funcImportDescr(id, signature) {
-    return {
-      type: "FuncImportDescr",
-      id: id,
-      signature: signature
-    };
-  }
-  function moduleImport(module, name, descr) {
-    if ("string" != typeof module) throw new Error('typeof module === "string" error: ' + ("Argument module must be of type string, given: " + _typeof(module) || !1));
-    if ("string" != typeof name) throw new Error('typeof name === "string" error: ' + ("Argument name must be of type string, given: " + _typeof(name) || !1));
-    return {
-      type: "ModuleImport",
-      module: module,
-      name: name,
-      descr: descr
-    };
-  }
-  function nodes_moduleExportDescr(exportType, id) {
-    return {
-      type: "ModuleExportDescr",
-      exportType: exportType,
-      id: id
-    };
-  }
-  function moduleExport(name, descr) {
-    if ("string" != typeof name) throw new Error('typeof name === "string" error: ' + ("Argument name must be of type string, given: " + _typeof(name) || !1));
-    return {
-      type: "ModuleExport",
-      name: name,
-      descr: descr
-    };
-  }
-  function nodes_limit(min, max) {
-    if ("number" != typeof min) throw new Error('typeof min === "number" error: ' + ("Argument min must be of type number, given: " + _typeof(min) || !1));
-    if (null != max && "number" != typeof max) throw new Error('typeof max === "number" error: ' + ("Argument max must be of type number, given: " + _typeof(max) || !1));
-    var node = {
-      type: "Limit",
-      min: min
-    };
-    return void 0 !== max && (node.max = max), node;
-  }
-  function nodes_signature(params, results) {
-    if ("object" !== _typeof(params) || void 0 === params.length) throw new Error('typeof params === "object" && typeof params.length !== "undefined" error: unknown');
-    if ("object" !== _typeof(results) || void 0 === results.length) throw new Error('typeof results === "object" && typeof results.length !== "undefined" error: unknown');
-    return {
-      type: "Signature",
-      params: params,
-      results: results
-    };
-  }
-  function program(body) {
-    if ("object" !== _typeof(body) || void 0 === body.length) throw new Error('typeof body === "object" && typeof body.length !== "undefined" error: unknown');
-    return {
-      type: "Program",
-      body: body
-    };
-  }
-  function identifier(value, raw) {
-    if ("string" != typeof value) throw new Error('typeof value === "string" error: ' + ("Argument value must be of type string, given: " + _typeof(value) || !1));
-    if (null != raw && "string" != typeof raw) throw new Error('typeof raw === "string" error: ' + ("Argument raw must be of type string, given: " + _typeof(raw) || !1));
-    var node = {
-      type: "Identifier",
-      value: value
-    };
-    return void 0 !== raw && (node.raw = raw), node;
-  }
-  function blockInstruction(label, instr, result) {
-    if ("object" !== _typeof(instr) || void 0 === instr.length) throw new Error('typeof instr === "object" && typeof instr.length !== "undefined" error: unknown');
-    return {
-      type: "BlockInstruction",
-      id: "block",
-      label: label,
-      instr: instr,
-      result: result
-    };
-  }
-  function callInstruction(index, instrArgs, numeric) {
-    if (null != instrArgs && ("object" !== _typeof(instrArgs) || void 0 === instrArgs.length)) throw new Error('typeof instrArgs === "object" && typeof instrArgs.length !== "undefined" error: unknown');
-    var node = {
-      type: "CallInstruction",
-      id: "call",
-      index: index
-    };
-    return void 0 !== instrArgs && instrArgs.length > 0 && (node.instrArgs = instrArgs), 
-    void 0 !== numeric && (node.numeric = numeric), node;
-  }
-  function callIndirectInstruction(signature, intrs) {
-    if (null != intrs && ("object" !== _typeof(intrs) || void 0 === intrs.length)) throw new Error('typeof intrs === "object" && typeof intrs.length !== "undefined" error: unknown');
-    var node = {
-      type: "CallIndirectInstruction",
-      id: "call_indirect",
-      signature: signature
-    };
-    return void 0 !== intrs && intrs.length > 0 && (node.intrs = intrs), node;
-  }
-  function nodes_byteArray(values) {
-    if ("object" !== _typeof(values) || void 0 === values.length) throw new Error('typeof values === "object" && typeof values.length !== "undefined" error: unknown');
-    return {
-      type: "ByteArray",
-      values: values
-    };
-  }
-  function func(name, signature, body, isExternal, metadata) {
-    if ("object" !== _typeof(body) || void 0 === body.length) throw new Error('typeof body === "object" && typeof body.length !== "undefined" error: unknown');
-    if (null != isExternal && "boolean" != typeof isExternal) throw new Error('typeof isExternal === "boolean" error: ' + ("Argument isExternal must be of type boolean, given: " + _typeof(isExternal) || !1));
-    var node = {
-      type: "Func",
-      name: name,
-      signature: signature,
-      body: body
-    };
-    return !0 === isExternal && (node.isExternal = !0), void 0 !== metadata && (node.metadata = metadata), 
-    node;
-  }
-  function internalBrUnless(target) {
-    if ("number" != typeof target) throw new Error('typeof target === "number" error: ' + ("Argument target must be of type number, given: " + _typeof(target) || !1));
-    return {
-      type: "InternalBrUnless",
-      target: target
-    };
-  }
-  function internalGoto(target) {
-    if ("number" != typeof target) throw new Error('typeof target === "number" error: ' + ("Argument target must be of type number, given: " + _typeof(target) || !1));
-    return {
-      type: "InternalGoto",
-      target: target
-    };
-  }
-  function internalCallExtern(target) {
-    if ("number" != typeof target) throw new Error('typeof target === "number" error: ' + ("Argument target must be of type number, given: " + _typeof(target) || !1));
-    return {
-      type: "InternalCallExtern",
-      target: target
-    };
-  }
-  function internalEndAndReturn() {
-    return {
-      type: "InternalEndAndReturn"
-    };
-  }
-  __webpack_require__.r(__webpack_exports__), __webpack_require__.d(__webpack_exports__, "module", (function() {
-    return nodes_module;
-  })), __webpack_require__.d(__webpack_exports__, "moduleMetadata", (function() {
-    return moduleMetadata;
-  })), __webpack_require__.d(__webpack_exports__, "moduleNameMetadata", (function() {
-    return moduleNameMetadata;
-  })), __webpack_require__.d(__webpack_exports__, "functionNameMetadata", (function() {
-    return functionNameMetadata;
-  })), __webpack_require__.d(__webpack_exports__, "localNameMetadata", (function() {
-    return localNameMetadata;
-  })), __webpack_require__.d(__webpack_exports__, "binaryModule", (function() {
-    return binaryModule;
-  })), __webpack_require__.d(__webpack_exports__, "quoteModule", (function() {
-    return quoteModule;
-  })), __webpack_require__.d(__webpack_exports__, "sectionMetadata", (function() {
-    return sectionMetadata;
-  })), __webpack_require__.d(__webpack_exports__, "producersSectionMetadata", (function() {
-    return producersSectionMetadata;
-  })), __webpack_require__.d(__webpack_exports__, "producerMetadata", (function() {
-    return producerMetadata;
-  })), __webpack_require__.d(__webpack_exports__, "producerMetadataVersionedName", (function() {
-    return producerMetadataVersionedName;
-  })), __webpack_require__.d(__webpack_exports__, "loopInstruction", (function() {
-    return loopInstruction;
-  })), __webpack_require__.d(__webpack_exports__, "instr", (function() {
-    return nodes_instr;
-  })), __webpack_require__.d(__webpack_exports__, "ifInstruction", (function() {
-    return ifInstruction;
-  })), __webpack_require__.d(__webpack_exports__, "stringLiteral", (function() {
-    return stringLiteral;
-  })), __webpack_require__.d(__webpack_exports__, "numberLiteral", (function() {
-    return nodes_numberLiteral;
-  })), __webpack_require__.d(__webpack_exports__, "longNumberLiteral", (function() {
-    return longNumberLiteral;
-  })), __webpack_require__.d(__webpack_exports__, "floatLiteral", (function() {
-    return floatLiteral;
-  })), __webpack_require__.d(__webpack_exports__, "elem", (function() {
-    return elem;
-  })), __webpack_require__.d(__webpack_exports__, "indexInFuncSection", (function() {
-    return indexInFuncSection;
-  })), __webpack_require__.d(__webpack_exports__, "valtypeLiteral", (function() {
-    return valtypeLiteral;
-  })), __webpack_require__.d(__webpack_exports__, "typeInstruction", (function() {
-    return typeInstruction;
-  })), __webpack_require__.d(__webpack_exports__, "start", (function() {
-    return nodes_start;
-  })), __webpack_require__.d(__webpack_exports__, "globalType", (function() {
-    return globalType;
-  })), __webpack_require__.d(__webpack_exports__, "leadingComment", (function() {
-    return leadingComment;
-  })), __webpack_require__.d(__webpack_exports__, "blockComment", (function() {
-    return blockComment;
-  })), __webpack_require__.d(__webpack_exports__, "data", (function() {
-    return data;
-  })), __webpack_require__.d(__webpack_exports__, "global", (function() {
-    return global;
-  })), __webpack_require__.d(__webpack_exports__, "table", (function() {
-    return table;
-  })), __webpack_require__.d(__webpack_exports__, "memory", (function() {
-    return memory;
-  })), __webpack_require__.d(__webpack_exports__, "funcImportDescr", (function() {
-    return funcImportDescr;
-  })), __webpack_require__.d(__webpack_exports__, "moduleImport", (function() {
-    return moduleImport;
-  })), __webpack_require__.d(__webpack_exports__, "moduleExportDescr", (function() {
-    return nodes_moduleExportDescr;
-  })), __webpack_require__.d(__webpack_exports__, "moduleExport", (function() {
-    return moduleExport;
-  })), __webpack_require__.d(__webpack_exports__, "limit", (function() {
-    return nodes_limit;
-  })), __webpack_require__.d(__webpack_exports__, "signature", (function() {
-    return nodes_signature;
-  })), __webpack_require__.d(__webpack_exports__, "program", (function() {
-    return program;
-  })), __webpack_require__.d(__webpack_exports__, "identifier", (function() {
-    return identifier;
-  })), __webpack_require__.d(__webpack_exports__, "blockInstruction", (function() {
-    return blockInstruction;
-  })), __webpack_require__.d(__webpack_exports__, "callInstruction", (function() {
-    return callInstruction;
-  })), __webpack_require__.d(__webpack_exports__, "callIndirectInstruction", (function() {
-    return callIndirectInstruction;
-  })), __webpack_require__.d(__webpack_exports__, "byteArray", (function() {
-    return nodes_byteArray;
-  })), __webpack_require__.d(__webpack_exports__, "func", (function() {
-    return func;
-  })), __webpack_require__.d(__webpack_exports__, "internalBrUnless", (function() {
-    return internalBrUnless;
-  })), __webpack_require__.d(__webpack_exports__, "internalGoto", (function() {
-    return internalGoto;
-  })), __webpack_require__.d(__webpack_exports__, "internalCallExtern", (function() {
-    return internalCallExtern;
-  })), __webpack_require__.d(__webpack_exports__, "internalEndAndReturn", (function() {
-    return internalEndAndReturn;
-  })), __webpack_require__.d(__webpack_exports__, "isModule", (function() {
-    return isModule;
-  })), __webpack_require__.d(__webpack_exports__, "isModuleMetadata", (function() {
-    return isModuleMetadata;
-  })), __webpack_require__.d(__webpack_exports__, "isModuleNameMetadata", (function() {
-    return isModuleNameMetadata;
-  })), __webpack_require__.d(__webpack_exports__, "isFunctionNameMetadata", (function() {
-    return isFunctionNameMetadata;
-  })), __webpack_require__.d(__webpack_exports__, "isLocalNameMetadata", (function() {
-    return isLocalNameMetadata;
-  })), __webpack_require__.d(__webpack_exports__, "isBinaryModule", (function() {
-    return isBinaryModule;
-  })), __webpack_require__.d(__webpack_exports__, "isQuoteModule", (function() {
-    return isQuoteModule;
-  })), __webpack_require__.d(__webpack_exports__, "isSectionMetadata", (function() {
-    return isSectionMetadata;
-  })), __webpack_require__.d(__webpack_exports__, "isProducersSectionMetadata", (function() {
-    return isProducersSectionMetadata;
-  })), __webpack_require__.d(__webpack_exports__, "isProducerMetadata", (function() {
-    return isProducerMetadata;
-  })), __webpack_require__.d(__webpack_exports__, "isProducerMetadataVersionedName", (function() {
-    return isProducerMetadataVersionedName;
-  })), __webpack_require__.d(__webpack_exports__, "isLoopInstruction", (function() {
-    return isLoopInstruction;
-  })), __webpack_require__.d(__webpack_exports__, "isInstr", (function() {
-    return isInstr;
-  })), __webpack_require__.d(__webpack_exports__, "isIfInstruction", (function() {
-    return isIfInstruction;
-  })), __webpack_require__.d(__webpack_exports__, "isStringLiteral", (function() {
-    return isStringLiteral;
-  })), __webpack_require__.d(__webpack_exports__, "isNumberLiteral", (function() {
-    return isNumberLiteral;
-  })), __webpack_require__.d(__webpack_exports__, "isLongNumberLiteral", (function() {
-    return isLongNumberLiteral;
-  })), __webpack_require__.d(__webpack_exports__, "isFloatLiteral", (function() {
-    return isFloatLiteral;
-  })), __webpack_require__.d(__webpack_exports__, "isElem", (function() {
-    return isElem;
-  })), __webpack_require__.d(__webpack_exports__, "isIndexInFuncSection", (function() {
-    return isIndexInFuncSection;
-  })), __webpack_require__.d(__webpack_exports__, "isValtypeLiteral", (function() {
-    return isValtypeLiteral;
-  })), __webpack_require__.d(__webpack_exports__, "isTypeInstruction", (function() {
-    return isTypeInstruction;
-  })), __webpack_require__.d(__webpack_exports__, "isStart", (function() {
-    return isStart;
-  })), __webpack_require__.d(__webpack_exports__, "isGlobalType", (function() {
-    return isGlobalType;
-  })), __webpack_require__.d(__webpack_exports__, "isLeadingComment", (function() {
-    return isLeadingComment;
-  })), __webpack_require__.d(__webpack_exports__, "isBlockComment", (function() {
-    return isBlockComment;
-  })), __webpack_require__.d(__webpack_exports__, "isData", (function() {
-    return isData;
-  })), __webpack_require__.d(__webpack_exports__, "isGlobal", (function() {
-    return isGlobal;
-  })), __webpack_require__.d(__webpack_exports__, "isTable", (function() {
-    return isTable;
-  })), __webpack_require__.d(__webpack_exports__, "isMemory", (function() {
-    return isMemory;
-  })), __webpack_require__.d(__webpack_exports__, "isFuncImportDescr", (function() {
-    return isFuncImportDescr;
-  })), __webpack_require__.d(__webpack_exports__, "isModuleImport", (function() {
-    return isModuleImport;
-  })), __webpack_require__.d(__webpack_exports__, "isModuleExportDescr", (function() {
-    return isModuleExportDescr;
-  })), __webpack_require__.d(__webpack_exports__, "isModuleExport", (function() {
-    return isModuleExport;
-  })), __webpack_require__.d(__webpack_exports__, "isLimit", (function() {
-    return isLimit;
-  })), __webpack_require__.d(__webpack_exports__, "isSignature", (function() {
-    return isSignature;
-  })), __webpack_require__.d(__webpack_exports__, "isProgram", (function() {
-    return isProgram;
-  })), __webpack_require__.d(__webpack_exports__, "isIdentifier", (function() {
-    return isIdentifier;
-  })), __webpack_require__.d(__webpack_exports__, "isBlockInstruction", (function() {
-    return isBlockInstruction;
-  })), __webpack_require__.d(__webpack_exports__, "isCallInstruction", (function() {
-    return isCallInstruction;
-  })), __webpack_require__.d(__webpack_exports__, "isCallIndirectInstruction", (function() {
-    return isCallIndirectInstruction;
-  })), __webpack_require__.d(__webpack_exports__, "isByteArray", (function() {
-    return isByteArray;
-  })), __webpack_require__.d(__webpack_exports__, "isFunc", (function() {
-    return isFunc;
-  })), __webpack_require__.d(__webpack_exports__, "isInternalBrUnless", (function() {
-    return isInternalBrUnless;
-  })), __webpack_require__.d(__webpack_exports__, "isInternalGoto", (function() {
-    return isInternalGoto;
-  })), __webpack_require__.d(__webpack_exports__, "isInternalCallExtern", (function() {
-    return isInternalCallExtern;
-  })), __webpack_require__.d(__webpack_exports__, "isInternalEndAndReturn", (function() {
-    return isInternalEndAndReturn;
-  })), __webpack_require__.d(__webpack_exports__, "isNode", (function() {
-    return isNode;
-  })), __webpack_require__.d(__webpack_exports__, "isBlock", (function() {
-    return isBlock;
-  })), __webpack_require__.d(__webpack_exports__, "isInstruction", (function() {
-    return isInstruction;
-  })), __webpack_require__.d(__webpack_exports__, "isExpression", (function() {
-    return isExpression;
-  })), __webpack_require__.d(__webpack_exports__, "isNumericLiteral", (function() {
-    return isNumericLiteral;
-  })), __webpack_require__.d(__webpack_exports__, "isImportDescr", (function() {
-    return isImportDescr;
-  })), __webpack_require__.d(__webpack_exports__, "isIntrinsic", (function() {
-    return isIntrinsic;
-  })), __webpack_require__.d(__webpack_exports__, "assertModule", (function() {
-    return assertModule;
-  })), __webpack_require__.d(__webpack_exports__, "assertModuleMetadata", (function() {
-    return assertModuleMetadata;
-  })), __webpack_require__.d(__webpack_exports__, "assertModuleNameMetadata", (function() {
-    return assertModuleNameMetadata;
-  })), __webpack_require__.d(__webpack_exports__, "assertFunctionNameMetadata", (function() {
-    return assertFunctionNameMetadata;
-  })), __webpack_require__.d(__webpack_exports__, "assertLocalNameMetadata", (function() {
-    return assertLocalNameMetadata;
-  })), __webpack_require__.d(__webpack_exports__, "assertBinaryModule", (function() {
-    return assertBinaryModule;
-  })), __webpack_require__.d(__webpack_exports__, "assertQuoteModule", (function() {
-    return assertQuoteModule;
-  })), __webpack_require__.d(__webpack_exports__, "assertSectionMetadata", (function() {
-    return assertSectionMetadata;
-  })), __webpack_require__.d(__webpack_exports__, "assertProducersSectionMetadata", (function() {
-    return assertProducersSectionMetadata;
-  })), __webpack_require__.d(__webpack_exports__, "assertProducerMetadata", (function() {
-    return assertProducerMetadata;
-  })), __webpack_require__.d(__webpack_exports__, "assertProducerMetadataVersionedName", (function() {
-    return assertProducerMetadataVersionedName;
-  })), __webpack_require__.d(__webpack_exports__, "assertLoopInstruction", (function() {
-    return assertLoopInstruction;
-  })), __webpack_require__.d(__webpack_exports__, "assertInstr", (function() {
-    return assertInstr;
-  })), __webpack_require__.d(__webpack_exports__, "assertIfInstruction", (function() {
-    return assertIfInstruction;
-  })), __webpack_require__.d(__webpack_exports__, "assertStringLiteral", (function() {
-    return assertStringLiteral;
-  })), __webpack_require__.d(__webpack_exports__, "assertNumberLiteral", (function() {
-    return assertNumberLiteral;
-  })), __webpack_require__.d(__webpack_exports__, "assertLongNumberLiteral", (function() {
-    return assertLongNumberLiteral;
-  })), __webpack_require__.d(__webpack_exports__, "assertFloatLiteral", (function() {
-    return assertFloatLiteral;
-  })), __webpack_require__.d(__webpack_exports__, "assertElem", (function() {
-    return assertElem;
-  })), __webpack_require__.d(__webpack_exports__, "assertIndexInFuncSection", (function() {
-    return assertIndexInFuncSection;
-  })), __webpack_require__.d(__webpack_exports__, "assertValtypeLiteral", (function() {
-    return assertValtypeLiteral;
-  })), __webpack_require__.d(__webpack_exports__, "assertTypeInstruction", (function() {
-    return assertTypeInstruction;
-  })), __webpack_require__.d(__webpack_exports__, "assertStart", (function() {
-    return assertStart;
-  })), __webpack_require__.d(__webpack_exports__, "assertGlobalType", (function() {
-    return assertGlobalType;
-  })), __webpack_require__.d(__webpack_exports__, "assertLeadingComment", (function() {
-    return assertLeadingComment;
-  })), __webpack_require__.d(__webpack_exports__, "assertBlockComment", (function() {
-    return assertBlockComment;
-  })), __webpack_require__.d(__webpack_exports__, "assertData", (function() {
-    return assertData;
-  })), __webpack_require__.d(__webpack_exports__, "assertGlobal", (function() {
-    return assertGlobal;
-  })), __webpack_require__.d(__webpack_exports__, "assertTable", (function() {
-    return assertTable;
-  })), __webpack_require__.d(__webpack_exports__, "assertMemory", (function() {
-    return assertMemory;
-  })), __webpack_require__.d(__webpack_exports__, "assertFuncImportDescr", (function() {
-    return assertFuncImportDescr;
-  })), __webpack_require__.d(__webpack_exports__, "assertModuleImport", (function() {
-    return assertModuleImport;
-  })), __webpack_require__.d(__webpack_exports__, "assertModuleExportDescr", (function() {
-    return assertModuleExportDescr;
-  })), __webpack_require__.d(__webpack_exports__, "assertModuleExport", (function() {
-    return assertModuleExport;
-  })), __webpack_require__.d(__webpack_exports__, "assertLimit", (function() {
-    return assertLimit;
-  })), __webpack_require__.d(__webpack_exports__, "assertSignature", (function() {
-    return assertSignature;
-  })), __webpack_require__.d(__webpack_exports__, "assertProgram", (function() {
-    return assertProgram;
-  })), __webpack_require__.d(__webpack_exports__, "assertIdentifier", (function() {
-    return assertIdentifier;
-  })), __webpack_require__.d(__webpack_exports__, "assertBlockInstruction", (function() {
-    return assertBlockInstruction;
-  })), __webpack_require__.d(__webpack_exports__, "assertCallInstruction", (function() {
-    return assertCallInstruction;
-  })), __webpack_require__.d(__webpack_exports__, "assertCallIndirectInstruction", (function() {
-    return assertCallIndirectInstruction;
-  })), __webpack_require__.d(__webpack_exports__, "assertByteArray", (function() {
-    return assertByteArray;
-  })), __webpack_require__.d(__webpack_exports__, "assertFunc", (function() {
-    return assertFunc;
-  })), __webpack_require__.d(__webpack_exports__, "assertInternalBrUnless", (function() {
-    return assertInternalBrUnless;
-  })), __webpack_require__.d(__webpack_exports__, "assertInternalGoto", (function() {
-    return assertInternalGoto;
-  })), __webpack_require__.d(__webpack_exports__, "assertInternalCallExtern", (function() {
-    return assertInternalCallExtern;
-  })), __webpack_require__.d(__webpack_exports__, "assertInternalEndAndReturn", (function() {
-    return assertInternalEndAndReturn;
-  })), __webpack_require__.d(__webpack_exports__, "unionTypesMap", (function() {
-    return unionTypesMap;
-  })), __webpack_require__.d(__webpack_exports__, "nodeAndUnionTypes", (function() {
-    return nodeAndUnionTypes;
-  })), __webpack_require__.d(__webpack_exports__, "numberLiteralFromRaw", (function() {
-    return numberLiteralFromRaw;
-  })), __webpack_require__.d(__webpack_exports__, "withLoc", (function() {
-    return withLoc;
-  })), __webpack_require__.d(__webpack_exports__, "withRaw", (function() {
-    return withRaw;
-  })), __webpack_require__.d(__webpack_exports__, "funcParam", (function() {
-    return funcParam;
-  })), __webpack_require__.d(__webpack_exports__, "indexLiteral", (function() {
-    return indexLiteral;
-  })), __webpack_require__.d(__webpack_exports__, "memIndexLiteral", (function() {
-    return memIndexLiteral;
-  })), __webpack_require__.d(__webpack_exports__, "instruction", (function() {
-    return node_helpers_instruction;
-  })), __webpack_require__.d(__webpack_exports__, "objectInstruction", (function() {
-    return objectInstruction;
-  })), __webpack_require__.d(__webpack_exports__, "traverse", (function() {
-    return traverse;
-  })), __webpack_require__.d(__webpack_exports__, "signatures", (function() {
-    return signatures;
-  })), __webpack_require__.d(__webpack_exports__, "isAnonymous", (function() {
-    return isAnonymous;
-  })), __webpack_require__.d(__webpack_exports__, "getSectionMetadata", (function() {
-    return getSectionMetadata;
-  })), __webpack_require__.d(__webpack_exports__, "getSectionMetadatas", (function() {
-    return getSectionMetadatas;
-  })), __webpack_require__.d(__webpack_exports__, "sortSectionMetadata", (function() {
-    return sortSectionMetadata;
-  })), __webpack_require__.d(__webpack_exports__, "orderedInsertNode", (function() {
-    return orderedInsertNode;
-  })), __webpack_require__.d(__webpack_exports__, "assertHasLoc", (function() {
-    return assertHasLoc;
-  })), __webpack_require__.d(__webpack_exports__, "getEndOfSection", (function() {
-    return getEndOfSection;
-  })), __webpack_require__.d(__webpack_exports__, "shiftLoc", (function() {
-    return shiftLoc;
-  })), __webpack_require__.d(__webpack_exports__, "shiftSection", (function() {
-    return shiftSection;
-  })), __webpack_require__.d(__webpack_exports__, "signatureForOpcode", (function() {
-    return signatureForOpcode;
-  })), __webpack_require__.d(__webpack_exports__, "getUniqueNameGenerator", (function() {
-    return getUniqueNameGenerator;
-  })), __webpack_require__.d(__webpack_exports__, "getStartByteOffset", (function() {
-    return getStartByteOffset;
-  })), __webpack_require__.d(__webpack_exports__, "getEndByteOffset", (function() {
-    return getEndByteOffset;
-  })), __webpack_require__.d(__webpack_exports__, "getFunctionBeginingByteOffset", (function() {
-    return getFunctionBeginingByteOffset;
-  })), __webpack_require__.d(__webpack_exports__, "getEndBlockByteOffset", (function() {
-    return getEndBlockByteOffset;
-  })), __webpack_require__.d(__webpack_exports__, "getStartBlockByteOffset", (function() {
-    return getStartBlockByteOffset;
-  })), __webpack_require__.d(__webpack_exports__, "cloneNode", (function() {
-    return cloneNode;
-  }));
-  var isModule = isTypeOf("Module"), isModuleMetadata = isTypeOf("ModuleMetadata"), isModuleNameMetadata = isTypeOf("ModuleNameMetadata"), isFunctionNameMetadata = isTypeOf("FunctionNameMetadata"), isLocalNameMetadata = isTypeOf("LocalNameMetadata"), isBinaryModule = isTypeOf("BinaryModule"), isQuoteModule = isTypeOf("QuoteModule"), isSectionMetadata = isTypeOf("SectionMetadata"), isProducersSectionMetadata = isTypeOf("ProducersSectionMetadata"), isProducerMetadata = isTypeOf("ProducerMetadata"), isProducerMetadataVersionedName = isTypeOf("ProducerMetadataVersionedName"), isLoopInstruction = isTypeOf("LoopInstruction"), isInstr = isTypeOf("Instr"), isIfInstruction = isTypeOf("IfInstruction"), isStringLiteral = isTypeOf("StringLiteral"), isNumberLiteral = isTypeOf("NumberLiteral"), isLongNumberLiteral = isTypeOf("LongNumberLiteral"), isFloatLiteral = isTypeOf("FloatLiteral"), isElem = isTypeOf("Elem"), isIndexInFuncSection = isTypeOf("IndexInFuncSection"), isValtypeLiteral = isTypeOf("ValtypeLiteral"), isTypeInstruction = isTypeOf("TypeInstruction"), isStart = isTypeOf("Start"), isGlobalType = isTypeOf("GlobalType"), isLeadingComment = isTypeOf("LeadingComment"), isBlockComment = isTypeOf("BlockComment"), isData = isTypeOf("Data"), isGlobal = isTypeOf("Global"), isTable = isTypeOf("Table"), isMemory = isTypeOf("Memory"), isFuncImportDescr = isTypeOf("FuncImportDescr"), isModuleImport = isTypeOf("ModuleImport"), isModuleExportDescr = isTypeOf("ModuleExportDescr"), isModuleExport = isTypeOf("ModuleExport"), isLimit = isTypeOf("Limit"), isSignature = isTypeOf("Signature"), isProgram = isTypeOf("Program"), isIdentifier = isTypeOf("Identifier"), isBlockInstruction = isTypeOf("BlockInstruction"), isCallInstruction = isTypeOf("CallInstruction"), isCallIndirectInstruction = isTypeOf("CallIndirectInstruction"), isByteArray = isTypeOf("ByteArray"), isFunc = isTypeOf("Func"), isInternalBrUnless = isTypeOf("InternalBrUnless"), isInternalGoto = isTypeOf("InternalGoto"), isInternalCallExtern = isTypeOf("InternalCallExtern"), isInternalEndAndReturn = isTypeOf("InternalEndAndReturn"), isNode = function(node) {
-    return isModule(node) || isModuleMetadata(node) || isModuleNameMetadata(node) || isFunctionNameMetadata(node) || isLocalNameMetadata(node) || isBinaryModule(node) || isQuoteModule(node) || isSectionMetadata(node) || isProducersSectionMetadata(node) || isProducerMetadata(node) || isProducerMetadataVersionedName(node) || isLoopInstruction(node) || isInstr(node) || isIfInstruction(node) || isStringLiteral(node) || isNumberLiteral(node) || isLongNumberLiteral(node) || isFloatLiteral(node) || isElem(node) || isIndexInFuncSection(node) || isValtypeLiteral(node) || isTypeInstruction(node) || isStart(node) || isGlobalType(node) || isLeadingComment(node) || isBlockComment(node) || isData(node) || isGlobal(node) || isTable(node) || isMemory(node) || isFuncImportDescr(node) || isModuleImport(node) || isModuleExportDescr(node) || isModuleExport(node) || isLimit(node) || isSignature(node) || isProgram(node) || isIdentifier(node) || isBlockInstruction(node) || isCallInstruction(node) || isCallIndirectInstruction(node) || isByteArray(node) || isFunc(node) || isInternalBrUnless(node) || isInternalGoto(node) || isInternalCallExtern(node) || isInternalEndAndReturn(node);
-  }, isBlock = function(node) {
-    return isLoopInstruction(node) || isBlockInstruction(node) || isFunc(node);
-  }, isInstruction = function(node) {
-    return isLoopInstruction(node) || isInstr(node) || isIfInstruction(node) || isTypeInstruction(node) || isBlockInstruction(node) || isCallInstruction(node) || isCallIndirectInstruction(node);
-  }, isExpression = function(node) {
-    return isInstr(node) || isStringLiteral(node) || isNumberLiteral(node) || isLongNumberLiteral(node) || isFloatLiteral(node) || isValtypeLiteral(node) || isIdentifier(node);
-  }, isNumericLiteral = function(node) {
-    return isNumberLiteral(node) || isLongNumberLiteral(node) || isFloatLiteral(node);
-  }, isImportDescr = function(node) {
-    return isGlobalType(node) || isTable(node) || isMemory(node) || isFuncImportDescr(node);
-  }, isIntrinsic = function(node) {
-    return isInternalBrUnless(node) || isInternalGoto(node) || isInternalCallExtern(node) || isInternalEndAndReturn(node);
-  }, assertModule = assertTypeOf("Module"), assertModuleMetadata = assertTypeOf("ModuleMetadata"), assertModuleNameMetadata = assertTypeOf("ModuleNameMetadata"), assertFunctionNameMetadata = assertTypeOf("FunctionNameMetadata"), assertLocalNameMetadata = assertTypeOf("LocalNameMetadata"), assertBinaryModule = assertTypeOf("BinaryModule"), assertQuoteModule = assertTypeOf("QuoteModule"), assertSectionMetadata = assertTypeOf("SectionMetadata"), assertProducersSectionMetadata = assertTypeOf("ProducersSectionMetadata"), assertProducerMetadata = assertTypeOf("ProducerMetadata"), assertProducerMetadataVersionedName = assertTypeOf("ProducerMetadataVersionedName"), assertLoopInstruction = assertTypeOf("LoopInstruction"), assertInstr = assertTypeOf("Instr"), assertIfInstruction = assertTypeOf("IfInstruction"), assertStringLiteral = assertTypeOf("StringLiteral"), assertNumberLiteral = assertTypeOf("NumberLiteral"), assertLongNumberLiteral = assertTypeOf("LongNumberLiteral"), assertFloatLiteral = assertTypeOf("FloatLiteral"), assertElem = assertTypeOf("Elem"), assertIndexInFuncSection = assertTypeOf("IndexInFuncSection"), assertValtypeLiteral = assertTypeOf("ValtypeLiteral"), assertTypeInstruction = assertTypeOf("TypeInstruction"), assertStart = assertTypeOf("Start"), assertGlobalType = assertTypeOf("GlobalType"), assertLeadingComment = assertTypeOf("LeadingComment"), assertBlockComment = assertTypeOf("BlockComment"), assertData = assertTypeOf("Data"), assertGlobal = assertTypeOf("Global"), assertTable = assertTypeOf("Table"), assertMemory = assertTypeOf("Memory"), assertFuncImportDescr = assertTypeOf("FuncImportDescr"), assertModuleImport = assertTypeOf("ModuleImport"), assertModuleExportDescr = assertTypeOf("ModuleExportDescr"), assertModuleExport = assertTypeOf("ModuleExport"), assertLimit = assertTypeOf("Limit"), assertSignature = assertTypeOf("Signature"), assertProgram = assertTypeOf("Program"), assertIdentifier = assertTypeOf("Identifier"), assertBlockInstruction = assertTypeOf("BlockInstruction"), assertCallInstruction = assertTypeOf("CallInstruction"), assertCallIndirectInstruction = assertTypeOf("CallIndirectInstruction"), assertByteArray = assertTypeOf("ByteArray"), assertFunc = assertTypeOf("Func"), assertInternalBrUnless = assertTypeOf("InternalBrUnless"), assertInternalGoto = assertTypeOf("InternalGoto"), assertInternalCallExtern = assertTypeOf("InternalCallExtern"), assertInternalEndAndReturn = assertTypeOf("InternalEndAndReturn"), unionTypesMap = {
-    Module: [ "Node" ],
-    ModuleMetadata: [ "Node" ],
-    ModuleNameMetadata: [ "Node" ],
-    FunctionNameMetadata: [ "Node" ],
-    LocalNameMetadata: [ "Node" ],
-    BinaryModule: [ "Node" ],
-    QuoteModule: [ "Node" ],
-    SectionMetadata: [ "Node" ],
-    ProducersSectionMetadata: [ "Node" ],
-    ProducerMetadata: [ "Node" ],
-    ProducerMetadataVersionedName: [ "Node" ],
-    LoopInstruction: [ "Node", "Block", "Instruction" ],
-    Instr: [ "Node", "Expression", "Instruction" ],
-    IfInstruction: [ "Node", "Instruction" ],
-    StringLiteral: [ "Node", "Expression" ],
-    NumberLiteral: [ "Node", "NumericLiteral", "Expression" ],
-    LongNumberLiteral: [ "Node", "NumericLiteral", "Expression" ],
-    FloatLiteral: [ "Node", "NumericLiteral", "Expression" ],
-    Elem: [ "Node" ],
-    IndexInFuncSection: [ "Node" ],
-    ValtypeLiteral: [ "Node", "Expression" ],
-    TypeInstruction: [ "Node", "Instruction" ],
-    Start: [ "Node" ],
-    GlobalType: [ "Node", "ImportDescr" ],
-    LeadingComment: [ "Node" ],
-    BlockComment: [ "Node" ],
-    Data: [ "Node" ],
-    Global: [ "Node" ],
-    Table: [ "Node", "ImportDescr" ],
-    Memory: [ "Node", "ImportDescr" ],
-    FuncImportDescr: [ "Node", "ImportDescr" ],
-    ModuleImport: [ "Node" ],
-    ModuleExportDescr: [ "Node" ],
-    ModuleExport: [ "Node" ],
-    Limit: [ "Node" ],
-    Signature: [ "Node" ],
-    Program: [ "Node" ],
-    Identifier: [ "Node", "Expression" ],
-    BlockInstruction: [ "Node", "Block", "Instruction" ],
-    CallInstruction: [ "Node", "Instruction" ],
-    CallIndirectInstruction: [ "Node", "Instruction" ],
-    ByteArray: [ "Node" ],
-    Func: [ "Node", "Block" ],
-    InternalBrUnless: [ "Node", "Intrinsic" ],
-    InternalGoto: [ "Node", "Intrinsic" ],
-    InternalCallExtern: [ "Node", "Intrinsic" ],
-    InternalEndAndReturn: [ "Node", "Intrinsic" ]
-  }, nodeAndUnionTypes = [ "Module", "ModuleMetadata", "ModuleNameMetadata", "FunctionNameMetadata", "LocalNameMetadata", "BinaryModule", "QuoteModule", "SectionMetadata", "ProducersSectionMetadata", "ProducerMetadata", "ProducerMetadataVersionedName", "LoopInstruction", "Instr", "IfInstruction", "StringLiteral", "NumberLiteral", "LongNumberLiteral", "FloatLiteral", "Elem", "IndexInFuncSection", "ValtypeLiteral", "TypeInstruction", "Start", "GlobalType", "LeadingComment", "BlockComment", "Data", "Global", "Table", "Memory", "FuncImportDescr", "ModuleImport", "ModuleExportDescr", "ModuleExport", "Limit", "Signature", "Program", "Identifier", "BlockInstruction", "CallInstruction", "CallIndirectInstruction", "ByteArray", "Func", "InternalBrUnless", "InternalGoto", "InternalCallExtern", "InternalEndAndReturn", "Node", "Block", "Instruction", "Expression", "NumericLiteral", "ImportDescr", "Intrinsic" ], src_long = __webpack_require__(0), long_default = __webpack_require__.n(src_long);
   function parse(input) {
     var mantissa, exponent, splitIndex = (input = input.toUpperCase()).indexOf("P");
     -1 !== splitIndex ? (mantissa = input.substring(0, splitIndex), exponent = parseInt(input.substring(splitIndex + 1))) : (mantissa = input, 
@@ -1135,18 +933,11 @@
     } else mantissa = parseInt(mantissa, 16);
     return mantissa * (-1 !== splitIndex ? Math.pow(2, exponent) : 1);
   }
-  function helper_api_error_esm_typeof(obj) {
-    return (helper_api_error_esm_typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj) {
-      return typeof obj;
-    } : function(obj) {
-      return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    })(obj);
-  }
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) throw new TypeError("Cannot call a class as a function");
   }
   function _possibleConstructorReturn(self, call) {
-    if (call && ("object" === helper_api_error_esm_typeof(call) || "function" == typeof call)) return call;
+    if (call && ("object" == typeof call || "function" == typeof call)) return call;
     if (!self) throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
     return self;
   }
@@ -1188,9 +979,9 @@
   }
   function parse64I(sourceString) {
     var long;
-    if (isHexLiteral(sourceString)) long = long_default.a.fromString(sourceString, !1, 16); else {
+    if (isHexLiteral(sourceString)) long = Long.fromString(sourceString, !1, 16); else {
       if (isDecimalExponentLiteral(sourceString)) throw new Error("This number literal format is yet to be implemented.");
-      long = long_default.a.fromString(sourceString);
+      long = Long.fromString(sourceString);
     }
     return {
       high: long.high,
@@ -1209,29 +1000,6 @@
   }
   function isHexLiteral(sourceString) {
     return "0X" === sourceString.substring(0, 2).toUpperCase() || "-0X" === sourceString.substring(0, 3).toUpperCase();
-  }
-  function esm_slicedToArray(arr, i) {
-    if (Array.isArray(arr)) return arr;
-    if (Symbol.iterator in Object(arr)) return function(arr, i) {
-      var _arr = [], _n = !0, _d = !1, _e = void 0;
-      try {
-        for (var _s, _i = arr[Symbol.iterator](); !(_n = (_s = _i.next()).done) && (_arr.push(_s.value), 
-        !i || _arr.length !== i); _n = !0) ;
-      } catch (err) {
-        _d = !0, _e = err;
-      } finally {
-        try {
-          _n || null == _i.return || _i.return();
-        } finally {
-          if (_d) throw _e;
-        }
-      }
-      return _arr;
-    }(arr, i);
-    throw new TypeError("Invalid attempt to destructure non-iterable instance");
-  }
-  function esm_classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) throw new TypeError("Cannot call a class as a function");
   }
   function _defineProperties(target, props) {
     for (var i = 0; i < props.length; i++) {
@@ -1256,7 +1024,7 @@
   new (function() {
     function FSM(transitions, initialState) {
       var terminatingState = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : STOP;
-      esm_classCallCheck(this, FSM), this.initialState = initialState, this.terminatingState = terminatingState, 
+      _classCallCheck(this, FSM), this.initialState = initialState, this.terminatingState = terminatingState, 
       terminatingState !== STOP && transitions[terminatingState] || (transitions[terminatingState] = []), 
       this.transitionFunction = combineTransitions.call(this, transitions);
     }
@@ -1266,7 +1034,7 @@
       value: function(input) {
         this.input = input, this.ptr = 0, this.currentState = this.initialState;
         for (var eatLength, nextState, value = ""; this.currentState !== this.terminatingState && this.ptr < this.input.length; ) {
-          var _transitionFunction2 = esm_slicedToArray(this.transitionFunction(), 2);
+          var _transitionFunction2 = this.transitionFunction();
           nextState = _transitionFunction2[0], eatLength = _transitionFunction2[1], value += this.input.substring(this.ptr, this.ptr += eatLength), 
           this.currentState = nextState;
         }
@@ -1364,15 +1132,6 @@
   function memIndexLiteral(value) {
     return numberLiteralFromRaw(value, "u32");
   }
-  function _extends() {
-    return (_extends = Object.assign || function(target) {
-      for (var i = 1; i < arguments.length; i++) {
-        var source = arguments[i];
-        for (var key in source) Object.prototype.hasOwnProperty.call(source, key) && (target[key] = source[key]);
-      }
-      return target;
-    }).apply(this, arguments);
-  }
   function findParent(_ref, cb) {
     var parentPath = _ref.parentPath;
     if (null == parentPath) throw new Error("node is root");
@@ -1441,7 +1200,7 @@
         if (void 0 !== node) {
           if (!0 !== node._deleted) {
             var path = function(context) {
-              var path = _extends({}, context);
+              var path = Object.assign({}, context);
               return Object.assign(path, createPathOperations(path)), path;
             }(context);
             callback(node.type, path), path.shouldStop ? stop = !0 : Object.keys(node).forEach((function(prop) {
@@ -1937,33 +1696,6 @@
       return "string" == typeof obj.object ? "".concat(obj.object, ".").concat(obj.name) : obj.name;
     }))
   };
-  function utils_slicedToArray(arr, i) {
-    if (Array.isArray(arr)) return arr;
-    if (Symbol.iterator in Object(arr)) return function(arr, i) {
-      var _arr = [], _n = !0, _d = !1, _e = void 0;
-      try {
-        for (var _s, _i = arr[Symbol.iterator](); !(_n = (_s = _i.next()).done) && (_arr.push(_s.value), 
-        !i || _arr.length !== i); _n = !0) ;
-      } catch (err) {
-        _d = !0, _e = err;
-      } finally {
-        try {
-          _n || null == _i.return || _i.return();
-        } finally {
-          if (_d) throw _e;
-        }
-      }
-      return _arr;
-    }(arr, i);
-    throw new TypeError("Invalid attempt to destructure non-iterable instance");
-  }
-  function utils_typeof(obj) {
-    return (utils_typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(obj) {
-      return typeof obj;
-    } : function(obj) {
-      return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    })(obj);
-  }
   function isAnonymous(ident) {
     return "" === ident.raw;
   }
@@ -2026,8 +1758,8 @@
   }
   function shiftSection(ast, node, delta) {
     if ("SectionMetadata" !== node.type) throw new Error("Can not shift node " + JSON.stringify(node.type));
-    node.startOffset += delta, "object" === utils_typeof(node.size.loc) && shiftLoc(node.size, delta), 
-    "object" === utils_typeof(node.vectorOfSize) && "object" === utils_typeof(node.vectorOfSize.loc) && shiftLoc(node.vectorOfSize, delta);
+    node.startOffset += delta, "object" == typeof node.size.loc && shiftLoc(node.size, delta), 
+    "object" == typeof node.vectorOfSize && "object" == typeof node.vectorOfSize.loc && shiftLoc(node.vectorOfSize, delta);
     var sectionName = node.section;
     traverse(ast, {
       Node: function(_ref3) {
@@ -2061,7 +1793,7 @@
            default:
             return;
           }
-        })(node) === sectionName && "object" === utils_typeof(node.loc) && shiftLoc(node, delta);
+        })(node) === sectionName && "object" == typeof node.loc && shiftLoc(node, delta);
       }
     });
   }
@@ -2088,21 +1820,21 @@
   }
   function getFunctionBeginingByteOffset(n) {
     if (!(n.body.length > 0)) throw new Error("n.body.length > 0 error: unknown");
-    return getStartByteOffset(utils_slicedToArray(n.body, 1)[0]);
+    return getStartByteOffset(n.body[0]);
   }
   function getEndBlockByteOffset(n) {
     if (!(n.instr.length > 0 || n.body.length > 0)) throw new Error("n.instr.length > 0 || n.body.length > 0 error: unknown");
     var lastInstruction;
     if (n.instr && (lastInstruction = n.instr[n.instr.length - 1]), n.body && (lastInstruction = n.body[n.body.length - 1]), 
-    "object" !== utils_typeof(lastInstruction)) throw new Error('typeof lastInstruction === "object" error: unknown');
+    "object" != typeof lastInstruction) throw new Error('typeof lastInstruction === "object" error: unknown');
     return getStartByteOffset(lastInstruction);
   }
   function getStartBlockByteOffset(n) {
     if (!(n.instr.length > 0 || n.body.length > 0)) throw new Error("n.instr.length > 0 || n.body.length > 0 error: unknown");
     var fistInstruction;
-    n.instr && (fistInstruction = utils_slicedToArray(n.instr, 1)[0]);
-    n.body && (fistInstruction = utils_slicedToArray(n.body, 1)[0]);
-    if ("object" !== utils_typeof(fistInstruction)) throw new Error('typeof fistInstruction === "object" error: unknown');
+    n.instr && (fistInstruction = n.instr[0]);
+    n.body && (fistInstruction = n.body[0]);
+    if ("object" != typeof fistInstruction) throw new Error('typeof fistInstruction === "object" error: unknown');
     return getStartByteOffset(fistInstruction);
   }
   function cloneNode(n) {
