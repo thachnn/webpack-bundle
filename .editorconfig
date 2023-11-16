@@ -14,6 +14,10 @@ trim_trailing_whitespace = true
 quote_type = single
 spaces_within_object_literal_braces = true
 
-[*.{md,txt}]
+[*.{md,txt,patch}]
 max_line_length = off
+trim_trailing_whitespace = false
+
+[{dist,node_modules}/**]
+insert_final_newline = off
 trim_trailing_whitespace = false

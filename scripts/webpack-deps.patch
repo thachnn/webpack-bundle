@@ -1,0 +1,102 @@
+--- a/node_modules/ansi-styles/index.js
++++ b/node_modules/ansi-styles/index.js
+@@ -162,4 +162 @@ function assembleStyles() {
+-Object.defineProperty(module, 'exports', {
+-	enumerable: true,
+-	get: assembleStyles
+-});
++module.exports = assembleStyles();
+--- a/node_modules/big.js/big.js
++++ b/node_modules/big.js/big.js
+@@ -7 +7,0 @@
+-;(function (GLOBAL) {
+@@ -930,2 +929,0 @@
+-  if (typeof define === 'function' && define.amd) {
+-    define(function () { return Big; });
+@@ -934 +931,0 @@
+-  } else if (typeof module !== 'undefined' && module.exports) {
+@@ -938,4 +934,0 @@
+-  } else {
+-    GLOBAL.Big = Big;
+-  }
+-})(this);
+--- a/node_modules/cross-spawn/lib/parse.js
++++ b/node_modules/cross-spawn/lib/parse.js
+@@ -4 +4,0 @@ const path = require('path');
+-const niceTry = require('nice-try');
+@@ -8 +7,0 @@ const readShebang = require('./util/readShebang');
+-const semver = require('semver');
+@@ -15 +13 @@ const isCmdShimRegExp = /node_modules[\\/].bin[\\/][^\\/]+\.cmd$/i;
+-const supportsShellOption = niceTry(() => semver.satisfies(process.version, '^4.8.0 || ^5.7.0 || >= 6.0.0', true)) || false;
++const supportsShellOption = /^[v=\s]*(4\.([8-9]|[1-9]\d+)|5\.([7-9]|[1-9]\d+)|[6-9]|[1-9]\d+)\./.test(process.version);
+--- a/node_modules/expand-tilde/index.js
++++ b/node_modules/expand-tilde/index.js
+@@ -8 +8 @@
+-var homedir = require('homedir-polyfill');
++var homedir = require('os').homedir;
+--- a/node_modules/global-modules/index.js
++++ b/node_modules/global-modules/index.js
+@@ -25,5 +25 @@ function getPath() {
+-Reflect.defineProperty(module, 'exports', {
+-  get() {
+-    return gm || (gm = getPath());
+-  }
+-});
++module.exports = gm || (gm = getPath());
+--- a/node_modules/global-prefix/index.js
++++ b/node_modules/global-prefix/index.js
+@@ -81,5 +81 @@ function tryConfigPath(configPath) {
+-Reflect.defineProperty(module, 'exports', {
+-  get() {
+-    return getPrefix();
+-  }
+-});
++module.exports = getPrefix();
+--- a/node_modules/is-windows/index.js
++++ b/node_modules/is-windows/index.js
+@@ -9 +9 @@
+-  if (exports && typeof exports === 'object' && typeof module !== 'undefined') {
++  if (typeof exports === 'object' && typeof module !== 'undefined') {
+--- a/node_modules/json5/lib/parse.js
++++ b/node_modules/json5/lib/parse.js
+@@ -2,0 +2 @@
++parse.parse = parse;
+\ No newline at end of file
+--- a/node_modules/loader-utils/lib/parseQuery.js
++++ b/node_modules/loader-utils/lib/parseQuery.js
+@@ -68 +68 @@ function parseQuery(query) {
+-module.exports = parseQuery;
++module.exports = parseQuery.parseQuery = parseQuery;
+--- a/node_modules/locate-path/index.js
++++ b/node_modules/locate-path/index.js
+@@ -4 +4 @@ const pathExists = require('path-exists');
+-const pLocate = require('p-locate');
++const pLocate = () => Promise.resolve();
+--- a/node_modules/source-map-url/source-map-url.js
++++ b/node_modules/source-map-url/source-map-url.js
+@@ -5,3 +5 @@ void (function(root, factory) {
+-  if (typeof define === "function" && define.amd) {
+-    define(factory)
+-  } else if (typeof exports === "object") {
++  if (typeof exports === "object") {
+--- a/node_modules/source-map/dist/source-map.js
++++ b/node_modules/source-map/dist/source-map.js
+@@ -1,11 +1 @@
+-(function webpackUniversalModuleDefinition(root, factory) {
+-	if(typeof exports === 'object' && typeof module === 'object')
+-		module.exports = factory();
+-	else if(typeof define === 'function' && define.amd)
+-		define([], factory);
+-	else if(typeof exports === 'object')
+-		exports["sourceMap"] = factory();
+-	else
+-		root["sourceMap"] = factory();
+-})(this, function() {
+-return /******/ (function(modules) { // webpackBootstrap
++module.exports = /******/ (function(modules) { // webpackBootstrap
+@@ -3089 +3079,0 @@ return /******/ (function(modules) { // webpackBootstrap
+-});
+--- a/node_modules/webpack-cli/bin/cli.js
++++ b/node_modules/webpack-cli/bin/cli.js
+@@ -1 +1,0 @@
+-#!/usr/bin/env node
