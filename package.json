@@ -12,35 +12,29 @@
   "repository": "thachnn/webpack-bundle",
   "license": "MIT",
   "engines": {
-    "node": ">=6"
+    "node": ">=6.9"
   },
   "scripts": {
+    "postinstall": "git apply --reject --unidiff-zero scripts/webpack-deps.patch",
     "build": "node scripts/build-webpack.js",
-    "clean": "node node_modules/rimraf/bin.js dist node_modules/.cache"
+    "clean": "node node_modules/rimraf/bin.js dist/ node_modules/.cache",
+    "terser": "node node_modules/webpack/bin/terser.js",
+    "webpack": "node node_modules/webpack-cli/bin/cli.js --progress --display-modules"
   },
   "devDependencies": {
     "@babel/core": "^7.8.3",
     "@babel/preset-env": "^7.8.3",
     "babel-loader": "^8.0.6",
-    "rimraf": "^2.6.3",
-    "string-replace-loader": "^2.2.0",
+    "rimraf": "^2.2.8",
     "webpack": "thachnn/webpack-bundle#v4.46.0",
     "webpack-cli": "thachnn/webpack-bundle#cli-3.3.12"
   },
   "resolutions": {
-    "**/@babel/highlight/chalk": "thachnn/webpack-bundle#chalk-2.4.2",
-    "**/schema-utils/ajv": "thachnn/webpack-bundle#ajv-6.12.6",
-    "rimraf/glob": "thachnn/webpack-bundle#glob-7.2.3"
+    "**/@babel/highlight/chalk": "thachnn/webpack-bundle#chalk-2.4.2"
   },
   "overrides": {
     "@babel/highlight": {
       "chalk": "thachnn/webpack-bundle#chalk-2.4.2"
-    },
-    "schema-utils": {
-      "ajv": "thachnn/webpack-bundle#ajv-6.12.6"
-    },
-    "rimraf": {
-      "glob": "thachnn/webpack-bundle#glob-7.2.3"
     }
   }
 }

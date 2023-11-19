@@ -1,0 +1,39 @@
+--- a/node_modules/regenerate/regenerate.js
++++ b/node_modules/regenerate/regenerate.js
+@@ -2 +2 @@
+-;(function(root) {
++/*;(function(root) {
+@@ -1189 +1189,2 @@
+ 	// Some AMD build optimizers, like r.js, check for specific condition patterns
++	if (typeof module == 'object') module.exports = regenerate; else
+@@ -1209 +1210,0 @@
+-}(this));
+--- a/node_modules/regexpu-core/rewrite-pattern.js
++++ b/node_modules/regexpu-core/rewrite-pattern.js
+@@ -44,5 +44,3 @@ const getUnicodePropertyValueSet = (property, value) => {
+-	const path = value ?
+-		`${ property }/${ value }` :
+-		`Binary_Property/${ property }`;
++	value || ((value = property), (property = 'Binary_Property'));
+ 	try {
+-		return require(`regenerate-unicode-properties/${ path }.js`);
++		return require(`regenerate-unicode-properties/${ property }/${ value }.js`);
+--- a/node_modules/regjsgen/regjsgen.js
++++ b/node_modules/regjsgen/regjsgen.js
+@@ -6 +6 @@
+-;(function() {
++'use strict';/*(function() {
+@@ -27,2 +27,2 @@
+     root = freeGlobal;
+-  }
++  }*/
+@@ -391 +391,2 @@
+   // Some AMD build optimizers, like r.js, check for condition patterns like the following:
++  if (typeof module == 'object') module.exports = regjsgen; else
+@@ -409 +410,0 @@
+-}.call(this));
+--- a/node_modules/regjsparser/parser.js
++++ b/node_modules/regjsparser/parser.js
+@@ -1180 +1180 @@
+-  if (typeof module !== 'undefined' && module.exports) {
++  if (typeof module !== 'undefined' && typeof exports !== 'undefined') {

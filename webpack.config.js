@@ -5,11 +5,12 @@ const fs = require('fs');
 const { minify: terserMinify } = require('webpack/vendor/terser');
 const { TerserPlugin, BannerPlugin, CopyPlugin, ReplaceCodePlugin } = require('webpack');
 
-/** @typedef {import("webpack").Configuration} Configuration */
+/**
+ * @typedef {import('webpack').Configuration} Configuration
+ * @typedef {{from: string, to?: (string|Function), context?: string, transform?: Function}} ObjectPattern
+ */
 
-/** @typedef {{ from: String, to?: String | Function, context?: String, transform?: Function }} ObjectPattern */
-
-/** @type {import("terser").MinifyOptions} */
+/** @type {import('terser').MinifyOptions} */
 const baseTerserOpts = {
   compress: { passes: 1 },
   mangle: false,
@@ -17,7 +18,7 @@ const baseTerserOpts = {
 };
 
 /**
- * @param {String} name
+ * @param {string} name
  * @param {Configuration} config
  * @returns {Configuration}
  */
@@ -25,53 +26,56 @@ const webpackConfig = (name, config, clean = name.charAt(0) !== '/') =>
   Object.assign(config, {
     mode: 'production',
     name: clean ? name : name.substring(1),
-    output: Object.assign({ path: path.join(__dirname, 'dist', clean ? name : '') }, config.output || {}),
+    output: Object.assign({ path: path.join(__dirname, 'dist', clean ? name : '') }, config.output),
     context: __dirname,
     target: 'node',
     node: { __filename: false, __dirname: false },
     cache: true,
     stats: { modules: true, maxModules: Infinity, children: true },
-    optimization: {
+    optimization: Object.assign({}, config.optimization, {
       nodeEnv: false,
       // minimize: false,
-      minimizer: [
-        new TerserPlugin({
-          test: /(\.m?js|[\\/][^.]+)$/i,
-          cache: true,
-          parallel: true,
-          terserOptions: Object.assign({}, baseTerserOpts, ((config.optimization || {}).minimizer || [])[0] || {}),
-          extractComments: { condition: /@preserve|@lic|@cc_on|^\**!/i, banner: false },
-        }),
-      ],
-    },
+      minimizer: ((config.optimization || {}).minimizer || [null]).map(newTerserPlugin),
+    }),
   });
 
-const minifyContent = (content, opts = {}) =>
-  terserMinify(String(content), Object.assign({}, baseTerserOpts, typeof opts === 'object' ? opts : {})).code;
+const baseTerserPluginOpts = {
+  test: /(\.m?js|[\\/][\w-]+)$/i,
+  cache: true,
+  // parallel: true,
+  extractComments: { condition: 'some', banner: false },
+};
+
+const newTerserPlugin = (opt) =>
+  new TerserPlugin(
+    Object.assign({}, baseTerserPluginOpts, opt, {
+      terserOptions: Object.assign({}, baseTerserOpts, (opt || {}).terserOptions),
+    })
+  );
+
+const minifyContent = (content, opts = null) =>
+  terserMinify(String(content), Object.assign({}, baseTerserOpts, typeof opts === 'object' ? opts : null)).code;
 
 let babelPresetPlugins = () => {
-  const re = /(?<=\brequire\(")@babel\/(plugin-|preset-modules\/lib\/plugins\/)[^"]+/g;
-  const file = path.join(__dirname, 'node_modules', '@babel', 'preset-env', 'lib', 'available-plugins.js');
+  const data = fs
+    .readFileSync(path.resolve(__dirname, 'node_modules/@babel/preset-env/lib/available-plugins.js'), 'utf8')
+    .match(/(?<=\brequire\(['"])@babel\/(plugin-|preset-modules\/lib\/plugins\/)[^'"]+/g);
 
-  const data = fs.readFileSync(file, 'utf8').match(re);
   babelPresetPlugins = () => data;
   return data;
 };
 
+//
 module.exports = [
   webpackConfig('regexpu-core', {
     entry: { 'rewrite-pattern': './node_modules/regexpu-core/rewrite-pattern' },
     output: { libraryTarget: 'commonjs2' },
     plugins: [
       new CopyPlugin([
-        { from: 'node_modules/regexpu-core/{LICENSE*,README*}', to: '[name].[ext]' },
+        { from: '{LICENSE*,*.md}', context: 'node_modules/regexpu-core' },
         {
           from: 'node_modules/regexpu-core/package.json',
-          transform(content) {
-            const pkg = JSON.parse(content);
-            ['dependencies', 'devDependencies', 'scripts'].forEach((k) => delete pkg[k]);
-            return JSON.stringify(pkg, null, '\t');
-          },
+          transform: (s) => String(s).replace(/,\s*"(d(evD)?ependencies|scripts)":\s*\{[^{}]*\}/g, ''),
         },
       ]),
     ],
@@ -94,19 +98,19 @@ module.exports = [
     module: {
       rules: [
         {
-          test: /node_modules.@babel.core.lib.config.files.(plugins|module-types|import)\.js$/i,
-          loader: 'string-replace-loader',
+          test: /node_modules[\\/]@babel.core\b.lib.config.files.(plugins|module-types|import)\.js$/i,
+          loader: 'webpack/lib/replace-loader',
           options: {
             multiple: [
-              { search: ' require(\\(\\w+\\))', flags: '', replace: ' require("originalRequire")$1' },
+              { search: / require(\(\w+\))/, replace: ' require("originalRequire")$1' },
               { search: ' import(filepath)', replace: ' Promise.resolve(() => require("originalRequire")(filepath))' },
             ],
           },
         },
         {
-          test: /node_modules.@babel.core.package\.json$/i,
-          loader: 'string-replace-loader',
-          options: { search: ',\\s*"main":[\\s\\S]*', flags: '', replace: '\n}' },
+          test: /node_modules[\\/]@babel.core\b.package\.json$/i,
+          loader: 'webpack/lib/replace-loader',
+          options: { search: /,\s*"main":[\s\S]*/, replace: '\n}' },
         },
       ],
     },
@@ -165,9 +169,9 @@ module.exports = [
     module: {
       rules: [
         {
-          test: /node_modules.@babel.(helper-create-(class|regexp)-features-plugin|plugin-proposal-dynamic-import).package\.json$/i,
-          loader: 'string-replace-loader',
-          options: { search: ',\\s*"(author|description)":[\\s\\S]*', flags: '', replace: '\n}' },
+          test: /node_modules[\\/]@babel.(helper-create-(class|regexp)-features-plugin|plugin-proposal-dynamic-import)\b.package\.json$/i,
+          loader: 'webpack/lib/replace-loader',
+          options: { search: /,\s*"(author|description)":[\s\S]*/, replace: '\n}' },
         },
       ],
     },
@@ -196,17 +200,13 @@ module.exports = [
   //
   webpackConfig('object.assign', {
     entry: { index: './node_modules/object.assign/index' },
-    output: { libraryTarget: 'commonjs2' },
+    output: { libraryTarget: 'commonjs2' }, // UNUSED
     plugins: [
       new CopyPlugin([
-        { from: 'node_modules/object.assign/{LICENSE*,*.md}', to: '[name].[ext]' },
+        { from: '{LICENSE*,*.md}', context: 'node_modules/object.assign' },
         {
           from: 'node_modules/object.assign/package.json',
-          transform(content) {
-            const pkg = JSON.parse(content);
-            ['dependencies', 'devDependencies', 'scripts', 'testling'].forEach((k) => delete pkg[k]);
-            return JSON.stringify(pkg, null, '\t');
-          },
+          transform: (s) => String(s).replace(/,\s*"(d(evD)?ependencies|scripts|testling)":\s*\{[^{}]*\}/g, ''),
         },
       ]),
     ],
@@ -238,28 +238,27 @@ module.exports = [
     module: {
       rules: [
         {
-          test: /node_modules.browserslist.cli\.js$/i,
-          loader: 'string-replace-loader',
-          options: { search: '^#!.*[\\r\\n]+', flags: '', replace: '' },
+          test: /node_modules[\\/]browserslist\b.cli\.js$/i,
+          loader: 'webpack/lib/replace-loader',
+          options: { search: /^#!.*[\r\n]+/, replace: '' },
         },
         {
-          test: /node_modules.browserslist.node\.js$/i,
-          loader: 'string-replace-loader',
+          test: /node_modules[\\/]browserslist\b.node\.js$/i,
+          loader: 'webpack/lib/replace-loader',
           options: {
-            search: ' require\\(\\s*require\\.resolve\\(',
-            flags: 'g',
+            search: / require\(\s*require\.resolve\(/g,
             replace: ' require("originalRequire")(require("originalRequire").resolve(',
           },
         },
         {
-          test: /node_modules.browserslist.update-db\.js$/i,
-          loader: 'string-replace-loader',
+          test: /node_modules[\\/]browserslist\b.update-db\.js$/i,
+          loader: 'webpack/lib/replace-loader',
           options: { search: "require('escalade/sync')", replace: "require('escalade/sync/index.js')" },
         },
         {
-          test: /node_modules.browserslist.package\.json$/i,
-          loader: 'string-replace-loader',
-          options: { search: ',\\s*"keywords":[\\s\\S]*', flags: '', replace: '\n}' },
+          test: /node_modules[\\/]browserslist\b.package\.json$/i,
+          loader: 'webpack/lib/replace-loader',
+          options: { search: /,\s*"keywords":[\s\S]*/, replace: '\n}' },
         },
       ],
     },
@@ -280,7 +279,12 @@ module.exports = [
       new ReplaceCodePlugin({ search: ' require("./originalRequire")', replace: ' require', test: /index\.js$/i }),
     ],
     optimization: {
-      minimizer: [{ output: Object.assign({}, baseTerserOpts.output, { indent_level: 0 }) }],
+      minimizer: [
+        {
+          parallel: true,
+          terserOptions: { output: Object.assign({}, baseTerserOpts.output, { indent_level: 0 }) },
+        },
+      ],
     },
   }),
 ];
